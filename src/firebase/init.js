@@ -10,7 +10,7 @@ var config = {
     databaseURL: process.env.DB_URL,
     projectId: process.env.PROJECT_ID,
     storageBucket: process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MASSAGING_SENDER_ID
+    messagingSenderId: process.env.MESSAGING_SENDER_ID
 };
 const firebaseApp = firebase.initializeApp(config);
 
