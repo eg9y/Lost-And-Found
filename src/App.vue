@@ -2,6 +2,7 @@
   <v-app id="inspire">
     <nav-bar></nav-bar>
     <v-content>
+        something
         <router-view/>
     </v-content>
   </v-app>
