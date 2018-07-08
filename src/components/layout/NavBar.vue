@@ -16,6 +16,12 @@
       <v-btn to="/database">
         Display
       </v-btn>
+      <v-btn to="/add-lost-item">
+        Add Lost Item
+      </v-btn>
+      <v-btn to="/add-found-item">
+        Add Found Item
+      </v-btn>
   </v-toolbar-items>
     
   </v-toolbar>
