@@ -6,21 +6,15 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn icon>
-      <v-icon>search</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>apps</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>refresh</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>more_vert</v-icon>
-    </v-btn>
+  <v-toolbar-items>
+      <v-btn to="/auth">
+        Sign in      
+      </v-btn>
+      <v-btn to="/">
+        Home      
+      </v-btn>
+  </v-toolbar-items>
+    
   </v-toolbar>
 </template>
 

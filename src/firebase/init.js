@@ -1,8 +1,6 @@
 import firebase from 'firebase'
 import firestore from 'firebase/firestore'
 
-require('dotenv').config()
-
 // Initialize Firebase
 var config = {
     apiKey: process.env.API_KEY,
