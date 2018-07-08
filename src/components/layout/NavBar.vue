@@ -7,8 +7,11 @@
     <v-spacer></v-spacer>
 
   <v-toolbar-items>
-      <v-btn to="/auth">
-        Sign in      
+      <v-btn @click="auth" v-if="!this.isUserLoggedIn">
+        Sign in    
+      </v-btn>
+      <v-btn @click="signOut" v-else>
+        Sign out
       </v-btn>
       <v-btn to="/">
         Home      
@@ -28,8 +31,35 @@
 </template>
 
 <script>
-export default {
+import db from '@/firebase/init'
+import firebase from 'firebase'
+import {mapState} from 'vuex'
 
+export default {
+  methods: {
+     auth() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().useDeviceLanguage();
+        provider.setCustomParameters({
+        'login_hint': 'cruzid@ucsc.edu'
+        });
+        firebase.auth().signInWithRedirect(provider);           
+      },
+      signOut() {
+        firebase.auth().signOut().then(()=>{
+          // Sign-out successful.
+          this.$store.dispatch('signOut');
+        }).catch(function(error) {
+          // An error happened.
+        });
+      }
+  },
+  computed: {
+    ...mapState([
+      'isUserLoggedIn',
+      'user'
+    ])
+  }
 }
 </script>
 

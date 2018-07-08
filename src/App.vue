@@ -8,6 +8,8 @@
 </template>
 
 <script>
+  import db from '@/firebase/init'
+  import firebase from 'firebase'
   import Navbar from "@/components/layout/Navbar"
 
   export default {
@@ -18,6 +20,17 @@
       return {
 
       }
+    },
+    created() {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          this.$store.dispatch('setUser', user);
+        } else {
+          // No user is signed in.
+        }
+      }.bind(this));
+
     }
   }
 </script>

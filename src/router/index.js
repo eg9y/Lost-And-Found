@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import GMap from '@/components/home/GMap'
-import Auth from '@/components/auth/Auth'
 import Database from '@/components/database/Database'
 import LostForm from '@/components/add-lost-item/LostForm'
 import FoundForm from '@/components/add-found-item/FoundForm'
@@ -14,11 +13,6 @@ export default new Router({
       path: '/',
       name: 'GMap',
       component: GMap
-    },
-    {
-      path: '/auth',
-      name: 'Auth',
-      component: Auth
     },
     {
       path: '/database',
