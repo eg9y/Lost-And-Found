@@ -13,6 +13,9 @@
       <v-btn to="/">
         Home      
       </v-btn>
+      <v-btn to="/database">
+        Display
+      </v-btn>
   </v-toolbar-items>
     
   </v-toolbar>
