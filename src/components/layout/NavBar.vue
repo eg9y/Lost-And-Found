@@ -1,7 +1,8 @@
 <template>
 <div>
   <v-toolbar dark color="primary">
-    <v-toolbar-side-icon></v-toolbar-side-icon>
+    <v-toolbar-side-icon @click.stop ="drawer = !drawer">
+    </v-toolbar-side-icon>
 
     <v-toolbar-title class="white--text">Lost And Found</v-toolbar-title>
 
@@ -177,21 +178,19 @@
 </div>
 </template>
 
-<script>
-import db from '@/firebase/init'
-import firebase from 'firebase'
-import {mapState} from 'vuex'
 
-export default {
-  computed: {
+<script>
+  import db from '@/firebase/init'
+  import firebase from 'firebase'
+  import {mapState} from 'vuex'
+  export default{
+    name: 'AddFound',
+    computed: {
     ...mapState([
       'isUserLoggedIn',
       'user'
     ])
-  }
-}
-  export default{
-    name: 'AddFound',
+  },
     data(){
       return{
         type: null,
@@ -200,7 +199,8 @@ export default {
         location: null,
         timestamp: null,
         found_dialog: false,
-        lost_dialog: false
+        lost_dialog: false,
+        drawer: null
       }
     },
     methods:{
