@@ -6,13 +6,7 @@
 
     <v-spacer></v-spacer>
 
-  <v-toolbar-items>
-      <v-btn @click="auth" v-if="!this.isUserLoggedIn">
-        Sign in    
-      </v-btn>
-      <v-btn @click="signOut" v-else>
-        Sign out
-      </v-btn>
+    <v-toolbar-items>      
       <v-btn to="/">
         Home      
       </v-btn>
@@ -25,8 +19,20 @@
       <v-btn to="/add-found-item">
         Add Found Item
       </v-btn>
-  </v-toolbar-items>
-    
+    </v-toolbar-items>   
+    <v-toolbar-items v-if="!this.isUserLoggedIn">
+      <v-btn @click="auth">
+        Sign In    
+      </v-btn>
+    </v-toolbar-items> 
+    <v-toolbar-items v-else>
+      <v-btn @click="signOut">
+        Sign Out  
+      </v-btn>
+      <v-btn @click="console.log('Profile page');">
+        {{user.displayName}}
+      </v-btn>
+    </v-toolbar-items>    
   </v-toolbar>
 </template>
 

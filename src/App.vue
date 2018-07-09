@@ -26,8 +26,6 @@
         if (user) {
           // User is signed in.
           this.$store.dispatch('setUser', user);
-        } else {
-          // No user is signed in.
         }
       }.bind(this));
 
