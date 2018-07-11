@@ -10,6 +10,8 @@
             Time Stamp: {{ lostItem.timestamp }}<br/>
             Location: {{ lostItem.location }}<br/>
             <!-- include script here to display picture -->
+            Picture:<br/>
+              <img id="lost-pic" src="" alt="picture of lost item" height="200" width="200"><br/>
         </div>
       </div>
     </div><br/>
@@ -31,10 +33,10 @@
 
 
 <script>
+import firebase from 'firebase'
 import db from '@/firebase/init'
 
 var storage = firebase.storage()
-var storageRef = storage.ref()
 
 export default {
   name: 'Database',
@@ -54,6 +56,7 @@ export default {
                 let lostItem = doc.data()
                 lostItem.id = doc.id
                 this.lostItems.push(lostItem)
+                this.getPicture(lostItem.picture) // get picture from Storage
             })
         })
     },
@@ -67,10 +70,24 @@ export default {
                 this.foundItems.push(foundItem)
             })
         })
+    },
+    getPicture(urlPic){
+      console.log("getPicture ran")
+      var gsReference = storage.refFromURL(urlPic).getDownloadURL().then(function(url) {
+          var img = document.getElementById('lost-pic')
+          console.log(img.src)
+          img.src = url
+      }).catch(function(error) {
+        console.log(error)
+      })
     }
   },
   created(){
-    this.displayLost(),
+    this.displayLost()
+    console.log(this.lostItems.type)
+    console.log(this.lostItems.picture)
+        if (this.lostItems.picture)
+            this.getPicture()
     this.displayFound(console.log('displayFound ran'))
   }
 }
