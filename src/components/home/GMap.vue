@@ -1,12 +1,12 @@
 <template>
-        <GmapMap
+    <GmapMap
         :center="{lat:36.994635, lng:-122.058842}"
         :zoom="16"
         :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
         style="width: 100%; height: 100%"
         ref="mapRef"
         @dragend="checkBoundary"
-        >
+    >
         <!-- <GmapMarker
             :key="index"
             v-for="(m, index) in markers"
@@ -15,11 +15,12 @@
             :draggable="true"
             @click="center=m.position"
         /> -->
-        </GmapMap>
+    </GmapMap>
 </template>
 
 <script>
 import {gmapApi} from 'vue2-google-maps'
+import db from '@/firebase/init'
 
 export default {
     name: "GMap",
@@ -56,10 +57,38 @@ export default {
 
                 map.setCenter(new this.google.maps.LatLng(y, x));
             })
+        },
+        // displays markers for entries in db under collectionName
+        displayMarkers(collectionName, collectionTitle){
+            db.collection(collectionName).get().then(items => {
+                items.docs.forEach(doc => {
+                    let data = doc.data()
+                    if(data.location){
+                        this.$refs.mapRef.$mapPromise.then((map) => {
+                            let marker = new google.maps.Marker({
+                                position: {
+                                    lat: parseFloat(data.location._lat),
+                                    lng: parseFloat(data.location._long)
+                                },
+                                map,
+                                title: collectionTitle + doc.id
+                            })
+                            // add click event to marker
+                            marker.addListener('click', () => {
+                                console.log(doc.id)
+                            })
+                        }) 
+                    }
+                })
+            })
         }
     },
     computed: {
-        google: gmapApi
+            google: gmapApi
+        },
+    mounted() {
+        this.displayMarkers('lost-items', 'Lost: ')
+        this.displayMarkers('found-items', 'Found: ')
     }
 }
 </script>
