@@ -8,7 +8,8 @@
             Description: {{ lostItem.description }}<br/>
             Contact: {{ lostItem.contactEmail }}<br/>
             Time Stamp: {{ lostItem.timestamp }}<br/>
-            Location: {{ lostItem.location }}
+            Location: {{ lostItem.location }}<br/>
+            <!-- include script here to display picture -->
         </div>
       </div>
     </div><br/>
@@ -28,8 +29,13 @@
   </div>
 </template>
 
+
 <script>
 import db from '@/firebase/init'
+
+var storage = firebase.storage()
+var storageRef = storage.ref()
+
 export default {
   name: 'Database',
   data(){

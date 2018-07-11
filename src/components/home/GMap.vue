@@ -58,20 +58,23 @@ export default {
                 map.setCenter(new this.google.maps.LatLng(y, x));
             })
         },
-        // displays markers for entries in db under collectionName
+        // adds markers to map for entries in db under collectionName
+        // TODO: only add markers if not null and if within map boundaries
         displayMarkers(collectionName, collectionTitle){
             db.collection(collectionName).get().then(items => {
                 items.docs.forEach(doc => {
                     let data = doc.data()
+                    let latitude =  parseFloat(data.location._lat)
+                    let longitude = parseFloat(data.location._long)
                     if(data.location){
                         this.$refs.mapRef.$mapPromise.then((map) => {
                             let marker = new google.maps.Marker({
                                 position: {
-                                    lat: parseFloat(data.location._lat),
-                                    lng: parseFloat(data.location._long)
+                                    lat: latitude,
+                                    lng: longitude
                                 },
                                 map,
-                                title: collectionTitle + doc.id
+                                title: collectionTitle + doc.id     // title displayed as a hover tooltip
                             })
                             // add click event to marker
                             marker.addListener('click', () => {
