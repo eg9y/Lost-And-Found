@@ -3,6 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 
+// setup event bus to be exported. Allows child component to talk
+// with parent component
+export const EventBus = new Vue()
+
 // setup router
 import router from './router'
 import VueRouter from 'vue-router'

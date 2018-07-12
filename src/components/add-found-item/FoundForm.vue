@@ -53,6 +53,8 @@
 
 <script>
 import db from '@/firebase/init'
+import {mapState} from 'vuex'
+
 export default {
   name: 'AddFound',
   data(){
@@ -74,7 +76,8 @@ export default {
                 description: this.description,
                 contactEmail: this.contactEmail,
                 location: this.location,
-                timestamp: this.timestamp
+                timestamp: this.timestamp,
+                userID: user.uid
             })
         }
         else{
@@ -84,6 +87,12 @@ export default {
     clear () {
         this.$refs.form.reset()
       }
+  },
+  computed: {
+    ...mapState([
+      'isUserLoggedIn',
+      'user'
+    ])
   }
 }
 </script>
