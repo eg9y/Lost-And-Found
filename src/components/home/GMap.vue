@@ -6,6 +6,7 @@
         style="width: 100%; height: 100%"
         ref="mapRef"
         @dragend="checkBoundary"
+        @click="logCoords"
     >
         <!-- <GmapMarker
             :key="index"
@@ -67,6 +68,7 @@ export default {
                     let latitude =  parseFloat(data.location._lat)
                     let longitude = parseFloat(data.location._long)
                     if(data.location){
+
                         this.$refs.mapRef.$mapPromise.then((map) => {
                             let marker = new google.maps.Marker({
                                 position: {
@@ -84,6 +86,11 @@ export default {
                     }
                 })
             })
+        },
+        // logs the coordinates of where user clicked on map
+        logCoords(e){
+            console.log(e.latLng.lng())
+            console.log(e.latLng.lat())
         }
     },
     computed: {
