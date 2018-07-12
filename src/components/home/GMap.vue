@@ -23,6 +23,11 @@
 import {gmapApi} from 'vue2-google-maps'
 import db from '@/firebase/init'
 
+var MIN_LAT = 36.987615,
+    MAX_LAT = 37.001976,
+    MIN_LNG = -122.068846,
+    MAX_LNG = -122.048080;
+
 export default {
     name: "GMap",
     data() {
@@ -34,8 +39,8 @@ export default {
     methods: {
         checkBoundary(){
             var strictBounds = new this.google.maps.LatLngBounds(
-                new this.google.maps.LatLng(36.987615, -122.068846),
-                new this.google.maps.LatLng(37.001976, -122.048080),
+                new this.google.maps.LatLng(MIN_LAT, MIN_LNG),
+                new this.google.maps.LatLng(MAX_LAT, MAX_LNG),
             );
             this.$refs.mapRef.$mapPromise.then((map) => {
                  if (strictBounds.contains(map.getCenter())) return;
@@ -60,29 +65,34 @@ export default {
             })
         },
         // adds markers to map for entries in db under collectionName
-        // TODO: only add markers if not null and if within map boundaries
         displayMarkers(collectionName, collectionTitle){
             db.collection(collectionName).get().then(items => {
                 items.docs.forEach(doc => {
                     let data = doc.data()
-                    let latitude =  parseFloat(data.location._lat)
-                    let longitude = parseFloat(data.location._long)
-                    if(data.location){
+                    if (data.location){
+                        var latitude =  parseFloat(data.location._lat)
+                        var longitude = parseFloat(data.location._long)
 
-                        this.$refs.mapRef.$mapPromise.then((map) => {
-                            let marker = new google.maps.Marker({
-                                position: {
-                                    lat: latitude,
-                                    lng: longitude
-                                },
-                                map,
-                                title: collectionTitle + doc.id     // title displayed as a hover tooltip
+                        // only place markers that are within scope of UCSC
+                        if (longitude >= MIN_LNG && longitude <= MAX_LNG 
+                            && latitude >= MIN_LAT && latitude <= MAX_LAT){
+
+                            this.$refs.mapRef.$mapPromise.then((map) => {
+                                let marker = new google.maps.Marker({
+                                    position: {
+                                        lat: latitude,
+                                        lng: longitude
+                                    },
+                                    map,
+                                    title: collectionTitle + doc.id     // title displayed as a hover tooltip
+                                })
+
+                                // add click event to marker
+                                marker.addListener('click', () => {
+                                    console.log(doc.id)
+                                })
                             })
-                            // add click event to marker
-                            marker.addListener('click', () => {
-                                console.log(doc.id)
-                            })
-                        }) 
+                        }   
                     }
                 })
             })
@@ -96,7 +106,7 @@ export default {
     computed: {
             google: gmapApi
         },
-    mounted() {
+    created() {
         this.displayMarkers('lost-items', 'Lost: ')
         this.displayMarkers('found-items', 'Found: ')
     }
