@@ -11,7 +11,7 @@
             Location: {{ lostItem.location }}<br/>
             <!-- include script here to display picture -->
             Picture:<br/>
-              <img id="lost-pic" src="" alt="picture of lost item" height="200" width="200"><br/>
+              <img id="lost-pic" src="" alt="no picture" height="200" width="200"><br/>
         </div>
       </div>
     </div><br/>
@@ -23,7 +23,9 @@
             Description: {{ foundItem.description }}<br/>
             Contact: {{ foundItem.contactEmail }}<br/>
             Time Stamp: {{ foundItem.timestamp }}<br/>
-            Location: {{ foundItem.location }}
+            Location: {{ foundItem.location }}<br/>
+            Picture:<br/>
+              <img id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)" height="200" width="200"><br/>
         </div>
       </div>
     </div>
@@ -56,7 +58,8 @@ export default {
                 let lostItem = doc.data()
                 lostItem.id = doc.id
                 this.lostItems.push(lostItem)
-                this.getPicture(lostItem.picture) // get picture from Storage
+                if (lostItem.picture) // get picture from Storage if it exists
+                  this.getPicture(lostItem.picture, 'lost-pic')
             })
         })
     },
@@ -68,14 +71,14 @@ export default {
                 let foundItem = doc.data()
                 foundItem.id = doc.id
                 this.foundItems.push(foundItem)
+                if (foundItem.picture) // get picture from Storage if it exists
+                  this.getPicture(foundItem.picture, 'found-pic') 
             })
         })
     },
-    getPicture(urlPic){
-      console.log("getPicture ran")
+    getPicture(urlPic, elemID){
       var gsReference = storage.refFromURL(urlPic).getDownloadURL().then(function(url) {
-          var img = document.getElementById('lost-pic')
-          console.log(img.src)
+          var img = document.getElementById(elemID)
           img.src = url
       }).catch(function(error) {
         console.log(error)
@@ -84,10 +87,6 @@ export default {
   },
   created(){
     this.displayLost()
-    console.log(this.lostItems.type)
-    console.log(this.lostItems.picture)
-        if (this.lostItems.picture)
-            this.getPicture()
     this.displayFound(console.log('displayFound ran'))
   }
 }
