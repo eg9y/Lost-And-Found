@@ -23,6 +23,7 @@
 import {gmapApi} from 'vue2-google-maps'
 import db from '@/firebase/init'
 
+// these coordinates define the boundaries of the map/UCSC
 var MIN_LAT = 36.987615,
     MAX_LAT = 37.001976,
     MIN_LNG = -122.068846,
@@ -55,7 +56,6 @@ export default {
                     minX = strictBounds.getSouthWest().lng(),
                     minY = strictBounds.getSouthWest().lat();
 
-
                 if (x < minX) x = minX;
                 if (x > maxX) x = maxX;
                 if (y < minY) y = minY;
@@ -64,7 +64,8 @@ export default {
                 map.setCenter(new this.google.maps.LatLng(y, x));
             })
         },
-        // adds markers to map for entries in db under collectionName
+
+        /*** adds markers to map for entries in db under collectionName ***/
         displayMarkers(collectionName, collectionTitle){
             db.collection(collectionName).get().then(items => {
                 items.docs.forEach(doc => {
@@ -97,7 +98,8 @@ export default {
                 })
             })
         },
-        // logs the coordinates of where user clicked on map
+
+        /*** logs the coordinates of where user clicked on map ***/
         logCoords(e){
             console.log(e.latLng.lng())
             console.log(e.latLng.lat())
@@ -109,6 +111,7 @@ export default {
     created() {
         this.displayMarkers('lost-items', 'Lost: ')
         this.displayMarkers('found-items', 'Found: ')
+        this.displayMarkers('centers', 'Center: ')
     }
 }
 </script>
