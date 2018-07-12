@@ -31,7 +31,7 @@
       <v-btn @click="signOut">
         Sign Out  
       </v-btn>
-      <v-btn @click="console.log('Profile page');">
+      <v-btn to="/profile">
         {{user.displayName}}
       </v-btn>
     </v-toolbar-items>    
