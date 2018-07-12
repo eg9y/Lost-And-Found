@@ -1,12 +1,13 @@
 <template>
-        <GmapMap
+    <GmapMap
         :center="{lat:36.994635, lng:-122.058842}"
         :zoom="16"
         :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
         style="width: 100%; height: 100%"
         ref="mapRef"
         @dragend="checkBoundary"
-        >
+        @click="logCoords"
+    >
         <!-- <GmapMarker
             :key="index"
             v-for="(m, index) in markers"
@@ -15,11 +16,12 @@
             :draggable="true"
             @click="center=m.position"
         /> -->
-        </GmapMap>
+    </GmapMap>
 </template>
 
 <script>
 import {gmapApi} from 'vue2-google-maps'
+import db from '@/firebase/init'
 
 export default {
     name: "GMap",
@@ -56,10 +58,47 @@ export default {
 
                 map.setCenter(new this.google.maps.LatLng(y, x));
             })
+        },
+        // adds markers to map for entries in db under collectionName
+        // TODO: only add markers if not null and if within map boundaries
+        displayMarkers(collectionName, collectionTitle){
+            db.collection(collectionName).get().then(items => {
+                items.docs.forEach(doc => {
+                    let data = doc.data()
+                    let latitude =  parseFloat(data.location._lat)
+                    let longitude = parseFloat(data.location._long)
+                    if(data.location){
+
+                        this.$refs.mapRef.$mapPromise.then((map) => {
+                            let marker = new google.maps.Marker({
+                                position: {
+                                    lat: latitude,
+                                    lng: longitude
+                                },
+                                map,
+                                title: collectionTitle + doc.id     // title displayed as a hover tooltip
+                            })
+                            // add click event to marker
+                            marker.addListener('click', () => {
+                                console.log(doc.id)
+                            })
+                        }) 
+                    }
+                })
+            })
+        },
+        // logs the coordinates of where user clicked on map
+        logCoords(e){
+            console.log(e.latLng.lng())
+            console.log(e.latLng.lat())
         }
     },
     computed: {
-        google: gmapApi
+            google: gmapApi
+        },
+    mounted() {
+        this.displayMarkers('lost-items', 'Lost: ')
+        this.displayMarkers('found-items', 'Found: ')
     }
 }
 </script>
