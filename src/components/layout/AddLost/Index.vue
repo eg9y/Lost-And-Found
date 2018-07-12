@@ -69,11 +69,16 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
+import {mapState} from 'vuex'
 import {EventBus} from '../../../main'
 
 export default {
     props: ['lostDialog','user'],
+    computed: {
+    ...mapState([
+      'db'
+    ])
+    },
     data() {
         return {
             type: null,
@@ -93,7 +98,7 @@ export default {
         addLost(){
           if(this.type){
               this.feedback = null
-              db.collection('lost-items').add({
+              this.db.collection('lost-items').add({
                   type: this.type,
                   description: this.description,
                   contactEmail: this.contactEmail,
