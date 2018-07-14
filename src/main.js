@@ -18,6 +18,10 @@ import 'vuetify/dist/vuetify.min.css'
 // setup google maps
 import * as VueGoogleMaps from 'vue2-google-maps'
 
+// import global component Panel ('window' component)
+import Panel from '@/components/globals/Panel'
+Vue.component('panel', Panel)
+
 // setup event bus to be exported. Allows child component to talk
 // with parent component
 export const EventBus = new Vue()

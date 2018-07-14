@@ -16,10 +16,10 @@
         <v-btn to="/database">
           Display
         </v-btn>
-        <v-btn @click.stop="lost_dialog = true">
+        <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn">
           Add Lost Item
         </v-btn>
-        <v-btn @click.stop="found_dialog = true">
+        <v-btn @click.stop="found_dialog = true" v-if="this.isUserLoggedIn">
           Add Found Item
         </v-btn>
       </v-toolbar-items>
@@ -78,11 +78,6 @@ export default {
   },
   data () {
     return {
-      type: null,
-      description: null,
-      contactEmail: null,
-      location: null,
-      timestamp: null,
       lost_dialog: false,
       found_dialog: false,
       drawer: false
