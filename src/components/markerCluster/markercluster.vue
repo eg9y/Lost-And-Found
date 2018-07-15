@@ -45,7 +45,7 @@
 
         // Add a marker clusterer to manage the markers.
         var markerCluster = new MarkerClusterer(map, markers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+            {imagePath: 'm1.png, m2.png, m3.png, m4.png, m5.png'});
       }
       var locations = [
         {lat: -31.563910, lng: 147.154312},
@@ -73,7 +73,7 @@
         {lat: -43.999792, lng: 170.463352}
       ]
     </script>
-    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    <script src="markerclusterer.js">
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
