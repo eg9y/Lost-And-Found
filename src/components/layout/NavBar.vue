@@ -15,10 +15,7 @@
       <v-btn to="/database">
         Display
       </v-btn>
-      <v-btn @click.stop="lost_dialog = true">
-        Add Lost Item
-      </v-btn>
-      <v-btn @click.stop="found_dialog = true">
+      <v-btn @click.stop="submission_dialog = true">
         Add Found Item
       </v-btn>
     </v-toolbar-items>   
@@ -37,144 +34,156 @@
     </v-toolbar-items>    
   </v-toolbar>
 
-  <!-- // FOUND ITEM pop up submission form -->
-  <v-layout row justify-center>
-    <v-dialog v-model="found_dialog" persistent max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Add Found Item</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="type"
-                  label="Item *"
-                  hint="What did you find?"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="description"
-                  label="Item Description"
-                  hint="Please describe the item."
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="location"
-                  label="Location Found"
-                  hint="Where did you find the item?"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="timestamp"
-                  label="Date Found"
-                  hint="When did you find the item?"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="contactEmail"
-                  label="Contact Information"
-                  hint="(E-mail only for now)"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-          <br />
-          <small>*indicates required field</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="found_dialog = false" @click="addFound">Submit</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="found_dialog = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+  <!-- // POP UP SUBMISSION FORM -->
+  <v-dialog v-model="submission_dialog" persistent max-width="500px" lazy>
+    <v-tabs
+      centered
+      color="cyan"
+      dark
+      icons-and-text>
+      <v-tabs-slider color="yellow"></v-tabs-slider>
 
-  <!-- // LOST ITEM pop up submission form -->
-  <v-layout row justify-center>
-    <v-dialog v-model="lost_dialog" persistent max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Add Lost Item</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="type"
-                  label="Item *"
-                  hint="What did you lose?"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="description"
-                  label="Item Description"
-                  hint="Please describe the item."
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="location"
-                  label="Location Found"
-                  hint="Where did you lose the item?"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="timestamp"
-                  label="Date Found"
-                  hint="When did you lose the item?"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="contactEmail"
-                  label="Contact Information"
-                  hint="(E-mail only for now)"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-          <br />
-          <small>*indicates required field</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="lost_dialog = false" @click="addLost">Submit</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="lost_dialog = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+      <v-tab href="#tab-1">
+        Add Found Item
+        <v-icon>phone</v-icon>
+      </v-tab>
 
+      <v-tab href="#tab-2">
+        Add Lost Item
+        <v-icon>favorite</v-icon>
+      </v-tab>
+
+      <!-- // FOUND ITEM form -->
+      <v-tab-item :id="'tab-1'">
+        <v-card>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="type"
+                    label="Item *"
+                    hint="What did you find?"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="description"
+                    label="Item Description"
+                    hint="Please describe the item."
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="location"
+                    label="Location Found"
+                    hint="Where did you find the item?"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="timestamp"
+                    label="Date Found"
+                    hint="When did you find the item?"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="contactEmail"
+                    label="Contact Information"
+                    hint="(E-mail only for now)"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+            <br />
+            <small>* indicates required field</small>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" @click.native="submission_dialog = false" @click="addFound">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="submission_dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-tab-item>
+
+      <!-- // LOST ITEM form -->
+      <v-tab-item :id="'tab-2'">
+        <v-card>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="type"
+                    label="Item *"
+                    hint="What did you lose?"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="description"
+                    label="Item Description"
+                    hint="Please describe the item."
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="location"
+                    label="Location Found"
+                    hint="Where did you lose the item?"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="timestamp"
+                    label="Date Found"
+                    hint="When did you lose the item?"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="contactEmail"
+                    label="Contact Information"
+                    hint="(E-mail only for now)"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+            <br />
+            <small>*indicates required field</small>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" @click.native="submission_dialog = false" @click="addLost">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="submission_dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-tab-item>
+    </v-tabs>
+  </v-dialog>
+
+  <!-- SIDEBAR -->
   <v-navigation-drawer
       v-model="drawer"
       absolute
@@ -234,8 +243,7 @@
         contactEmail: null,
         location: null,
         timestamp: null,
-        found_dialog: false,
-        lost_dialog: false,
+        submission_dialog: false,
         drawer: null,
         items: [
           { title: 'Home', icon: 'dashboard' },
