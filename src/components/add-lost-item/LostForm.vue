@@ -52,37 +52,36 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
+import db from "@/firebase/init";
 export default {
-  name: 'AddLost',
-  data(){
-    return{
+  name: "AddLost",
+  data() {
+    return {
       type: null,
       description: null,
       contactEmail: null,
       location: null,
       timestamp: null
-    }
+    };
   },
   methods: {
-    addLost(){
-        if(this.type){
-            this.feedback = null
-            db.collection('lost-items').add({
-                type: this.type,
-                description: this.description,
-                contactEmail: this.contactEmail,
-                location: this.location,
-                timestamp: this.timestamp
-            })
-        }
-        else{
-            this.feedback = 'You must enter an item type'
-        }
-    },
-    clear () {
-        this.$refs.form.reset()
+    addLost() {
+      if (this.type) {
+        this.feedback = null;
+        db.collection("lost-items").add({
+          type: this.type,
+          description: this.description,
+          contactEmail: this.contactEmail,
+          location: this.location,
+          timestamp: this.timestamp
+        });
+      } else {
+        this.feedback = "You must enter an item type";
       }
+    },
+    clear() {
+      this.$refs.form.reset();
+    }
   }
-}
+};
 </script>
