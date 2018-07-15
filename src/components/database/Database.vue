@@ -22,12 +22,11 @@
   </div>
 </template>
 
-
 <script>
-import firebase from 'firebase'
+// import firebase from 'firebase'
 import db from '@/firebase/init'
 
-var storage = firebase.storage()
+// var storage = firebase.storage()
 
 export default {
   name: 'Database',

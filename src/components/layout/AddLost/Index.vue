@@ -22,11 +22,14 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
+<<<<<<< HEAD
                             </v-flex>
                             <!-- upload picture...don't know how to make this pretty :( -->
                             <v-flex xs12>
                                 <br/>Picture:<br/>
                                 <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
+=======
+>>>>>>> dbca4973e709adcd3720ded340e4dfa0fe06dbd3
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -130,5 +133,4 @@ export default {
 </script>
 
 <style>
-
 </style>
