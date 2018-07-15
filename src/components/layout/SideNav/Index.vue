@@ -3,7 +3,7 @@
     <v-list class="pa-1">
       <v-list-tile avatar>
         <v-list-tile-avatar>
-          <img src="https://randomuser.me/api/portraits/men/85.jpg">
+          <img src="http://playerdimension.com/uploads/monthly_2016_08/57b9e7bcebeb9_sunglassespikachu.png.fee11bb7ff9ba8ee57e2289afc0b2efe.thumb.png.dfc0442502d7bc0a5b4150b1b8ae6259.png">
         </v-list-tile-avatar>
 
         <v-list-tile-content>
@@ -61,6 +61,5 @@ export default {
   }
 }
 </script>
-
 <style>
 </style>
