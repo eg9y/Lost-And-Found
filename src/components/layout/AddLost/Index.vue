@@ -61,7 +61,6 @@ export default {
             location: null,
             timestamp: null,
             imageFile: null,
-            imagePromise: null,
             imageURL: null,
             dialog: false
         }

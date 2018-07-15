@@ -14,7 +14,7 @@
       <div class="cardFound-content">
         <h2 class="indigo-text">Found: {{ foundItem.type }}</h2>
         <div>
-          <img class="item-pictures" id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
+          <img class="item-pictures" id="found-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
         </div>
       </div>
     </div>
@@ -45,9 +45,18 @@ export default {
           snapshot.forEach(doc => {
             let lostItem = doc.data()
             lostItem.id = doc.id
-            this.lostItems.push(lostItem)
-            if (lostItem.picture) // get picture from Storage if it exists
-              this.getPicture(lostItem.picture, 'lost-pic')
+            if (lostItem.picture) {
+              //this.getPicture(lostItem.picture, 'lost-pic')
+              var gsReference = storage.refFromURL(lostItem.picture).getDownloadURL().then(function (url) {
+                var img = document.getElementById('lost-pic');
+                img.src = url;
+                this.lostItems.push(lostItem);
+              }).catch(function (error) {
+                console.log(error)
+              })
+            }
+            else
+              this.lostItems.push(lostItem)
           })
         })
     },
