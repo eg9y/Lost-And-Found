@@ -11,6 +11,8 @@ export default new Vuex.Store({
   state: {
     user: null, // user object
     isUserLoggedIn: false,
+    lost_items: null,
+    found_items: null,
     firebase,
     db
   },
@@ -22,6 +24,12 @@ export default new Vuex.Store({
     signOut (state) {
       state.isUserLoggedIn = false
       state.user = null
+    },
+    setLostItems (state, documents) {
+      state.lost_items = documents
+    },
+    setFoundItems (state, documents) {
+      state.found_items = documents
     }
   },
   actions: {
@@ -30,6 +38,12 @@ export default new Vuex.Store({
     },
     signOut ({commit}) {
       commit('signOut')
+    },
+    setLostItems ({commit}, documents) {
+      commit('setLostItems', documents)
+    },
+    setFoundItems ({commit}, documents) {
+      commit('setFoundItems', documents)
     }
   }
 })
