@@ -15,11 +15,19 @@
     <v-layout>
       <v-flex xs6>
         <panel title="Lost Items">
-          <ul>
-            <li v-if="lost_items.length > 0" v-for="(item, index) in lost_items" :key="index">
-              {{item}}
-            </li>
-          </ul>
+          <template v-if="lost_items">
+            <ul>
+              <li v-if="lost_items.length > 0" v-for="(item, index) in lost_items" :key="index">
+                {{item}}
+              </li>
+            </ul>
+          </template>
+          <template v-else>
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </template>
         </panel>
       </v-flex>
       <v-flex xs6>
@@ -90,6 +98,9 @@ export default {
   created () {
     if (!this.user) {
       this.$router.push('/')
+    }
+    if (this.lost_items.length) {
+      this.fetchAllDocuments()
     }
   }
 }
