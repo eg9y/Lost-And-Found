@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     user: null, // user object
     isUserLoggedIn: false,
+    stillLoading: true,
     firebase,
     db
   },
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     signOut (state) {
       state.isUserLoggedIn = false
       state.user = null
+    },
+    stillLoading (state, loadingStatus) {
+      state.stillLoading = loadingStatus
     }
   },
   actions: {
@@ -30,6 +34,9 @@ export default new Vuex.Store({
     },
     signOut ({commit}) {
       commit('signOut')
+    },
+    stillLoading ({commit}, loadingStatus) {
+      commit('stillLoading', loadingStatus)
     }
   }
 })

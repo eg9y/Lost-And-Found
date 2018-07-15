@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- NAV BAR -->
-    <v-toolbar dark color="primary">
+    <v-toolbar dark color="primary" v-if="!stillLoading">
       <v-toolbar-side-icon @click.stop="drawer = !drawer">
       </v-toolbar-side-icon>
 
@@ -37,6 +37,9 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
+    <template v-else>
+      <v-progress-linear :indeterminate="true" color="info"></v-progress-linear>
+    </template>
 
     <!-- // FOUND ITEM pop up submission form (seperate component) -->
     <v-layout row justify-center>
@@ -73,6 +76,7 @@ export default {
     ...mapState([
       'isUserLoggedIn',
       'user',
+      'stillLoading',
       'firebase'
     ])
   },
