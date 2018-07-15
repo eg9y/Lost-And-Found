@@ -1,13 +1,5 @@
 <template>
-    <GmapMap
-        :center="{lat:36.994635, lng:-122.058842}"
-        :zoom="16"
-        :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
-        style="width: 100%; height: 100%"
-        ref="mapRef"
-        @dragend="checkBoundary"
-        @click="logCoords"
-    >
+    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="logCoords">
         <!-- <GmapMarker
             :key="index"
             v-for="(m, index) in markers"
@@ -20,7 +12,7 @@
 </template>
 
 <script>
-import {gmapApi} from 'vue2-google-maps'
+import { gmapApi } from 'vue2-google-maps'
 import db from '@/firebase/init'
 
 // these coordinates define the boundaries of the map/UCSC
@@ -46,25 +38,29 @@ export default {
             this.$refs.mapRef.$mapPromise.then((map) => {
                  if (strictBounds.contains(map.getCenter())) return;
 
-                // We're out of bounds - Move the map back within the bounds
-                console.log("OMG! BOUNDS HAVE EXCEEDED!!1");
-                let c = map.getCenter(),
-                    x = c.lng(),
-                    y = c.lat(),
-                    maxX = strictBounds.getNorthEast().lng(),
-                    maxY = strictBounds.getNorthEast().lat(),
-                    minX = strictBounds.getSouthWest().lng(),
-                    minY = strictBounds.getSouthWest().lat();
+          // We're out of bounds - Move the map back within the bounds
+          console.log('OMG! BOUNDS HAVE EXCEEDED!!1')
+          let c = map.getCenter()
+        let x = c.lng()
 
-                if (x < minX) x = minX;
-                if (x > maxX) x = maxX;
-                if (y < minY) y = minY;
-                if (y > maxY) y = maxY;
+        let y = c.lat()
 
-                map.setCenter(new this.google.maps.LatLng(y, x));
-            })
-        },
+        let maxX = strictBounds.getNorthEast().lng()
 
+        let maxY = strictBounds.getNorthEast().lat()
+
+        let minX = strictBounds.getSouthWest().lng()
+
+        let minY = strictBounds.getSouthWest().lat()
+
+        if (x < minX) x = minX
+        if (x > maxX) x = maxX
+        if (y < minY) y = minY
+        if (y > maxY) y = maxY
+
+        map.setCenter(new this.google.maps.LatLng(y, x))
+      })
+    },
         /*** adds markers to map for entries in db under collectionName ***/
         displayMarkers(collectionName, collectionTitle){
             db.collection(collectionName).get().then(items => {
@@ -112,12 +108,21 @@ export default {
         this.displayMarkers('lost-items', 'Lost: ')
         this.displayMarkers('found-items', 'Found: ')
         this.displayMarkers('centers', 'Center: ')
+
     }
+  },
+  computed: {
+    google: gmapApi
+  },
+  mounted () {
+    this.displayMarkers('lost-items', 'Lost: ')
+    this.displayMarkers('found-items', 'Found: ')
+  }
 }
 </script>
 
 <style>
-    /* .google-map {
+/* .google-map {
         width: 100%;
         height: 100%;
         margin: 0 auto;

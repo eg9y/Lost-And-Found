@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-dialog v-model="dialog" persistent max-width="500px">
-             <v-card>
+            <v-card>
                 <v-card-title>
                     <span class="headline">Add Lost Item</span>
                 </v-card-title>
@@ -9,49 +9,19 @@
                     <v-container grid-list-md>
                         <v-layout wrap>
                             <v-flex xs12>
-                            <v-text-field
-                                v-model="type"
-                                label="Item *"
-                                hint="What did you lose?"
-                                persistent-hint
-                                required
-                            ></v-text-field>
+                                <v-text-field v-model="type" label="Item *" hint="What did you lose?" persistent-hint required></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                            <v-text-field
-                                v-model="description"
-                                label="Item Description"
-                                hint="Please describe the item."
-                                persistent-hint
-                                required
-                            ></v-text-field>
+                                <v-text-field v-model="description" label="Item Description" hint="Please describe the item." persistent-hint required></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                            <v-text-field
-                                v-model="location"
-                                label="Location Found"
-                                hint="Where did you lose the item?"
-                                persistent-hint
-                                required
-                            ></v-text-field>
+                                <v-text-field v-model="location" label="Location Found" hint="Where did you lose the item?" persistent-hint required></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                            <v-text-field
-                                v-model="timestamp"
-                                label="Date Found"
-                                hint="When did you lose the item?"
-                                persistent-hint
-                                required
-                            ></v-text-field>
+                                <v-text-field v-model="timestamp" label="Date Found" hint="When did you lose the item?" persistent-hint required></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                            <v-text-field
-                                v-model="contactEmail"
-                                label="Contact Information"
-                                hint="(E-mail only for now)"
-                                persistent-hint
-                                required
-                            ></v-text-field>
+                                <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -69,51 +39,54 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
-import {EventBus} from '../../../main'
+import { mapState } from 'vuex'
+import { EventBus } from '../../../main'
 
 export default {
-    props: ['lostDialog','user'],
-    data() {
-        return {
-            type: null,
-            description: null,
-            contactEmail: null,
-            location: null,
-            timestamp: null,
-            dialog: false
-        }
-    },
-    watch: {
-        lostDialog() {
-            this.dialog = this.lostDialog
-        }
-    },
-    methods: {
-        addLost(){
-          if(this.type){
-              this.feedback = null
-              db.collection('lost-items').add({
-                  type: this.type,
-                  description: this.description,
-                  contactEmail: this.contactEmail,
-                  location: this.location,
-                  timestamp: this.timestamp,
-                  userID: this.user.uid
-              })
-          }
-          else{
-              this.feedback = 'You must enter an item type'
-          }
-      },
-      toggleDialog() {
-          this.dialog = !this.dialog
-          EventBus.$emit('toggleDialog', 'lost');
-      }
+  props: ['lostDialog', 'user'],
+  computed: {
+    ...mapState([
+      'db'
+    ])
+  },
+  data () {
+    return {
+      type: null,
+      description: null,
+      contactEmail: null,
+      location: null,
+      timestamp: null,
+      dialog: false
     }
+  },
+  watch: {
+    lostDialog () {
+      this.dialog = this.lostDialog
+    }
+  },
+  methods: {
+    addLost () {
+      if (this.type) {
+        this.feedback = null
+        this.db.collection('lost-items').add({
+          type: this.type,
+          description: this.description,
+          contactEmail: this.contactEmail,
+          location: this.location,
+          timestamp: this.timestamp,
+          userID: this.user.uid
+        })
+      } else {
+        this.feedback = 'You must enter an item type'
+      }
+    },
+    toggleDialog () {
+      this.dialog = !this.dialog
+      EventBus.$emit('toggleDialog', 'lost')
+    }
+  }
 }
 </script>
 
 <style>
-
 </style>
