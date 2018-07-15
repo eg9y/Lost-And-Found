@@ -1,27 +1,31 @@
-<html>
-  <head>
-  <div>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Marker Clustering</title>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-  </head>
+<template>
   <body>
-    <div id="map"></div>
-    <script>
+    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="logCoords">
+        <GmapMarker
+            :key="index"
+            v-for="(m, index) in markers"
+            :position="m.position"
+            :clickable="true"
+            :draggable="true"
+            @click="center=m.position"
+        />
+    </GmapMap>
 
+    <div id="map"></div>
+    
+    <!--<script src="markerclusterer.js">
+    </script>-->
+    <!--<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+    </script>-->
+  </body>
+</template>
+
+<script>
+import markerClustererPlus from '@google/markerclustererplus' 
+import gmapApi from 'vue2-google-maps' 
+import GmapCluster from 'vue2-google-maps/dist/components/cluster' // replace src with dist if you have Babel issues
+Vue.component('GmapCluster', GmapCluster)
       function initMap() {
 
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -72,12 +76,5 @@
         {lat: -42.735258, lng: 147.438000},
         {lat: -43.999792, lng: 170.463352}
       ]
-    </script>
-    <script src="markerclusterer.js">
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
-    </script>
-    </div>
-  </body>
-</html>
+  </script>
+  <script src="markerClusterer.js"</script>
