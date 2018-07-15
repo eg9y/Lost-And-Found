@@ -24,7 +24,7 @@ import { gmapApi } from "vue2-google-maps";
 import db from "@/firebase/init";
 
 // these coordinates define the boundaries of the map/UCSC
-var MIN_LAT = 36.987615,
+const MIN_LAT = 36.987615,
   MAX_LAT = 37.001976,
   MIN_LNG = -122.068846,
   MAX_LNG = -122.04808;

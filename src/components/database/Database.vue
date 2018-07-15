@@ -43,7 +43,6 @@ export default {
       db.collection('lost-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            console.log(doc.data())
             let lostItem = doc.data()
             lostItem.id = doc.id
             this.lostItems.push(lostItem)
@@ -56,7 +55,6 @@ export default {
       db.collection('found-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            console.log(doc.data())
             let foundItem = doc.data()
             foundItem.id = doc.id
             this.foundItems.push(foundItem)
