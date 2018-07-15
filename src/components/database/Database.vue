@@ -5,16 +5,16 @@
       <div class="card-content">
         <h2 class="indigo-text">Lost: {{ lostItem.type }}</h2>
         <div>
-          <img class="item-pictures" id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
+          <img class="item-pictures" v-bind:id="lostItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
         </div>
       </div>
     </div><br/>
 
-    <div class="cardFound" v-for="foundItem in foundItems" :key="foundItem.id">
-      <div class="cardFound-content">
+    <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
+      <div class="card-content">
         <h2 class="indigo-text">Found: {{ foundItem.type }}</h2>
         <div>
-          <img class="item-pictures" id="found-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
+          <img class="item-pictures" v-bind:id="foundItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
         </div>
       </div>
     </div>
@@ -23,10 +23,10 @@
 </template>
 
 <script>
-// import firebase from 'firebase'
+import firebase from 'firebase'
 import db from '@/firebase/init'
 
-// var storage = firebase.storage()
+var storage = firebase.storage()
 
 export default {
   name: 'Database',
@@ -37,40 +37,40 @@ export default {
     }
   },
   methods: {
+    /***  ***/
     displayLost () {
       // fetch data from firestore
       db.collection('lost-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let lostItem = doc.data()
-            lostItem.id = doc.id
-            if (lostItem.picture) {
-              //this.getPicture(lostItem.picture, 'lost-pic')
-              var gsReference = storage.refFromURL(lostItem.picture).getDownloadURL().then(function (url) {
-                var img = document.getElementById('lost-pic');
-                img.src = url;
-                this.lostItems.push(lostItem);
-              }).catch(function (error) {
-                console.log(error)
-              })
-            }
-            else
-              this.lostItems.push(lostItem)
+            let lostItem = doc.data();
+            lostItem.id = doc.id;
+            this.lostItems.push(lostItem);
+
+            // fetch picture from Storage (if not null)
+            if (lostItem.picture)
+              this.getPicture(lostItem.picture, lostItem.id);
           })
         })
     },
+    /***  ***/
     displayFound () {
+      // fetch data from firestore
       db.collection('found-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let foundItem = doc.data()
-            foundItem.id = doc.id
-            this.foundItems.push(foundItem)
-            if (foundItem.picture) // get picture from Storage if it exists
-              this.getPicture(foundItem.picture, 'found-pic')
+            let foundItem = doc.data();
+            foundItem.id = doc.id;
+            this.foundItems.push(foundItem);
+
+            // fetch picture from Storage (if not null)
+            if (foundItem.picture)
+              this.getPicture(foundItem.picture, foundItem.id);
           })
         })
     },
+    /*** fetches the picture from Storage, url given by urlPic, 
+     *   and replaces the associated img tag src with the url ***/
     getPicture (urlPic, elemID) {
       var gsReference = storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
         var img = document.getElementById(elemID)

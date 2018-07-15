@@ -22,14 +22,11 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
-<<<<<<< HEAD
                             </v-flex>
                             <!-- upload picture...don't know how to make this pretty :( -->
                             <v-flex xs12>
                                 <br/>Picture:<br/>
                                 <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
-=======
->>>>>>> dbca4973e709adcd3720ded340e4dfa0fe06dbd3
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -113,7 +110,6 @@ export default {
             var metadata = { contentType: this.imageFile.type };
             var uploadTask = storageRef.child(name).put(this.imageFile, metadata);
             uploadTask.on('state_changed', function (snapshot) {
-                // Observe state change events such as progress, pause, and resume
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                 var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log('Upload is ' + progress + '% done');
@@ -133,4 +129,5 @@ export default {
 </script>
 
 <style>
+
 </style>
