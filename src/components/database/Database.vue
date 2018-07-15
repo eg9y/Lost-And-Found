@@ -5,21 +5,16 @@
       <div class="card-content">
         <h2 class="indigo-text">Lost: {{ lostItem.type }}</h2>
         <div>
-          Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
-          <!-- include script here to display picture -->
-          Picture:<br/>
-          <img id="lost-pic" src="" alt="no picture" height="200" width="200"><br/>
+          <img class="item-pictures" v-bind:id="lostItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
         </div>
       </div>
     </div><br/>
 
-    <div class="cardFound" v-for="foundItem in foundItems" :key="foundItem.id">
-      <div class="cardFound-content">
+    <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
+      <div class="card-content">
         <h2 class="indigo-text">Found: {{ foundItem.type }}</h2>
         <div>
-          Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/> Picture:
-          <br/>
-          <img id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)" height="200" width="200"><br/>
+          <img class="item-pictures" v-bind:id="foundItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
         </div>
       </div>
     </div>
@@ -28,10 +23,10 @@
 </template>
 
 <script>
-// import firebase from 'firebase'
+import firebase from 'firebase'
 import db from '@/firebase/init'
 
-// var storage = firebase.storage()
+var storage = firebase.storage()
 
 export default {
   name: 'Database',
@@ -42,46 +37,47 @@ export default {
     }
   },
   methods: {
+    /***  ***/
     displayLost () {
       // fetch data from firestore
       db.collection('lost-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            console.log(doc.data())
-            let lostItem = doc.data()
-            lostItem.id = doc.id
-            this.lostItems.push(lostItem)
+            let lostItem = doc.data();
+            lostItem.id = doc.id;
+            this.lostItems.push(lostItem);
 
-            // get picture from Storage if it exists
-            if (lostItem.picture) {
-              this.getPicture(lostItem.picture, 'lost-pic')
-            }
+            // fetch picture from Storage (if not null)
+            if (lostItem.picture)
+              this.getPicture(lostItem.picture, lostItem.id);
           })
         })
     },
+    /***  ***/
     displayFound () {
+      // fetch data from firestore
       db.collection('found-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            console.log(doc.data())
-            let foundItem = doc.data()
-            foundItem.id = doc.id
-            this.foundItems.push(foundItem)
+            let foundItem = doc.data();
+            foundItem.id = doc.id;
+            this.foundItems.push(foundItem);
 
-            // get picture from Storage if it exists
-            if (foundItem.picture) {
-              this.getPicture(foundItem.picture, 'found-pic')
-            }
+            // fetch picture from Storage (if not null)
+            if (foundItem.picture)
+              this.getPicture(foundItem.picture, foundItem.id);
           })
         })
     },
+    /*** fetches the picture from Storage, url given by urlPic, 
+     *   and replaces the associated img tag src with the url ***/
     getPicture (urlPic, elemID) {
-      // var gsReference = storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
-      //   var img = document.getElementById(elemID)
-      //   img.src = url
-      // }).catch(function (error) {
-      //   console.log(error)
-      // })
+      var gsReference = storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
+        var img = document.getElementById(elemID)
+        img.src = url
+      }).catch(function (error) {
+        console.log(error)
+      })
     }
   },
   created () {
@@ -95,7 +91,7 @@ export default {
 .index {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 30px;
+  grid-gap: 50px;
   margin-top: 60px;
 }
 .index h2 {
@@ -103,18 +99,11 @@ export default {
   text-align: center;
   margin-top: 0;
 }
-.index .ingredients {
-  margin: 30px auto;
-}
-.index .ingredients li {
-  display: inline-block;
-}
-.index .delete {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  cursor: pointer;
-  color: #aaa;
-  font-size: 1.4em;
+.item-pictures {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 200px;
+  max-height: 200px;
 }
 </style>
