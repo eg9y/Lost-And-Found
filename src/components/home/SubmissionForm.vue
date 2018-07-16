@@ -10,12 +10,12 @@
 
       <v-tab href="#tab-1">
         Add Found Item
-        <v-icon>phone</v-icon>
+        <v-icon>place</v-icon>
       </v-tab>
 
       <v-tab href="#tab-2">
         Add Lost Item
-        <v-icon>favorite</v-icon>
+        <v-icon>place</v-icon>
       </v-tab>
 
       <!-- // FOUND ITEM form -->
@@ -126,7 +126,7 @@
               </v-layout>
             </v-container>
             <br />
-            <small>*indicates required field</small>
+            <small>* indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
