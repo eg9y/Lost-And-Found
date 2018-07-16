@@ -17,9 +17,9 @@
               <v-text-field v-model="location" label="Location Found" hint="Where did you find the item?" persistent-hint required></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field v-model="timestamp" label="Date Found" hint="When did you find the item?" persistent-hint required></v-text-field>
+              <v-date-picker v-model="timestamp"  :landscape="false" :reactive="true"></v-date-picker>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 class="text-xs-center">
               <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
             </v-flex>
             <!-- upload picture...don't know how to make this pretty :( -->
@@ -46,7 +46,7 @@ import firebase from 'firebase'
 import db from '@/firebase/init'
 import { EventBus } from '../../../main'
 
-var storageRef = firebase.storage().ref();
+var storageRef = firebase.storage().ref()
 
 export default {
   props: ['foundDialog', 'user'],
@@ -80,42 +80,41 @@ export default {
           picture: this.imageURL,
           userID: this.user.uid
         })
-      }
-      else {
+      } else {
         this.feedback = 'You must enter an item type'
       }
     },
     toggleDialog () {
       this.dialog = !this.dialog
-      EventBus.$emit('toggleDialog', 'found');
+      EventBus.$emit('toggleDialog', 'found')
     },
-    /*** updates the picture info in data ***/
+    /** * updates the picture info in data ***/
     getPicInfo (e) {
-      this.imageFile = e.target.files[0];
+      this.imageFile = e.target.files[0]
     },
 
-    /*** upload picture to Storage and save the url to data.image ***/
-    /*** NOTE!!! must be called before addToDB() ***/
+    /** * upload picture to Storage and save the url to data.image ***/
+    /** * NOTE!!! must be called before addToDB() ***/
     uploadPic () {
-      var self = this;
-      var name = (+new Date()) + '-' + this.imageFile.name;
-      var metadata = { contentType: this.imageFile.type };
-      var uploadTask = storageRef.child(name).put(this.imageFile, metadata);
+      var self = this
+      var name = (+new Date()) + '-' + this.imageFile.name
+      var metadata = { contentType: this.imageFile.type }
+      var uploadTask = storageRef.child(name).put(this.imageFile, metadata)
       uploadTask.on('state_changed', function (snapshot) {
         // Observe state change events such as progress, pause, and resume
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
       }, function (error) {
         // Handle unsuccessful uploads
-        console.log("Error: couldn't picture")
+        console.log("Error: couldn't picture,", error)
       }, function () {
         // Handle successful uploads on complete
         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          self.imageURL = downloadURL;
-          self.addToDB();     // add entry to database
-        });
-      });
+          self.imageURL = downloadURL
+          self.addToDB() // add entry to database
+        })
+      })
     }
   }
 }

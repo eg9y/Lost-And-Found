@@ -1,20 +1,16 @@
 <template>
-    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="logCoords">
-        <!-- <GmapMarker
-            :key="index"
-            v-for="(m, index) in markers"
-            :position="m.position"
-            :clickable="true"
-            :draggable="true"
-            @click="center=m.position"
-        /> -->
+    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
+    style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addMarker">
+    <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog"></submission-form>
     </GmapMap>
 </template>
 
 <script>
-import { gmapApi } from "vue2-google-maps";
-import firebase from 'firebase';
-import db from "@/firebase/init";
+import { gmapApi } from 'vue2-google-maps'
+import firebase from 'firebase'
+import db from '@/firebase/init'
+import SubmissionForm from './SubmissionForm'
+import { EventBus } from '../../main'
 
 const STORAGE = firebase.storage();
 
@@ -30,11 +26,15 @@ const LOST_STR = "Lost: ",
     CENTER_STR = "Lost & Found Center";
 
 export default {
-    name: "GMap",
+    components: {
+    'submission-form': SubmissionForm
+    },
     data () {
         return {
-            lat: 53,
-            lng: -2,
+            // lat and lng are used for location
+            lat: null,
+            lng: null,
+            submissionDialog: false,
             markers: []
         };
     },
@@ -90,7 +90,7 @@ export default {
                                 var markerTitle = (data.type) ? collectionTitle + data.type : collectionTitle;
 
                                 this.$refs.mapRef.$mapPromise.then(map => {
-                                    let marker = new google.maps.Marker({
+                                    let marker = new this.google.maps.Marker({
                                         position: {
                                             lat: latitude,
                                             lng: longitude
@@ -98,7 +98,7 @@ export default {
                                         map,
                                         title: markerTitle, // title displayed as a hover tooltip
                                         markerID: docID,
-                                        infoWindow: new google.maps.InfoWindow({
+                                        infoWindow: new this.google.maps.InfoWindow({
                                             content: ""
                                         })
                                     });
@@ -124,10 +124,37 @@ export default {
                 });
         },
 
-        /*** logs the coordinates of where user clicked on map ***/
-        logCoords (e) {
-            console.log(e.latLng.lng());
-            console.log(e.latLng.lat());
+        /** * logs the coordinates of where user clicked on map ***/
+        addMarker (e) {
+          console.log(e.latLng.lat())
+          console.log(e.latLng.lng())
+
+          this.lat = e.latLng.lat()
+          this.lng = e.latLng.lng()
+          // only place markers that are within scope of UCSC
+          if (this.lng >= MIN_LNG && this.lng <= MAX_LNG &&
+                    this.lat >= MIN_LAT && this.lat <= MAX_LAT) {
+            this.$refs.mapRef.$mapPromise.then((map) => {
+              let marker = new this.google.maps.Marker({
+                position: {
+                  lat: e.latLng.lat(),
+                  lng: e.latLng.lng()
+                },
+                map
+              })
+
+              // open the submission form
+              this.submissionDialog = true
+
+              // add click event to marker
+              marker.addListener('click', () => {
+                // console.log(doc.id)
+              })
+            })
+          }
+        },
+        deleteMarker () {
+          // stuff
         },
 
         /*** set content of info window for lost-items and found-items markers  ***/
@@ -179,6 +206,10 @@ export default {
         google: gmapApi
     },
     created () {
+        EventBus.$on('toggleSubmission', function (submission) {
+          this.submissionDialog = false
+        }.bind(this));
+
         this.displayMarkers("lost-items", LOST_STR);
         this.displayMarkers("found-items", FOUND_STR);
         this.displayMarkers("centers", CENTER_STR);
