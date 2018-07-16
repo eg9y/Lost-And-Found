@@ -5,7 +5,7 @@
       <div class="card-content">
         <h2 class="indigo-text">Lost: {{ lostItem.type }}</h2>
         <div>
-          <img class="item-pictures" v-bind:id="lostItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
+          <img class="item-pictures" v-bind:id="lostItem.id" src="" alt="[ITEM PICTURE]"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
         </div>
       </div>
     </div><br/>
@@ -14,7 +14,7 @@
       <div class="card-content">
         <h2 class="indigo-text">Found: {{ foundItem.type }}</h2>
         <div>
-          <img class="item-pictures" v-bind:id="foundItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
+          <img class="item-pictures" v-bind:id="foundItem.id" src="" alt="[ITEM PICTURE]"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
         </div>
       </div>
     </div>
@@ -37,7 +37,7 @@ export default {
     }
   },
   methods: {
-    /***  ***/
+    /*** displays all of the "lost" items in the db ***/
     displayLost () {
       // fetch data from firestore
       db.collection('lost-items').get()
@@ -53,7 +53,7 @@ export default {
           })
         })
     },
-    /***  ***/
+    /*** displays all of the "found" items in the db ***/
     displayFound () {
       // fetch data from firestore
       db.collection('found-items').get()

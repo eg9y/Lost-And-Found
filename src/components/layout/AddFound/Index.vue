@@ -24,7 +24,7 @@
             </v-flex>
             <!-- upload picture...don't know how to make this pretty :( -->
             <v-flex xs12>
-              <br/>Picture:<br/>
+              <br/>Picture of Item:<br/>
               <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
             </v-flex>
           </v-layout>
