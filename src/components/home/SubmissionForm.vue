@@ -60,6 +60,10 @@
                     required
                   ></v-text-field>
                 </v-flex>
+                <v-flex xs12>
+                  <br/>Picture of Item:<br/>
+                  <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
+                </v-flex>
               </v-layout>
             </v-container>
             <br />
@@ -67,7 +71,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="submissionDialog = false" @click="addFound">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="submissionDialog = false" @click="uploadPic(false)">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="submissionDialog = false">Close</v-btn>
           </v-card-actions>
         </v-card>
@@ -100,7 +104,7 @@
                 <v-flex xs12>
                   <v-text-field
                     v-model="timestamp"
-                    label="Date Found"
+                    label="Date Lost"
                     hint="When did you lose the item?"
                     persistent-hint
                     required
@@ -115,6 +119,10 @@
                     required
                   ></v-text-field>
                 </v-flex>
+                <v-flex xs12>
+                  <br/>Picture of Item:<br/>
+                  <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
+                </v-flex>
               </v-layout>
             </v-container>
             <br />
@@ -122,7 +130,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="addLost">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic(true)">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
@@ -136,6 +144,8 @@ import db from '@/firebase/init'
 import firebase from 'firebase'
 import { EventBus } from '../../main'
 
+const STORAGE = firebase.storage().ref()
+
 export default {
   props: ['lat', 'lng', 'submissionDialog'],
   data () {
@@ -144,7 +154,9 @@ export default {
       description: null,
       contactEmail: null,
       timestamp: null,
-      submission_dialog: false
+      submission_dialog: false,
+      imageFile: null,
+      imageURL: null
     }
   },
   methods: {
@@ -159,7 +171,8 @@ export default {
           description: this.description,
           contactEmail: this.contactEmail,
           location: new firebase.firestore.GeoPoint(this.lat, this.lng),
-          timestamp: this.timestamp
+          timestamp: this.timestamp,
+          picture: this.imageURL
         })
       } else {
         this.feedback = 'You must enter an item type'
@@ -173,11 +186,44 @@ export default {
           description: this.description,
           contactEmail: this.contactEmail,
           location: new firebase.firestore.GeoPoint(this.lat, this.lng),
-          timestamp: this.timestamp
+          timestamp: this.timestamp,
+          picture: this.imageURL
         })
       } else {
         this.feedback = 'You must enter an item type'
       }
+    },
+
+    /* updates the picture info in data */
+    getPicInfo (e) {
+      this.imageFile = e.target.files[0]
+    },
+
+    /* upload picture to Storage and save the url to data.image */
+    /* NOTE!!! must be called before addLost() or addFound() */
+    uploadPic (isLostItem) {
+      var self = this
+      var name = (+new Date()) + '-' + this.imageFile.name
+      var metadata = { contentType: this.imageFile.type }
+      var uploadTask = STORAGE.child(name).put(this.imageFile, metadata)
+      uploadTask.on('state_changed', function (snapshot) {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+      }, function (error) {
+        // Handle unsuccessful uploads
+        console.log("Error: couldn't picture,", error)
+      }, function () {
+        // Handle successful uploads on complete
+        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          self.imageURL = downloadURL
+          if (isLostItem) {
+            self.addLost() // add entry to database
+          } else {
+            self.addFound()
+          }
+        })
+      })
     }
   }
 }
