@@ -1,14 +1,6 @@
 <template>
     <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" 
     style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addMarker">
-        <!-- <GmapMarker
-            :key="index"
-            v-for="(m, index) in markers"
-            :position="m.position"
-            :clickable="true"
-            :draggable="true"
-            @click="center=m.position"
-        /> -->
         
   <!-- // POP UP SUBMISSION FORM -->
   <v-dialog v-model="submission_dialog" persistent max-width="450px" lazy>
@@ -278,6 +270,9 @@ export default {
                     })
                 })
             }
+        },
+        deleteMarker() {
+          // stuff
         }
     },
     computed: {
