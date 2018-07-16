@@ -37,7 +37,7 @@ export default {
     }
   },
   methods: {
-    /*** displays all of the "lost" items in the db ***/
+    /* displays all of the "lost" items in the db */
     displayLost () {
       // fetch data from firestore
       db.collection('lost-items').get()
@@ -52,7 +52,7 @@ export default {
           })
         })
     },
-    /*** displays all of the "found" items in the db ***/
+    /* displays all of the "found" items in the db */
     displayFound () {
       // fetch data from firestore
       db.collection('found-items').get()
@@ -67,8 +67,7 @@ export default {
           })
         })
     },
-    /** * fetches the picture from Storage, url given by urlPic,
-     *   and replaces the associated img tag src with the url ***/
+    /* fetches the picture from Storage, url given by urlPic, and replaces the associated img tag src with the url */
     getPicture (urlPic, elemID) {
       storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
         var img = document.getElementById(elemID)
