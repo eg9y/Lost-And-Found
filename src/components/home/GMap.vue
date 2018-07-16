@@ -143,7 +143,6 @@ export default {
       // open the submission form
       this.submissionDialog = true
     },
-    /* logs the coordinates of where user clicked on map */
     addMarker () {
       // only place markers that are within scope of UCSC
       if (this.lng >= MIN_LNG && this.lng <= MAX_LNG &&
@@ -196,7 +195,7 @@ export default {
       }
     },
 
-    /** * set content of info window for lost&found centers ***/
+    /* set content of info window for lost&found centers */
     getInfoWindowContentCenters (data, collectionTitle, markerID) {
       // find the marker we want to edit
       for (var i = 0; i < this.markers.length; ++i) {

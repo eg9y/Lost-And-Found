@@ -50,6 +50,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <!-- NOTE: Submit button should call uploadPic function on click, with "false" as argument for the "Found" form -->
             <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic(false)">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
@@ -86,6 +87,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <!-- NOTE: Submit button should call uploadPic function on click, with "true" as argument for the "Lost" form -->
             <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic(true)">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
@@ -173,6 +175,7 @@ export default {
     },
 
     /* upload picture to Storage and save the url to data.image */
+    /* param "isLostItem" is true if item should be added to "lost-items" collection, and false if item should be added to "found-items" collection */
     /* NOTE!!! must be called before addLost() or addFound() */
     uploadPic (isLostItem) {
       var self = this
@@ -203,4 +206,5 @@ export default {
 </script>
 
 <style>
+
 </style>
