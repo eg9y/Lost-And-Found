@@ -1,11 +1,7 @@
 <template>
-    <!-- // POP UP SUBMISSION FORM -->
+  <!-- // POP UP SUBMISSION FORM -->
   <v-dialog v-model="submissionDialog" persistent max-width="450px" lazy>
-    <v-tabs
-      centered
-      color="cyan"
-      dark
-      icons-and-text>
+    <v-tabs centered color="cyan" dark icons-and-text>
       <v-tabs-slider color="yellow"></v-tabs-slider>
 
       <v-tab href="#tab-1">
@@ -25,40 +21,23 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="type"
-                    label="Item *"
-                    hint="What did you find?"
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="type" label="Item *" hint="What did you find?" persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="description"
-                    label="Item Description"
-                    hint="Please describe the item."
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="description" label="Item Description" hint="Please describe the item." persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field
+                  <v-date-picker v-model="timestamp" :allowed-dates="allowedDates" class="mt-3"></v-date-picker>
+                  <!-- <v-text-field
                     v-model="timestamp"
                     label="Date Found"
                     hint="When did you find the item?"
                     persistent-hint
                     required
-                  ></v-text-field>
+                  ></v-text-field> -->
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="contactEmail"
-                    label="Contact Information"
-                    hint="(E-mail only for now)"
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <br/>Picture of Item:<br/>
@@ -71,8 +50,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="submissionDialog = false" @click="uploadPic(false)">Submit</v-btn>
-            <v-btn color="blue darken-1" @click.native="submissionDialog = false">Close</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic(false)">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
@@ -84,40 +63,17 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="type"
-                    label="Item *"
-                    hint="What did you lose?"
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="type" label="Item *" hint="What did you lose?" persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="description"
-                    label="Item Description"
-                    hint="Please describe the item."
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="description" label="Item Description" hint="Please describe the item." persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="timestamp"
-                    label="Date Lost"
-                    hint="When did you lose the item?"
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-date-picker v-model="timestamp" :allowed-dates="allowedDates" class="mt-3"></v-date-picker>
+                  <!-- <v-text-field v-model="timestamp" label="Date Lost" hint="When did you lose the item?" persistent-hint required></v-text-field> -->
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="contactEmail"
-                    label="Contact Information"
-                    hint="(E-mail only for now)"
-                    persistent-hint
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <br/>Picture of Item:<br/>
@@ -154,12 +110,22 @@ export default {
       description: null,
       contactEmail: null,
       timestamp: null,
+      date: null,
+      currDate: new Date(),
       submission_dialog: false,
       imageFile: null,
       imageURL: null
     }
   },
   methods: {
+    allowedDates (val) {
+      const getDateMonthYear = val.split('-')
+      const earlierOrCurrentDate = parseInt(getDateMonthYear[2], 10) <= this.currDate.getDate()
+      const currentMonth = parseInt(getDateMonthYear[1], 10) === this.currDate.getMonth() + 1
+      const earlierMonth = parseInt(getDateMonthYear[1], 10) < this.currDate.getMonth() + 1
+      const sameYear = parseInt(getDateMonthYear[0], 10) <= this.currDate.getFullYear()
+      return ((earlierOrCurrentDate && currentMonth) || earlierMonth) && sameYear
+    },
     toggleSubmission () {
       EventBus.$emit('toggleSubmission')
     },
@@ -173,7 +139,12 @@ export default {
           location: new firebase.firestore.GeoPoint(this.lat, this.lng),
           timestamp: this.timestamp,
           picture: this.imageURL
+        }).then(function () {
+          EventBus.$emit('addMarker')
         })
+          .catch(function (error) {
+            console.log(error)
+          })
       } else {
         this.feedback = 'You must enter an item type'
       }
@@ -230,5 +201,4 @@ export default {
 </script>
 
 <style>
-
 </style>

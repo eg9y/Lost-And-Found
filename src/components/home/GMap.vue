@@ -1,5 +1,11 @@
 <template>
-    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addMarker">
+    <GmapMap
+      :center="{lat:36.994635, lng:-122.058842}"
+      :zoom="16"
+      :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
+      style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary"
+      @click="addLocation"
+      >
         <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog"></submission-form>
     </GmapMap>
 </template>
@@ -130,28 +136,28 @@ export default {
           })
         })
     },
-
-    /* logs the coordinates of where user clicked on map */
-    addMarker (e) {
+    addLocation (e) {
       console.log(e.latLng.lat())
       console.log(e.latLng.lng())
 
       this.lat = e.latLng.lat()
       this.lng = e.latLng.lng()
+      // open the submission form
+      this.submissionDialog = true
+    },
+    /* logs the coordinates of where user clicked on map */
+    addMarker () {
       // only place markers that are within scope of UCSC
       if (this.lng >= MIN_LNG && this.lng <= MAX_LNG &&
                 this.lat >= MIN_LAT && this.lat <= MAX_LAT) {
         this.$refs.mapRef.$mapPromise.then((map) => {
           let marker = new this.google.maps.Marker({
             position: {
-              lat: e.latLng.lat(),
-              lng: e.latLng.lng()
+              lat: this.lat,
+              lng: this.lng
             },
             map
           })
-
-          // open the submission form
-          this.submissionDialog = true
 
           // add click event to marker
           marker.addListener('click', () => {
@@ -213,6 +219,10 @@ export default {
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
+    }.bind(this))
+
+    EventBus.$on('addMarker', function () {
+      this.addMarker()
     }.bind(this))
 
     this.displayMarkers('lost-items', LOST_STR)
