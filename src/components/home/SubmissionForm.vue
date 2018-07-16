@@ -122,8 +122,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="submissionDialog = false" @click="addLost">Submit</v-btn>
-            <v-btn color="blue darken-1" @click.native="submissionDialog = false">Close</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="addLost">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
@@ -134,6 +134,7 @@
 <script>
 import db from '@/firebase/init'
 import firebase from 'firebase'
+import { EventBus } from '../../main'
 
 export default {
   props: ['lat', 'lng', 'submissionDialog'],
@@ -147,6 +148,9 @@ export default {
     }
   },
   methods: {
+    toggleSubmission () {
+      EventBus.$emit('toggleSubmission')
+    },
     addFound () {
       if (this.type) {
         this.feedback = null

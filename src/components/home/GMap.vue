@@ -9,6 +9,7 @@
 import { gmapApi } from 'vue2-google-maps'
 import db from '@/firebase/init'
 import SubmissionForm from './SubmissionForm'
+import { EventBus } from '../../main'
 
 // these coordinates define the boundaries of the map/UCSC
 var MIN_LAT = 36.987615
@@ -119,6 +120,10 @@ export default {
     google: gmapApi
   },
   created () {
+    EventBus.$on('toggleSubmission', function (submission) {
+      this.submissionDialog = false
+    }.bind(this))
+
     this.displayMarkers('lost-items', 'Lost: ')
     this.displayMarkers('found-items', 'Found: ')
     this.displayMarkers('centers', 'Center: ')
