@@ -45,10 +45,8 @@ export default {
         .where('userID', '==', this.user.uid)
         .get()
         .then(items => {
-          console.log('this :', this)
           items.forEach(doc => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, ' => ', doc.data())
             documents.push(doc.data())
           })
           if (collectionName === 'lost-items') {

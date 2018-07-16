@@ -17,14 +17,12 @@
           <v-icon left>fas fa-list-ul</v-icon>
           Display
         </v-btn>
-        <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn" flat>
-          <!-- <v-icon left>fas fa-map-pin</v-icon> -->
+        <!-- <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn" flat>
            Add Lost Item
         </v-btn>
         <v-btn @click.stop="found_dialog = true" v-if="this.isUserLoggedIn" flat>
-          <!-- <v-icon left>fas fa-map-marker-alt</v-icon>  -->
           Add Found Item
-        </v-btn>
+        </v-btn> -->
       </v-toolbar-items>
       <v-toolbar-items v-if="!this.isUserLoggedIn">
         <v-btn @click="auth" flat>
@@ -102,8 +100,6 @@ export default {
     }.bind(this))
 
     EventBus.$on('toggleDrawer', function () {
-      console.log(this.type)
-      console.log(this.drawer)
       this.drawer = false
     }.bind(this))
   },

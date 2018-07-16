@@ -1,35 +1,31 @@
 <template>
-    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="logCoords">
-        <!-- <GmapMarker
-            :key="index"
-            v-for="(m, index) in markers"
-            :position="m.position"
-            :clickable="true"
-            :draggable="true"
-            @click="center=m.position"
-        /> -->
+    <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
+    style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addMarker">
+    <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog"></submission-form>
     </GmapMap>
 </template>
 
 <script>
 import { gmapApi } from 'vue2-google-maps'
 import db from '@/firebase/init'
+import SubmissionForm from './SubmissionForm'
 
 // these coordinates define the boundaries of the map/UCSC
-const MIN_LAT = 36.987615
-
-const MAX_LAT = 37.001976
-
-const MIN_LNG = -122.068846
-
-const MAX_LNG = -122.04808
+var MIN_LAT = 36.987615
+var MAX_LAT = 37.001976
+var MIN_LNG = -122.068846
+var MAX_LNG = -122.048080
 
 export default {
-  name: 'GMap',
+  components: {
+    'submission-form': SubmissionForm
+  },
   data () {
     return {
-      lat: 53,
-      lng: -2
+      // lat and lng are used for location
+      lat: null,
+      lng: null,
+      submissionDialog: false
     }
   },
   methods: {
@@ -38,78 +34,85 @@ export default {
         new this.google.maps.LatLng(MIN_LAT, MIN_LNG),
         new this.google.maps.LatLng(MAX_LAT, MAX_LNG)
       )
-      this.$refs.mapRef.$mapPromise.then(map => {
+      this.$refs.mapRef.$mapPromise.then((map) => {
         if (strictBounds.contains(map.getCenter())) return
-
         // We're out of bounds - Move the map back within the bounds
-        console.log('OMG! BOUNDS HAVE EXCEEDED!!1')
+        console.log('OMG! BOUNDS HAVE EXCEEDED!!!')
         let c = map.getCenter()
-
         let x = c.lng()
-
         let y = c.lat()
-
         let maxX = strictBounds.getNorthEast().lng()
-
         let maxY = strictBounds.getNorthEast().lat()
-
         let minX = strictBounds.getSouthWest().lng()
-
         let minY = strictBounds.getSouthWest().lat()
-
         if (x < minX) x = minX
         if (x > maxX) x = maxX
         if (y < minY) y = minY
         if (y > maxY) y = maxY
-
         map.setCenter(new this.google.maps.LatLng(y, x))
       })
     },
-
     /** * adds markers to map for entries in db under collectionName ***/
     displayMarkers (collectionName, collectionTitle) {
-      db
-        .collection(collectionName)
-        .get()
-        .then(items => {
-          items.docs.forEach(doc => {
-            let data = doc.data()
-            if (data.location) {
-              var latitude = parseFloat(data.location._lat)
-              var longitude = parseFloat(data.location._long)
-
-              // only place markers that are within scope of UCSC
-              if (
-                longitude >= MIN_LNG &&
-                longitude <= MAX_LNG &&
-                latitude >= MIN_LAT &&
-                latitude <= MAX_LAT
-              ) {
-                this.$refs.mapRef.$mapPromise.then(map => {
-                  let marker = new this.google.maps.Marker({
-                    position: {
-                      lat: latitude,
-                      lng: longitude
-                    },
-                    map,
-                    title: collectionTitle + doc.id // title displayed as a hover tooltip
-                  })
-
-                  // add click event to marker
-                  marker.addListener('click', () => {
-                    console.log(doc.id)
-                  })
+      db.collection(collectionName).get().then(items => {
+        items.docs.forEach(doc => {
+          let data = doc.data()
+          if (data.location) {
+            var latitude = parseFloat(data.location._lat)
+            var longitude = parseFloat(data.location._long)
+            // only place markers that are within scope of UCSC
+            if (longitude >= MIN_LNG && longitude <= MAX_LNG &&
+                            latitude >= MIN_LAT && latitude <= MAX_LAT) {
+              this.$refs.mapRef.$mapPromise.then((map) => {
+                let marker = new this.google.maps.Marker({
+                  position: {
+                    lat: latitude,
+                    lng: longitude
+                  },
+                  map,
+                  title: collectionTitle + doc.id // title displayed as a hover tooltip
                 })
-              }
+                // add click event to marker
+                marker.addListener('click', () => {
+                  console.log(doc.id)
+                })
+              })
             }
+          }
+        })
+      })
+    },
+    /** * logs the coordinates of where user clicked on map ***/
+    addMarker (e) {
+      console.log(e.latLng.lat())
+      console.log(e.latLng.lng())
+
+      this.lat = e.latLng.lat()
+      this.lng = e.latLng.lng()
+      // only place markers that are within scope of UCSC
+      if (this.lng >= MIN_LNG && this.lng <= MAX_LNG &&
+                this.lat >= MIN_LAT && this.lat <= MAX_LAT) {
+        this.$refs.mapRef.$mapPromise.then((map) => {
+          let marker = new this.google.maps.Marker({
+            position: {
+              lat: e.latLng.lat(),
+              lng: e.latLng.lng()
+            },
+            map
+          })
+
+          // open the submission form
+          this.submissionDialog = true
+
+          // add click event to marker
+          marker.addListener('click', () => {
+            // console.log(doc.id)
           })
         })
+      }
     },
-
-    /** * logs the coordinates of where user clicked on map ***/
-    logCoords (e) {
-      console.log(e.latLng.lng())
-      console.log(e.latLng.lat())
+    deleteMarker () {
+      // stuff
     }
   },
   computed: {
@@ -119,6 +122,10 @@ export default {
     this.displayMarkers('lost-items', 'Lost: ')
     this.displayMarkers('found-items', 'Found: ')
     this.displayMarkers('centers', 'Center: ')
+  },
+  mounted () {
+    this.displayMarkers('lost-items', 'Lost: ')
+    this.displayMarkers('found-items', 'Found: ')
   }
 }
 </script>
