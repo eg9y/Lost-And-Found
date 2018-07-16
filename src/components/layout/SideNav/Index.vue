@@ -37,24 +37,38 @@
 
     </v-list>
 
-     <v-divider inset></v-divider>
+    <v-list>
+     <v-divider></v-divider>
       <v-subheader inset>History</v-subheader>
 
 <v-list-tile
-          v-for="item in items"
-          :key="item.title"
-          @click=""
+          v-for="lost_item in lost_items"
+          :key="lost_item.type"
+          @click="console"
         >
-          <v-list-tile-action>
-            <v-list-tile-title>{{ item.date }}</v-list-tile-title>
-          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ lost_item.type }}</v-list-tile-title>
+          </v-list-tile-content>
 
           <v-list-tile-content>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            <v-list-tile-title>{{ lost_item.location }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-      </v-list>
-        
+    <v-divider inset></v-divider>
+<v-list-tile
+          v-for="found_item in found_items"
+          :key="found_item.type"
+          @click="console"
+        >
+          <v-list-tile-content>
+            <v-list-tile-title>{{ found_item.type }}</v-list-tile-title>
+          </v-list-tile-content>
+
+          <v-list-tile-content>
+            <v-list-tile-title>{{ found_item.location }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+    </v-list>
 
   </v-navigation-drawer>
 </template>
@@ -76,11 +90,7 @@ export default {
   },
   data () {
     return {
-      drawer: this.mainDrawer,
-      items: [
-          { title: 'Home', date: 'dashboard' },
-          { title: 'About', date: 'question_answer' }
-        ]
+      drawer: this.mainDrawer
     }
   },
   methods: {
