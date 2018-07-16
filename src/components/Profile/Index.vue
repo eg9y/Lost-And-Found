@@ -1,17 +1,13 @@
 <template>
   <v-container>
     <v-layout>
-      <v-flex xs12>
+      <v-flex xs12 class="text-xs-center">
         <panel v-if="user" :title="user.displayName">
           <img class="img" justify-center :src="user.photoURL" alt="No pic">
           <h2>{{user.email}}</h2>
           <h2>{{user.phoneNumber}}</h2>
         </panel>
-        <v-progress-circular
-            indeterminate
-            color="primary"
-            v-else
-        ></v-progress-circular>
+        <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
       </v-flex>
     </v-layout>
     <v-layout>
@@ -28,10 +24,7 @@
             <h3>No submissions yet</h3>
           </template>
           <template v-else>
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </template>
         </panel>
       </v-flex>
@@ -48,10 +41,7 @@
             <h3>No submissions yet</h3>
           </template>
           <template v-else>
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </template>
         </panel>
       </v-flex>
@@ -127,5 +117,6 @@ export default {
 .img {
   width: 20%;
   height: 20%;
+
 }
 </style>

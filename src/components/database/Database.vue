@@ -37,42 +37,40 @@ export default {
     }
   },
   methods: {
-    /***  ***/
+    /** *  ***/
     displayLost () {
       // fetch data from firestore
       db.collection('lost-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let lostItem = doc.data();
-            lostItem.id = doc.id;
-            this.lostItems.push(lostItem);
+            let lostItem = doc.data()
+            lostItem.id = doc.id
+            this.lostItems.push(lostItem)
 
             // fetch picture from Storage (if not null)
-            if (lostItem.picture)
-              this.getPicture(lostItem.picture, lostItem.id);
+            if (lostItem.picture) { this.getPicture(lostItem.picture, lostItem.id) }
           })
         })
     },
-    /***  ***/
+    /** *  ***/
     displayFound () {
       // fetch data from firestore
       db.collection('found-items').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let foundItem = doc.data();
-            foundItem.id = doc.id;
-            this.foundItems.push(foundItem);
+            let foundItem = doc.data()
+            foundItem.id = doc.id
+            this.foundItems.push(foundItem)
 
             // fetch picture from Storage (if not null)
-            if (foundItem.picture)
-              this.getPicture(foundItem.picture, foundItem.id);
+            if (foundItem.picture) { this.getPicture(foundItem.picture, foundItem.id) }
           })
         })
     },
-    /*** fetches the picture from Storage, url given by urlPic, 
+    /** * fetches the picture from Storage, url given by urlPic,
      *   and replaces the associated img tag src with the url ***/
     getPicture (urlPic, elemID) {
-      var gsReference = storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
+      storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
         var img = document.getElementById(elemID)
         img.src = url
       }).catch(function (error) {

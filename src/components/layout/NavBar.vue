@@ -10,29 +10,34 @@
       <v-spacer></v-spacer>
 
       <v-toolbar-items>
-        <v-btn to="/">
-          Home
+        <v-btn to="/" flat >
+          <v-icon left>home</v-icon> Home
         </v-btn>
-        <v-btn to="/database">
+        <v-btn to="/database" flat>
+          <v-icon left>fas fa-list-ul</v-icon>
           Display
         </v-btn>
-        <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn">
-          Add Lost Item
+        <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn" flat>
+          <!-- <v-icon left>fas fa-map-pin</v-icon> -->
+           Add Lost Item
         </v-btn>
-        <v-btn @click.stop="found_dialog = true" v-if="this.isUserLoggedIn">
+        <v-btn @click.stop="found_dialog = true" v-if="this.isUserLoggedIn" flat>
+          <!-- <v-icon left>fas fa-map-marker-alt</v-icon>  -->
           Add Found Item
         </v-btn>
       </v-toolbar-items>
       <v-toolbar-items v-if="!this.isUserLoggedIn">
-        <v-btn @click="auth">
-          Sign In
+        <v-btn @click="auth" flat>
+          <v-icon left>fas fa-sign-in-alt</v-icon>
+           Sign In
         </v-btn>
       </v-toolbar-items>
       <v-toolbar-items v-else>
-        <v-btn @click="signOut">
+        <v-btn @click="signOut" flat>
+          <v-icon left>fas fa-sign-out-alt</v-icon>
           Sign Out
         </v-btn>
-        <v-btn to="/profile">
+        <v-btn to="/profile" flat>
           {{user.displayName}}
         </v-btn>
       </v-toolbar-items>

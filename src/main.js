@@ -20,6 +20,7 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 
 // import global component Panel ('window' component)
 import Panel from '@/components/globals/Panel'
+
 Vue.component('panel', Panel)
 
 // setup event bus to be exported. Allows child component to talk
@@ -27,7 +28,12 @@ Vue.component('panel', Panel)
 export const EventBus = new Vue()
 Vue.use(VueRouter)
 sync(store, router) // Ensure you are using css-loader
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  theme: {
+    primary: '#1C77C3',
+    accent: '#39A9DB'
+  }
+})
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyB-FXJVrNHMXVkgxiGkZylm8kcABXb06cA',
