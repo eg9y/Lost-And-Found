@@ -34,20 +34,29 @@
           <v-list-tile-title>Sign Out</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-
     </v-list>
 
-    <v-divider inset></v-divider>
-    <v-subheader inset>History</v-subheader>
-
     <v-list>
-      <v-list-tile v-for="item in items" :key="item.title" @click="console.log('hu')">
-        <v-list-tile-action>
-          <v-list-tile-title>{{ item.date }}</v-list-tile-title>
-        </v-list-tile-action>
+      <v-divider></v-divider>
+      <v-subheader inset>History</v-subheader>
+
+      <v-list-tile v-for="lost_item in lost_items" :key="lost_item.type" @click="console.log('d')">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ lost_item.type }}</v-list-tile-title>
+        </v-list-tile-content>
 
         <v-list-tile-content>
-          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          <v-list-tile-title>{{ lost_item.location }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-divider inset></v-divider>
+      <v-list-tile v-for="found_item in found_items" :key="found_item.type" @click="console.log('d')">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ found_item.type }}</v-list-tile-title>
+        </v-list-tile-content>
+
+        <v-list-tile-content>
+          <v-list-tile-title>{{ found_item.location }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
@@ -71,11 +80,7 @@ export default {
   },
   data () {
     return {
-      drawer: this.mainDrawer,
-      items: [
-        { title: 'Home', date: 'dashboard' },
-        { title: 'About', date: 'question_answer' }
-      ]
+      drawer: this.mainDrawer
     }
   },
   methods: {
