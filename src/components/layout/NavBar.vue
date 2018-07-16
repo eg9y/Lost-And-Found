@@ -86,12 +86,6 @@
   },
     data(){
       return{
-        type: null,
-        description: null,
-        contactEmail: null,
-        location: null,
-        timestamp: null,
-        submission_dialog: false,
         drawer: null,
         items: [
           { title: 'Home', icon: 'dashboard' },

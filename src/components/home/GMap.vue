@@ -1,6 +1,6 @@
 <template>
     <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" 
-    style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="logCoords">
+    style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addMarker">
         <!-- <GmapMarker
             :key="index"
             v-for="(m, index) in markers"
@@ -9,8 +9,9 @@
             :draggable="true"
             @click="center=m.position"
         /> -->
-          <!-- // POP UP SUBMISSION FORM -->
-  <v-dialog v-model="submission_dialog" persistent max-width="500px" lazy>
+        
+  <!-- // POP UP SUBMISSION FORM -->
+  <v-dialog v-model="submission_dialog" persistent max-width="450px" lazy>
     <v-tabs
       centered
       color="cyan"
@@ -48,15 +49,6 @@
                     v-model="description"
                     label="Item Description"
                     hint="Please describe the item."
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field
-                    v-model="location"
-                    label="Location Found"
-                    hint="Where did you find the item?"
                     persistent-hint
                     required
                   ></v-text-field>
@@ -118,15 +110,6 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field
-                    v-model="location"
-                    label="Location Found"
-                    hint="Where did you lose the item?"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field
                     v-model="timestamp"
                     label="Date Found"
                     hint="When did you lose the item?"
@@ -163,7 +146,7 @@
 <script>
 import { gmapApi } from 'vue2-google-maps'
 import db from '@/firebase/init'
-import NavBar from '@/components/layout/NavBar'
+import firebase from 'firebase'
 // these coordinates define the boundaries of the map/UCSC
 var MIN_LAT = 36.987615,
     MAX_LAT = 37.001976,
@@ -173,9 +156,14 @@ export default {
     name: "GMap",
     data() {
         return {
+            type: null,
+            description: null,
+            contactEmail: null,
+            location: null,
+            timestamp: null,
             submission_dialog: false,
-            lat: 53,
-            lng: -2
+            lat: null,
+            lng: null
         }
     },
     methods: {
@@ -186,7 +174,22 @@ export default {
                     type: this.type,
                     description: this.description,
                     contactEmail: this.contactEmail,
-                    location: this.location,
+                    location: new firebase.firestore.GeoPoint(this.lat, this.lng),
+                    timestamp: this.timestamp
+                })
+            }
+            else{
+                this.feedback = 'You must enter an item type'
+            }
+        },
+        addLost(){
+            if(this.type){
+                this.feedback = null
+                db.collection('lost-items').add({
+                    type: this.type,
+                    description: this.description,
+                    contactEmail: this.contactEmail,
+                    location: new firebase.firestore.GeoPoint(this.lat, this.lng),
                     timestamp: this.timestamp
                 })
             }
@@ -248,26 +251,30 @@ export default {
             })
         },
         /*** logs the coordinates of where user clicked on map ***/
-        logCoords(e) {
-            console.log(e.latLng.lng())
+        addMarker(e) {
             console.log(e.latLng.lat())
-            this.submission_dialog = true
-            var latitude =  e.latLng.lat()
-            var longitude = e.latLng.lng()
+            console.log(e.latLng.lng())
+
+            this.lat =  e.latLng.lat()
+            this.lng = e.latLng.lng()
             // only place markers that are within scope of UCSC
-            if (longitude >= MIN_LNG && longitude <= MAX_LNG 
-                && latitude >= MIN_LAT && latitude <= MAX_LAT){
+            if (this.lng >= MIN_LNG && this.lng <= MAX_LNG 
+                && this.lat >= MIN_LAT && this.lat <= MAX_LAT){
                 this.$refs.mapRef.$mapPromise.then((map) => {
                     let marker = new google.maps.Marker({
                         position: {
-                            lat: latitude,
-                            lng: longitude
+                            lat: e.latLng.lat(),
+                            lng: e.latLng.lng()
                         },
                         map
                     })
+
+                    // open the submission form
+                    this.submission_dialog = true
+
                     // add click event to marker
                     marker.addListener('click', () => {
-                        console.log(doc.id)
+                        // console.log(doc.id)
                     })
                 })
             }
@@ -280,9 +287,6 @@ export default {
         this.displayMarkers('lost-items', 'Lost: ')
         this.displayMarkers('found-items', 'Found: ')
         this.displayMarkers('centers', 'Center: ')
-    },
-    computed: {
-        google: gmapApi
     },
     mounted () {
         this.displayMarkers('lost-items', 'Lost: ')
