@@ -15,9 +15,35 @@
     <v-list class="pt-0" dense>
       <v-divider></v-divider>
 
-      <v-list-tile v-for="item in items" :key="item.title" @click="console.log('palceholder')">
+      <v-list-tile to="/Profile">
         <v-list-tile-action>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-icon>dashboard</v-icon>
+        </v-list-tile-action>
+
+        <v-list-tile-content>
+          <v-list-tile-title>Profile</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+      <v-list-tile @click="signOut">
+        <v-list-tile-action>
+          <v-icon>power_settings_new</v-icon>
+        </v-list-tile-action>
+
+        <v-list-tile-content>
+          <v-list-tile-title>Sign Out</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+    </v-list>
+
+    <v-divider inset></v-divider>
+    <v-subheader inset>History</v-subheader>
+
+    <v-list>
+      <v-list-tile v-for="item in items" :key="item.title" @click="console.log('hu')">
+        <v-list-tile-action>
+          <v-list-tile-title>{{ item.date }}</v-list-tile-title>
         </v-list-tile-action>
 
         <v-list-tile-content>
@@ -30,15 +56,25 @@
 
 <script>
 import { EventBus } from '../../../main'
+import { mapState } from 'vuex'
 
 export default {
   props: ['mainDrawer'],
+  computed: {
+    ...mapState([
+      'isUserLoggedIn',
+      'user',
+      'lost_items',
+      'found_items',
+      'firebase'
+    ])
+  },
   data () {
     return {
       drawer: this.mainDrawer,
       items: [
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
+        { title: 'Home', date: 'dashboard' },
+        { title: 'About', date: 'question_answer' }
       ]
     }
   },
@@ -46,6 +82,14 @@ export default {
     toggleDrawer () {
       this.drawer = !this.drawer
       EventBus.$emit('toggleDrawer')
+    },
+    signOut () {
+      this.firebase.auth().signOut().then(() => {
+        // Sign-out successful.
+        this.$store.dispatch('signOut')
+      }).catch(function (error) {
+        console.log(error)
+      })
     }
   },
   watch: {
