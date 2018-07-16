@@ -179,6 +179,21 @@ export default {
         }
     },
     methods: {
+        addFound(){
+            if(this.type){
+                this.feedback = null
+                db.collection('found-items').add({
+                    type: this.type,
+                    description: this.description,
+                    contactEmail: this.contactEmail,
+                    location: this.location,
+                    timestamp: this.timestamp
+                })
+            }
+            else{
+                this.feedback = 'You must enter an item type'
+            }
+        },
         checkBoundary(){
             var strictBounds = new this.google.maps.LatLngBounds(
                 new this.google.maps.LatLng(MIN_LAT, MIN_LNG),
