@@ -71,7 +71,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="submissionDialog = false" @click="uploadPic(2)">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="submissionDialog = false" @click="uploadPic(false)">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="submissionDialog = false">Close</v-btn>
           </v-card-actions>
         </v-card>
@@ -130,7 +130,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic(1)">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic(true)">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
@@ -201,7 +201,7 @@ export default {
 
     /* upload picture to Storage and save the url to data.image */
     /* NOTE!!! must be called before addLost() or addFound() */
-    uploadPic (lostOrFound) {
+    uploadPic (isLostItem) {
       var self = this
       var name = (+new Date()) + '-' + this.imageFile.name
       var metadata = { contentType: this.imageFile.type }
@@ -217,9 +217,9 @@ export default {
         // Handle successful uploads on complete
         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
           self.imageURL = downloadURL
-          if (lostOrFound === 1) {
+          if (isLostItem) {
             self.addLost() // add entry to database
-          } else if (lostOrFound === 2) {
+          } else {
             self.addFound()
           }
         })
