@@ -1,18 +1,7 @@
 <template>
-    <GmapMap
-      :center="{lat:36.994635, lng:-122.058842}"
-      :zoom="16"
-      :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}"
-      style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary"
-      @click="addLocation"
-      >
-        <submission-form
-          :lat="lat"
-          :lng="lng"
-          :submissionDialog="submissionDialog"
-          :user="user"
-        ></submission-form>
-    </GmapMap>
+  <GmapMap :center="{lat:36.994635, lng:-122.058842}" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
+    <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
+  </GmapMap>
 </template>
 
 <script>
@@ -104,9 +93,9 @@ export default {
               // only place markers that are within scope of UCSC
               if (
                 longitude >= MIN_LNG &&
-                                longitude <= MAX_LNG &&
-                                latitude >= MIN_LAT &&
-                                latitude <= MAX_LAT
+                longitude <= MAX_LNG &&
+                latitude >= MIN_LAT &&
+                latitude <= MAX_LAT
               ) {
                 var self = this
                 var markerTitle = (data.type) ? collectionTitle + data.type : collectionTitle
@@ -158,7 +147,7 @@ export default {
     addMarker () {
       // only place markers that are within scope of UCSC
       if (this.lng >= MIN_LNG && this.lng <= MAX_LNG &&
-                this.lat >= MIN_LAT && this.lat <= MAX_LAT) {
+        this.lat >= MIN_LAT && this.lat <= MAX_LAT) {
         this.$refs.mapRef.$mapPromise.then((map) => {
           let marker = new this.google.maps.Marker({
             position: {
@@ -192,17 +181,17 @@ export default {
       if (data.picture) {
         STORAGE.refFromURL(data.picture).getDownloadURL().then(function (url) {
           var contentString = '<div class="window-content"><h2>' + collectionTitle + data.type +
-                        '</h2><div><img src="' + url + '" alt="[ITEM PICTURE]" width="150"><br/>Description: ' +
-                        data.description + '<br/> Contact: ' + data.contactEmail + '<br/> Time Stamp: ' +
-                        data.timestamp + '<br/></div></div>'
+            '</h2><div><img src="' + url + '" alt="[ITEM PICTURE]" width="150"><br/>Description: ' +
+            data.description + '<br/> Contact: ' + data.contactEmail + '<br/> Time Stamp: ' +
+            data.timestamp + '<br/></div></div>'
           marker.infoWindow.setContent(contentString)
         }).catch(function (error) {
           console.log(error)
         })
       } else { // if db entry doesn't have a picture
         var contentString = '<div class="window-content"><h2>' + collectionTitle + data.type +
-                    '</h2><div>Description: ' + data.description + '<br/> Contact: ' + data.contactEmail +
-                    '<br/> Time Stamp: ' + data.timestamp + '<br/></div></div>'
+          '</h2><div>Description: ' + data.description + '<br/> Contact: ' + data.contactEmail +
+          '<br/> Time Stamp: ' + data.timestamp + '<br/></div></div>'
         marker.infoWindow.setContent(contentString)
       }
     },
@@ -218,7 +207,7 @@ export default {
       }
 
       var contentString = '<div class="window-content"><h2>' + collectionTitle +
-                '</h2><div>Description: ' + data.description + '</div></div>'
+        '</h2><div>Description: ' + data.description + '</div></div>'
       marker.infoWindow.setContent(contentString)
     }
   },
