@@ -5,11 +5,7 @@
       <div class="card-content">
         <h2 class="indigo-text">Lost: {{ lostItem.type }}</h2>
         <div>
-            <img class = "item-pictures" id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/>
-            Description: {{ lostItem.description }}<br/>
-            Contact: {{ lostItem.contactEmail }}<br/>
-            Time Stamp: {{ lostItem.timestamp }}<br/>
-            Location: {{ lostItem.location }}<br/>
+          <img class="item-pictures" id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
         </div>
       </div>
     </div><br/>
@@ -18,11 +14,7 @@
       <div class="cardFound-content">
         <h2 class="indigo-text">Found: {{ foundItem.type }}</h2>
         <div>
-            <img class = "item-pictures" id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/>
-            Description: {{ foundItem.description }}<br/>
-            Contact: {{ foundItem.contactEmail }}<br/>
-            Time Stamp: {{ foundItem.timestamp }}<br/>
-            Location: {{ foundItem.location }}<br/>
+          <img class="item-pictures" id="lost-pic" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
         </div>
       </div>
     </div>
@@ -107,12 +99,12 @@ export default {
   margin-top: 0;
 }
 
-  right: 4px;
-  cursor: pointer;
-  color: #aaa;
-  font-size: 1.4em;
-  
-.item-pictures{
+right: 4px;
+cursor: pointer;
+color: #aaa;
+font-size: 1.4em;
+
+.item-pictures {
   display: block;
   margin-left: auto;
   margin-right: auto;
