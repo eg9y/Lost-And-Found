@@ -103,7 +103,7 @@ import { EventBus } from '../../main'
 const STORAGE = firebase.storage().ref()
 
 export default {
-  props: ['lat', 'lng', 'submissionDialog'],
+  props: ['lat', 'lng', 'submissionDialog', 'user'],
   data () {
     return {
       type: null,
@@ -138,7 +138,8 @@ export default {
           contactEmail: this.contactEmail,
           location: new firebase.firestore.GeoPoint(this.lat, this.lng),
           timestamp: this.timestamp,
-          picture: this.imageURL
+          picture: this.imageURL,
+          userID: this.user.uid
         }).then(function () {
           EventBus.$emit('addMarker')
         })
@@ -158,7 +159,8 @@ export default {
           contactEmail: this.contactEmail,
           location: new firebase.firestore.GeoPoint(this.lat, this.lng),
           timestamp: this.timestamp,
-          picture: this.imageURL
+          picture: this.imageURL,
+          userID: this.user.uid
         })
       } else {
         this.feedback = 'You must enter an item type'

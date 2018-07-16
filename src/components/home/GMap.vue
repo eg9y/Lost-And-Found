@@ -6,7 +6,12 @@
       style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary"
       @click="addLocation"
       >
-        <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog"></submission-form>
+        <submission-form
+          :lat="lat"
+          :lng="lng"
+          :submissionDialog="submissionDialog"
+          :user="user"
+        ></submission-form>
     </GmapMap>
 </template>
 
@@ -16,6 +21,7 @@ import firebase from 'firebase'
 import db from '@/firebase/init'
 import SubmissionForm from './SubmissionForm'
 import { EventBus } from '../../main'
+import { mapState } from 'vuex'
 
 const STORAGE = firebase.storage()
 
@@ -142,6 +148,9 @@ export default {
 
       this.lat = e.latLng.lat()
       this.lng = e.latLng.lng()
+      if (!this.user) {
+        return
+      }
       // open the submission form
       this.submissionDialog = true
     },
@@ -214,7 +223,13 @@ export default {
     }
   },
   computed: {
-    google: gmapApi
+    google: gmapApi,
+    ...mapState([
+      'isUserLoggedIn',
+      'user',
+      'stillLoading',
+      'firebase'
+    ])
   },
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
