@@ -28,13 +28,6 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-date-picker v-model="timestamp" :allowed-dates="allowedDates" class="mt-3"></v-date-picker>
-                  <!-- <v-text-field
-                    v-model="timestamp"
-                    label="Date Found"
-                    hint="When did you find the item?"
-                    persistent-hint
-                    required
-                  ></v-text-field> -->
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
@@ -71,7 +64,6 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-date-picker v-model="timestamp" :allowed-dates="allowedDates" class="mt-3"></v-date-picker>
-                  <!-- <v-text-field v-model="timestamp" label="Date Lost" hint="When did you lose the item?" persistent-hint required></v-text-field> -->
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
@@ -100,7 +92,7 @@
 <script>
 import db from '@/firebase/init'
 import firebase from 'firebase'
-import { EventBus } from '../../main'
+import { EventBus } from '../../../main'
 
 const STORAGE = firebase.storage().ref()
 
@@ -131,10 +123,10 @@ export default {
     toggleSubmission () {
       EventBus.$emit('toggleSubmission')
     },
-    addFound () {
+    addDoc (collectionName) {
       if (this.type) {
         this.feedback = null
-        db.collection('found-items').add({
+        db.collection(collectionName).add({
           type: this.type,
           description: this.description,
           contactEmail: this.contactEmail,
@@ -142,8 +134,12 @@ export default {
           timestamp: this.timestamp,
           picture: this.imageURL,
           userID: this.user.uid
-        }).then(function () {
-          EventBus.$emit('addMarker')
+        }).then((docRef) => {
+          console.log('doc :', docRef)
+          docRef.get().then((doc) => {
+            this.$store.dispatch('updateUserCollection', collectionName)
+            this.$store.dispatch('updateCollection', collectionName)
+          })
         })
           .catch(function (error) {
             console.log(error)
@@ -152,23 +148,6 @@ export default {
         this.feedback = 'You must enter an item type'
       }
     },
-    addLost () {
-      if (this.type) {
-        this.feedback = null
-        db.collection('lost-items').add({
-          type: this.type,
-          description: this.description,
-          contactEmail: this.contactEmail,
-          location: new firebase.firestore.GeoPoint(this.lat, this.lng),
-          timestamp: this.timestamp,
-          picture: this.imageURL,
-          userID: this.user.uid
-        })
-      } else {
-        this.feedback = 'You must enter an item type'
-      }
-    },
-
     /* updates the picture info in data */
     getPicInfo (e) {
       this.imageFile = e.target.files[0]
@@ -176,7 +155,7 @@ export default {
 
     /* upload picture to Storage and save the url to data.image */
     /* param "isLostItem" is true if item should be added to "lost-items" collection, and false if item should be added to "found-items" collection */
-    /* NOTE!!! must be called before addLost() or addFound() */
+    /* NOTE!!! must be called before addDoc() */
     uploadPic (isLostItem) {
       var self = this
       var name = (+new Date()) + '-' + this.imageFile.name
@@ -194,9 +173,9 @@ export default {
         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
           self.imageURL = downloadURL
           if (isLostItem) {
-            self.addLost() // add entry to database
+            self.addDoc('lost-items') // add entry to database
           } else {
-            self.addFound()
+            self.addDoc('found-items')
           }
         })
       })

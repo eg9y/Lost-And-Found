@@ -2,7 +2,7 @@
   <div>
     <!-- NAV BAR -->
     <v-toolbar dark color="primary" v-if="!stillLoading">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer">
+      <v-toolbar-side-icon v-if="this.isUserLoggedIn" @click.stop="drawer = !drawer">
       </v-toolbar-side-icon>
 
       <v-toolbar-title class="white--text">Lost And Found</v-toolbar-title>

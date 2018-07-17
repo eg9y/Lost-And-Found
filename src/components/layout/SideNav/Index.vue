@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer v-model="drawer" absolute temporary>
-    <v-list class="pa-1">
+    <v-list class="pa-1" v-if="user">
       <v-list-tile avatar>
         <v-list-tile-avatar>
           <img :src="user.photoURL">
