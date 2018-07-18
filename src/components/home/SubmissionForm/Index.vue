@@ -44,8 +44,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="imageFile ? uploadPic('found-items') : addDoc('found-items')">Submit</v-btn>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission" @click="imageFile ? uploadPic('found-items') : addDoc('found-items')">Submit</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
@@ -80,8 +80,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="imageFile ? uploadPic('lost-items') : addDoc('lost-items')">Submit</v-btn>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission" @click="imageFile ? uploadPic('lost-items') : addDoc('lost-items')">Submit</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
