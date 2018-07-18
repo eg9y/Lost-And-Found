@@ -21,7 +21,7 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="type" label="Item *" hint="What did you find?" persistent-hint required></v-text-field>
+                  <v-text-field class="text-field" v-model="type" label="Item *" hint="What did you find?" persistent-hint required></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field v-model="description" label="Item Description" hint="Please describe the item." persistent-hint required></v-text-field>
