@@ -26,12 +26,13 @@
                 <v-flex xs12>
                   <v-text-field v-model="description" label="Item Description" hint="Please describe the item." persistent-hint required></v-text-field>
                 </v-flex>
-                <v-flex xs12>
+                <!-- <v-flex xs12>
                   <v-date-picker v-model="timestamp" :allowed-dates="allowedDates" class="mt-3"></v-date-picker>
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12>
                   <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
                 </v-flex>
+                <date-picker></date-picker>
                 <v-flex xs12>
                   <br/>Picture of Item:<br/>
                   <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
@@ -43,8 +44,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="imageFile ? uploadPic('found-items') : addDoc('found-items')">Submit</v-btn>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission" @click="imageFile ? uploadPic('found-items') : addDoc('found-items')">Submit</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
@@ -61,12 +62,13 @@
                 <v-flex xs12>
                   <v-text-field v-model="description" label="Item Description" hint="Please describe the item." persistent-hint required></v-text-field>
                 </v-flex>
-                <v-flex xs12>
+                <!-- <v-flex xs12>
                   <v-date-picker v-model="timestamp" :allowed-dates="allowedDates" class="mt-3"></v-date-picker>
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12>
                   <v-text-field v-model="contactEmail" label="Contact Information" hint="(E-mail only for now)" persistent-hint required></v-text-field>
                 </v-flex>
+                <date-picker></date-picker>
                 <v-flex xs12>
                   <br/>Picture of Item:<br/>
                   <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
@@ -78,8 +80,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="imageFile ? uploadPic('lost-items') : addDoc('lost-items')">Submit</v-btn>
-            <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission" @click="imageFile ? uploadPic('lost-items') : addDoc('lost-items')">Submit</v-btn>
+            <v-btn color="cyan" dark @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
@@ -90,11 +92,15 @@
 <script>
 import db from '@/firebase/init'
 import firebase from 'firebase'
+import DatePicker from './DatePicker'
 import { EventBus } from '../../../main'
 
 const STORAGE = firebase.storage().ref()
 
 export default {
+  components: {
+    'date-picker': DatePicker
+  },
   props: ['lat', 'lng', 'submissionDialog', 'user'],
   data () {
     return {
@@ -102,22 +108,22 @@ export default {
       description: null,
       contactEmail: null,
       timestamp: null,
-      date: null,
-      currDate: new Date(),
+      // date: null,
+      // currDate: new Date(),
       submission_dialog: false,
       imageFile: null,
       imageURL: null
     }
   },
   methods: {
-    allowedDates (val) {
-      const getDateMonthYear = val.split('-')
-      const earlierOrCurrentDate = parseInt(getDateMonthYear[2], 10) <= this.currDate.getDate()
-      const currentMonth = parseInt(getDateMonthYear[1], 10) === this.currDate.getMonth() + 1
-      const earlierMonth = parseInt(getDateMonthYear[1], 10) < this.currDate.getMonth() + 1
-      const sameYear = parseInt(getDateMonthYear[0], 10) <= this.currDate.getFullYear()
-      return ((earlierOrCurrentDate && currentMonth) || earlierMonth) && sameYear
-    },
+    // allowedDates (val) {
+    //   const getDateMonthYear = val.split('-')
+    //   const earlierOrCurrentDate = parseInt(getDateMonthYear[2], 10) <= this.currDate.getDate()
+    //   const currentMonth = parseInt(getDateMonthYear[1], 10) === this.currDate.getMonth() + 1
+    //   const earlierMonth = parseInt(getDateMonthYear[1], 10) < this.currDate.getMonth() + 1
+    //   const sameYear = parseInt(getDateMonthYear[0], 10) <= this.currDate.getFullYear()
+    //   return ((earlierOrCurrentDate && currentMonth) || earlierMonth) && sameYear
+    // },
     toggleSubmission () {
       EventBus.$emit('toggleSubmission')
     },
