@@ -43,8 +43,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <!-- NOTE: Submit button should call uploadPic function on click, not addDoc -->
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic('found-items')">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="imageFile ? uploadPic('found-items') : addDoc('found-items')">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
@@ -79,8 +78,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <!-- NOTE: Submit button should call uploadPic function on click, not addDoc -->
-            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="uploadPic('lost-items')">Submit</v-btn>
+            <v-btn color="blue darken-1" @click.native="toggleSubmission" @click="imageFile ? uploadPic('lost-items') : addDoc('lost-items')">Submit</v-btn>
             <v-btn color="blue darken-1" @click.native="toggleSubmission">Close</v-btn>
           </v-card-actions>
         </v-card>
@@ -153,32 +151,27 @@ export default {
       this.imageFile = e.target.files[0]
     },
 
-    /* upload picture to Storage and save the url to data.image */
-    /* param "isLostItem" is true if item should be added to "lost-items" collection, and false if item should be added to "found-items" collection */
-    /* NOTE!!! must be called before addDoc() */
+    /* upload picture to Storage and save the url to data.imageURL */
+    /* NOTE!!! must be called before addDoc() if user is including a picture */
     uploadPic (collectionName) {
-      if (this.imageFile) {
-        var name = this.userID + '-' + (+new Date()) + '-' + this.imageFile.name // give picture unique name based on userID, timestamp, and file name
-        var metadata = { contentType: this.imageFile.type }
-        var uploadTask = STORAGE.child(name).put(this.imageFile, metadata)
-        var self = this
-        uploadTask.on('state_changed', function (snapshot) {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          console.log('Upload is ' + progress + '% done')
-        }, function (error) {
-          // Handle unsuccessful uploads
-          console.log("Error: couldn't upload picture,", error)
-        }, function () {
-          // Handle successful uploads on complete
-          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-            self.imageURL = downloadURL
-            self.addDoc(collectionName)
-          })
+      var name = this.userID + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
+      var metadata = { contentType: this.imageFile.type }
+      var uploadTask = STORAGE.child(name).put(this.imageFile, metadata)
+      var self = this
+      uploadTask.on('state_changed', function (snapshot) {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+      }, function (error) {
+        // Handle unsuccessful uploads
+        console.log("Error: couldn't upload picture,", error)
+      }, function () {
+        // Handle successful uploads on complete
+        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          self.imageURL = downloadURL
+          self.addDoc(collectionName)
         })
-      } else { // no picture--go straight to updating db
-        this.addDoc(collectionName)
-      }
+      })
     }
   }
 }
