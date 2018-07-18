@@ -1,7 +1,7 @@
 <template>
     <v-flex xs12>
         <v-menu :close-on-content-click="false" v-model="dateMenu" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-            <v-text-field slot="activator" v-model="computedDateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint prepend-icon="event" readonly></v-text-field>
+            <v-text-field slot="activator" v-model="computedDateFormatted" label="Date" hint="MM/DD/YYYY format" persistent-hint append-icon="event" readonly></v-text-field>
             <v-date-picker v-model="date" no-title @input="dateMenu = false"></v-date-picker>
         </v-menu>
     </v-flex>
