@@ -32,38 +32,22 @@ export default {
         if (user) {
           // User is signed in.
           this.$store.dispatch('setUser', user)
-          this.fetchAllDocuments()
+          this.fetchAllUserDocuments()
         }
+        this.fetchAllDocuments()
       }.bind(this)
     )
   },
   methods: {
-    fetchDocuments (collectionName) {
-      let documents = []
-      this.db
-        .collection(collectionName)
-        .where('userID', '==', this.user.uid)
-        .get()
-        .then(items => {
-          items.forEach(doc => {
-            // doc.data() is never undefined for query doc snapshots
-            documents.push(doc.data())
-          })
-          if (collectionName === 'lost-items') {
-            this.$store.dispatch('setLostItems', documents)
-          } else {
-            this.$store.dispatch('setFoundItems', documents)
-          }
-        })
-        .catch(function (error) {
-          console.log('Error getting documents: ', error)
-        })
-    },
     // Get all documents by user from lost-items and found-items collection
     // and put it to lost_items and found_items array
+    fetchAllUserDocuments () {
+      this.$store.dispatch('updateUserCollection', 'lost-items')
+      this.$store.dispatch('updateUserCollection', 'found-items')
+    },
     fetchAllDocuments () {
-      this.fetchDocuments('lost-items')
-      this.fetchDocuments('found-items')
+      this.$store.dispatch('updateCollection', 'lost-items')
+      this.$store.dispatch('updateCollection', 'found-items')
     }
   }
 }

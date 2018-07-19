@@ -1,13 +1,13 @@
 <template>
   <v-navigation-drawer v-model="drawer" absolute temporary>
-    <v-list class="pa-1">
+    <v-list class="pa-1" v-if="user">
       <v-list-tile avatar>
         <v-list-tile-avatar>
-          <img src="https://randomuser.me/api/portraits/men/85.jpg">
+          <img :src="user.photoURL">
         </v-list-tile-avatar>
 
         <v-list-tile-content>
-          <v-list-tile-title>John Leider</v-list-tile-title>
+          <v-list-tile-title>{{user.displayName}}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
@@ -46,7 +46,7 @@
         </v-list-tile-content>
 
         <v-list-tile-content>
-          <v-list-tile-title>{{ lost_item.location }}</v-list-tile-title>
+          <v-list-tile-title>{{ lost_item.timestamp }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-divider inset></v-divider>
@@ -56,7 +56,7 @@
         </v-list-tile-content>
 
         <v-list-tile-content>
-          <v-list-tile-title>{{ found_item.location }}</v-list-tile-title>
+          <v-list-tile-title>{{ found_item.timestamp }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
