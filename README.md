@@ -1,13 +1,41 @@
-# Lost-And-Found
-> Web Application that visualizes lost and found items at UCSC on a map.
+# Lost and Found
+Pin your lost and found items in the UCSC campus map!
 
+![Cite Homepage](https://i.imgur.com/CeFbunj.png "Cite Homepage")
 
-## Development setup
-1. install Node
-2. Do the following command to install dependencies:
-```sh
-npm i
+## Getting Started
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Installation
+1. Install Node.js
+2. In your preferred directory, clone this repository
+3. Install dependencies via NPM:
 ```
-2. create a .env file at root of the project folder
-3. Add necessary environment variables inside .env (as of now, this includes the api key for the firebase db)
-4. Do npm run dev
+npm install --only=production
+```
+4. Run the application locally (hosted at localhost:8080):
+```
+npm start
+```
+
+## Development Setup
+1. Install all dependecies (including dev dependencies) via NPM:
+```
+npm install
+```
+## Running the tests
+tests can be found in the `test` folder. We chose `Mocha` as our testing framework, and `Karma` as test runner 
+1. Run the automated test via:
+```
+npm install
+npm run unit
+```
+
+### Authors
+* Geoff Huang
+* Lily Nguyen
+* Chengyu Jiang
+* Wan Fong
+* Egan Bisma
+* Peter Eskraus
+

@@ -16,6 +16,7 @@
     "firebase": "^5.2.0",
     "firebaseui": "^3.1.1",
     "vue": "^2.5.2",
+    "vue-progressive-image": "^3.1.0",
     "vue-router": "^3.0.1",
     "vue-upload-component": "^2.8.9",
     "vue2-google-maps": "^0.9.7",
