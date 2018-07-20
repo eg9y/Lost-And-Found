@@ -1,28 +1,51 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <v-alert icon="new_releases"
-    style="margin=0 0 0 0;"
-    v-model="alert" dismissible type="error" transition="slide-y-transition">
-      Boi. You must log in to add stuff
+    <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
+      You must log in to pin!
     </v-alert>
     <GmapMap :center="center" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
-      <gmap-info-window :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
-          <h1 style="text-align: center;">{{infoWindow.type}}</h1>
-          <v-layout>
-            <v-flex class="text-xs-center">
-              <img :src="infoWindow.pictures" alt="">
-            </v-flex>
-          </v-layout>
-          <h2>{{infoWindow.description}}</h2>
-          <h2>{{infoWindow.timestamp}}</h2>
-          <h2>{{infoWindow.contactEmail}}</h2>
+      <gmap-info-window
+        v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
+        <v-layout>
+          <v-flex class="text-xs-center">
+            <transition name="fade">
+              <h1 style="text-align: center;">{{infoWindow.type}}</h1>
+            </transition>
+            <progressive-img v-if="infoWindow.pictures" :src="infoWindow.pictures" alt=""/>
+          </v-flex>
+        </v-layout>
+        <v-layout>
+          <v-flex v-if="infoWinOpen" transition="fade">
+              <h2>{{infoWindow.description}}</h2>
+              <h2>{{infoWindow.timestamp}}</h2>
+              <h2>{{infoWindow.contactEmail | truncate}}</h2>
+          </v-flex>
+        </v-layout>
         <div class="text-xs-center">
-          <v-btn v-if="isUserLoggedIn && user.uid == infoWindow.userID" @click="deleteMarker" color="error">Delete</v-btn>
+          <v-btn v-if="isUserLoggedIn && user.uid == infoWindow.userID" @click="deleteMarker" color="error">Resolve</v-btn>
         </div>
       </gmap-info-window>
-      <GmapMarker v-if="all_lost_items" :key="`lost-${index}`" v-for="(lost_item, index) in all_lost_items" :position="{lat: lost_item.location._lat, lng: lost_item.location._long}" :title="lost_item.type" :clickable="true" @click="getMarkerDetails(lost_item, index, 'Lost: ', 'lost-items')" />
-      <GmapMarker v-if="all_found_items" :key="`found-${index}`" v-for="(found_item, index) in all_found_items" :position="{lat: found_item.location._lat, lng: found_item.location._long}" :title="found_item.type" :clickable="true" @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+      <GmapMarker
+        v-if="all_lost_items"
+        :animation="2"
+        v-for="(lost_item, index) in all_lost_items"
+        :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`"
+        :position="{lat: lost_item.location._lat, lng: lost_item.location._long}"
+        :title="lost_item.type"
+        :clickable="true"
+        icon="../../../static/icons/lost_icon.png"
+        @click="getMarkerDetails(lost_item, index, 'Lost: ', 'lost-items')" />
+      <GmapMarker
+        v-if="all_found_items"
+        :animation="2"
+        v-for="(found_item, index) in all_found_items"
+        :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`"
+        :position="{lat: found_item.location._lat, lng: found_item.location._long}"
+        :title="found_item.type"
+        :clickable="true"
+        icon="../../../static/icons/found_icon.png"
+        @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
     </GmapMap>
   </div>
 </template>
@@ -108,29 +131,38 @@ export default {
         map.setCenter(new this.google.maps.LatLng(y, x))
       })
     },
+    // Assigns values from selected marker for info window to project
     getMarkerDetails (marker, idx, collectionTitle, collectionName) {
+      this.closeInfoWindow()
       if (marker.location) {
-        console.log('marker :', marker)
-        this.infoWindow.location = { lat: marker.location._lat, lng: marker.location._long }
-        this.infoWindow.type = collectionTitle + marker.type
-        this.infoWindow.description = marker.description
+        // wait 1/4 seconds to set new info for info window
         this.infoWindow.pictures = marker.picture
-        this.infoWindow.contactEmail = marker.contactEmail
-        this.infoWindow.timestamp = marker.timestamp
-        this.infoWindow.userID = marker.userID
-        this.infoWindow.collectionName = collectionName
-        this.infoWindow.id = marker.id
+        setTimeout(() => {
+          this.infoWindow.location = { lat: marker.location._lat, lng: marker.location._long }
+          this.infoWindow.type = collectionTitle + marker.type
+          this.infoWindow.description = marker.description
+          this.infoWindow.contactEmail = marker.contactEmail
+          this.infoWindow.timestamp = marker.timestamp
+          this.infoWindow.userID = marker.userID
+          this.infoWindow.collectionName = collectionName
+          this.infoWindow.id = marker.id
 
-        // check if its the same marker that was selected if yes toggle
-        if (this.currentMidx === idx) {
-          this.infoWinOpen = !this.infoWinOpen
-        } else { // if different marker set infowindow to open and reset current marker index
-          this.infoWinOpen = true
-          this.currentMidx = idx
-        }
+          // check if its the same marker that was selected if yes toggle
+          if (this.currentMidx === idx) {
+            this.infoWinOpen = !this.infoWinOpen
+          } else { // if different marker set infowindow to open and reset current marker index
+            this.infoWinOpen = true
+            this.currentMidx = idx
+          }
+        }, 400)
       }
     },
+    // update new location for potential marker
     addLocation (e) {
+      if (this.infoWinOpen) {
+        this.infoWinOpen = false
+        return
+      }
       this.lat = e.latLng.lat()
       this.lng = e.latLng.lng()
       if (!this.user) {
@@ -149,121 +181,19 @@ export default {
       }).catch(function (error) {
         console.error('Error removing document: ', error)
       })
+    },
+    closeInfoWindow () {
+      this.infoWinOpen = false
+      this.infoWindow.type = null
+      this.infoWindow.description = null
+      this.infoWindow.pictures = null
+      this.infoWindow.location = null
+      this.infoWindow.contactEmail = null
+      this.infoWindow.timestamp = null
+      this.infoWindow.userID = null
+      this.infoWindow.id = null
+      this.infoWindow.collectionName = null
     }
-    // addMarker () {
-    // // only place markers that are within scope of UCSC
-    // if (this.lng >= MIN_LNG && this.lng <= MAX_LNG &&
-    //   this.lat >= MIN_LAT && this.lat <= MAX_LAT) {
-    //   this.$refs.mapRef.$mapPromise.then((map) => {
-    //     let marker = new this.google.maps.Marker({
-    //       position: {
-    //         lat: this.lat,
-    //         lng: this.lng
-    //       },
-    //       map
-    //     })
-
-    //     // add click event to marker
-    //     marker.addListener('click', () => {
-    //       // console.log(doc.id)
-    //     })
-    //   })
-    // }
-    // },
-    /* adds markers to map for entries in db under collectionName */
-    // displayMarkers (collectionName, collectionTitle) {
-    //   this.db
-    //     .collection(collectionName)
-    //     .get()
-    //     .then(items => {
-    //       items.docs.forEach(doc => {
-    //         let data = doc.data()
-
-    //         // if the doc have a location
-    //         if (data.location) {
-    //           var docID = doc.id
-    //           var latitude = parseFloat(data.location._lat)
-    //           var longitude = parseFloat(data.location._long)
-
-    //           // only place markers that are within scope of UCSC
-    //           const withinCampus = longitude >= MIN_LNG && longitude <= MAX_LNG && latitude >= MIN_LAT && latitude <= MAX_LAT
-    //           if (withinCampus) {
-    //             var self = this
-    //             var markerTitle = (data.type) ? collectionTitle + data.type : collectionTitle
-
-    //             this.$refs.mapRef.$mapPromise.then(map => {
-    //               let marker = new this.google.maps.Marker({
-    //                 position: {
-    //                   lat: latitude,
-    //                   lng: longitude
-    //                 },
-    //                 map,
-    //                 title: markerTitle, // title displayed as a hover tooltip
-    //                 markerID: docID,
-    //                 infoWindow: new this.google.maps.InfoWindow({
-    //                   content: ''
-    //                 })
-    //               })
-
-    //               // open info window when marker is clicked
-    //               marker.addListener('click', () => {
-    //                 marker.addListener('click', function () {
-    //                   marker.infoWindow.open(map, marker)
-    //                 })
-    //               })
-
-    //               self.markers.push(marker)
-
-    //               // set the contents of the infoWindow
-    //               if (collectionTitle === CENTER_STR) { self.getInfoWindowContentCenters(data, collectionTitle, docID) } else { self.getInfoWindowContentItems(data, collectionTitle, docID) }
-    //             })
-    //           }
-    //         }
-    //       })
-    //     })
-    // },
-    // /* set content of info window for lost-items and found-items markers  */
-    // getInfoWindowContentItems (data, collectionTitle, markerID) {
-    //   // find the marker we want to edit
-    //   for (var i = 0; i < this.markers.length; ++i) {
-    //     if (this.markers[i].markerID === markerID) {
-    //       var marker = this.markers[i]
-    //       i = this.markers.length
-    //     }
-    //   }
-    //   // if db entry does have a picture, include it
-    //   if (data.picture) {
-    //     this.firebase.storage().refFromURL(data.picture).getDownloadURL().then(function (url) {
-    //       var contentString = '<div class="window-content"><h2>' + collectionTitle + data.type +
-    //         '</h2><div><img src="' + url + '" alt="[ITEM PICTURE]" width="150"><br/>Description: ' +
-    //         data.description + '<br/> Contact: ' + data.contactEmail + '<br/> Time Stamp: ' +
-    //         data.timestamp + '<br/></div></div>'
-    //       marker.infoWindow.setContent(contentString)
-    //     }).catch(function (error) {
-    //       console.log(error)
-    //     })
-    //   } else { // if db entry doesn't have a picture
-    //     var contentString = '<div class="window-content"><h2>' + collectionTitle + data.type +
-    //       '</h2><div>Description: ' + data.description + '<br/> Contact: ' + data.contactEmail +
-    //       '<br/> Time Stamp: ' + data.timestamp + '<br/></div></div>'
-    //     marker.infoWindow.setContent(contentString)
-    //   }
-    // },
-
-    // /* set content of info window for lost&found centers */
-    // getInfoWindowContentCenters (data, collectionTitle, markerID) {
-    //   // find the marker we want to edit
-    //   for (var i = 0; i < this.markers.length; ++i) {
-    //     if (this.markers[i].markerID === markerID) {
-    //       var marker = this.markers[i]
-    //       i = this.markers.length
-    //     }
-    //   }
-
-    //   var contentString = '<div class="window-content"><h2>' + collectionTitle +
-    //     '</h2><div>Description: ' + data.description + '</div></div>'
-    //   marker.infoWindow.setContent(contentString)
-    // }
   },
   computed: {
     google: gmapApi,
@@ -281,9 +211,17 @@ export default {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
     }.bind(this))
-    // this.displayMarkers('lost-items', LOST_STR)
-    // this.displayMarkers('found-items', FOUND_STR)
-    // this.displayMarkers('centers', CENTER_STR)
+  },
+  filters: {
+    // Define truncate filter to replace long words with ...
+    truncate (text) {
+      let newText = text
+      if (typeof (newText) === 'string' && newText.length > 14) {
+        newText = newText.substring(0, 14)
+        newText += '...'
+      }
+      return newText
+    }
   }
 }
 </script>
@@ -291,5 +229,11 @@ export default {
 img {
   width: 100%;
   height: auto;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

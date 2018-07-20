@@ -40,7 +40,7 @@
       <v-divider></v-divider>
       <v-subheader inset>History</v-subheader>
 
-      <v-list-tile v-for="lost_item in lost_items" :key="lost_item.type" @click="console.log('d')">
+      <v-list-tile v-for="(lost_item,index) in lost_items" :key="`lost-${lost_item.type}-${index}`" @click="console.log('d')">
         <v-list-tile-content>
           <v-list-tile-title>{{ lost_item.type }}</v-list-tile-title>
         </v-list-tile-content>
@@ -50,7 +50,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-divider inset></v-divider>
-      <v-list-tile v-for="found_item in found_items" :key="found_item.type" @click="console.log('d')">
+      <v-list-tile v-for="(found_item,index) in found_items" :key="`found-${found_item.type}-${index}`" @click="console.log('d')">
         <v-list-tile-content>
           <v-list-tile-title>{{ found_item.type }}</v-list-tile-title>
         </v-list-tile-content>
