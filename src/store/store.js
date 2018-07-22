@@ -43,16 +43,8 @@ export default new Vuex.Store({
     setAllLostItems (state, items) {
       state.all_lost_items = items
     },
-    // added by Geoff for toggling lost pins off
-    setAllLostItemsToFalse (state, items) {
-      state.all_lost_items = null
-    },
     setAllFoundItems (state, items) {
       state.all_found_items = items
-    },
-    // added by Geoff for toggling found pins off
-    setAllFoundItemsToFalse (state, items) {
-      state.all_found_items = null
     },
     // below two functions are for toggling lost/found pins
     setLostToggle (state) {

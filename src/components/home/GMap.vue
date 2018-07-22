@@ -5,7 +5,6 @@
     </v-alert>
     <toggle-buttons></toggle-buttons>
     <GmapMap :center="center" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
-      <!-- <toggle-buttons></toggle-buttons> -->
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
         v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
