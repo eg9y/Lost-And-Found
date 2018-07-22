@@ -43,18 +43,6 @@ export default new Vuex.Store({
     setAllFoundItems (state, items) {
       state.all_found_items = items
     },
-    // pushToCollection (state, colAndDoc) {
-    //   let collection = colAndDoc[0]
-    //   let document = colAndDoc[1]
-    //   switch (collection) {
-    //     case 'lost-items':
-    //       state.all_lost_items.push(document)
-    //       break
-    //     case 'found-items':
-    //       state.all_found_items.push(document)
-    //       break
-    //   }
-    // },
     updateCollection (state, collectionName) {
       let documents = []
       state.db

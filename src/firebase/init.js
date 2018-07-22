@@ -9,6 +9,7 @@ var config = {
   storageBucket: process.env.STORAGE_BUCKET,
   messagingSenderId: process.env.MESSAGING_SENDER_ID
 }
+
 const firebaseApp = firebase.initializeApp(config)
 const firestore = firebaseApp.firestore()
 const settings = {timestampsInSnapshots: true}

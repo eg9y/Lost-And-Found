@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import firebase from 'firebase'
 import Navbar from '@/components/layout/Navbar'
 import { mapState } from 'vuex'
 
@@ -21,12 +20,13 @@ export default {
   },
   computed: {
     ...mapState([
+      'firebase',
       'db',
       'user'
     ])
   },
   created () {
-    firebase.auth().onAuthStateChanged(
+    this.firebase.auth().onAuthStateChanged(
       function (user) {
         this.$store.dispatch('stillLoading', false)
         if (user) {
