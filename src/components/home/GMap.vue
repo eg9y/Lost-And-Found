@@ -55,17 +55,13 @@ import { gmapApi } from 'vue2-google-maps'
 import SubmissionForm from './SubmissionForm/Index'
 import { EventBus } from '../../main'
 import { mapState } from 'vuex'
+import firebase from 'firebase'
 
 // these coordinates define the boundaries of the map/UCSC
 const MIN_LAT = 36.987615
 const MAX_LAT = 37.001976
 const MIN_LNG = -122.068846
 const MAX_LNG = -122.04808
-
-// strings used for displaying marker titles and info windows
-// const LOST_STR = 'Lost: '
-// const FOUND_STR = 'Found: '
-// const CENTER_STR = 'Lost & Found Center'
 
 export default {
   components: {
@@ -105,6 +101,9 @@ export default {
     }
   },
   methods: {
+    /*
+
+    */
     checkBoundary () {
       var strictBounds = new this.google.maps.LatLngBounds(
         new this.google.maps.LatLng(MIN_LAT, MIN_LNG),
@@ -131,7 +130,10 @@ export default {
         map.setCenter(new this.google.maps.LatLng(y, x))
       })
     },
-    // Assigns values from selected marker for info window to project
+    /*
+      Closes the currently open info window, assigns values from selected marker to info window, opens the info window
+      Parameters: ???
+    */
     getMarkerDetails (marker, idx, collectionTitle, collectionName) {
       this.closeInfoWindow()
       if (marker.location) {
@@ -157,7 +159,10 @@ export default {
         }, 400)
       }
     },
-    // update new location for potential marker
+    /*
+      Updates the location for a new potential marker, and opens the submission form
+      Parameters: e -- event object from clicking the map
+    */
     addLocation (e) {
       if (this.infoWinOpen) {
         this.infoWinOpen = false
@@ -172,7 +177,22 @@ export default {
       // open the submission form
       this.submissionDialog = true
     },
+    /*
+      Deletes the marker's associated entry in the db, and deletes the picture from Storage if applicable
+    */
     deleteMarker () {
+      // deletes associated picture if item has one, and it's stored in Storage
+      if (this.infoWindow.pictures && this.infoWindow.pictures.includes(this.infoWindow.userID)) {
+        var picRef = firebase.storage().refFromURL(this.infoWindow.pictures)
+        picRef.delete().then(function () {
+          console.log('Image successfully deleted from Storage')
+        // eslint-disable-next-line
+        }).catch(function (error) {
+          console.log('Error in deleting image from Storage')
+        })
+      }
+
+      // deletes the entry from the db and then updates the local copies
       this.db.collection(this.infoWindow.collectionName).doc(this.infoWindow.id).delete().then(() => {
         this.$store.dispatch('updateUserCollection', this.infoWindow.collectionName)
         this.$store.dispatch('updateCollection', this.infoWindow.collectionName)
@@ -182,6 +202,9 @@ export default {
         console.error('Error removing document: ', error)
       })
     },
+    /*
+
+    */
     closeInfoWindow () {
       this.infoWinOpen = false
       this.infoWindow.type = null

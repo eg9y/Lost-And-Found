@@ -119,14 +119,20 @@ export default {
         this.feedback = 'You must enter an item type'
       }
     },
-    /* updates the picture info in data */
+    /*
+      Updates the picture file stored in data everytime the user changes the file they've uploaded
+      Parameters: e -- the event object from the file input button
+    */
     getPicInfo (e) {
       this.imageFile = e.target.files[0]
     },
-    /* upload picture to Storage and save the url to data.imageURL */
-    /* NOTE!!! must be called before addDoc() if user is including a picture */
+    /*
+      Uploads the picture to Storage and saves the url to data.imageURL
+      Parameters: collectionName -- the name of the item collection in the db; should be either 'lost-items' or 'found-items'
+      NOTE!!! must be called before addDoc() if user is including a picture
+    */
     uploadPic (collectionName) {
-      var name = this.userID + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
+      var name = this.user.uid + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
       var metadata = { contentType: this.imageFile.type }
       const STORAGE = this.firebase.storage().ref()
       var uploadTask = STORAGE.child(name).put(this.imageFile, metadata)
