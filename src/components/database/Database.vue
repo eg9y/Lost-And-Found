@@ -39,8 +39,8 @@
                 </div>
               </v-card-title>
             <v-card-actions>
-              <v-btn bottom flat color="orange">Contact</v-btn>
-              <v-btn bottom flat color="orange">Location</v-btn>
+              <v-btn bottom flat color="cyan">Contact</v-btn>
+              <v-btn bottom flat color="cyan">Location</v-btn>
             </v-card-actions>
             </v-card>
           </v-flex>
