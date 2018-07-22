@@ -4,7 +4,7 @@
             <v-container grid-list-md>
                 <v-layout wrap>
                     <v-flex xs12>
-                        <v-text-field class="text-field" v-model="type" label="Item *" :hint="typeHint" persistent-hint required></v-text-field>
+                        <v-text-field class="text-field" v-model="type" label="Item *" :hint="typeHint" persistent-hint required clearable></v-text-field>
                     </v-flex>
                     <v-flex xs12>
                         <v-text-field v-model="description" label="Item Description" :hint="descriptionHint" persistent-hint required></v-text-field>
@@ -12,30 +12,42 @@
                     <v-flex xs12>
                         <v-text-field v-model="contactEmail" label="Contact Information" :hint="contactHint" persistent-hint required></v-text-field>
                     </v-flex>
+                    <!-- new code for new image uploader -->
                     <date-picker></date-picker>
-                    <v-flex xs12>
+                    <v-flex xs12 mt-4>
                         <v-tabs
                           centered
                           v-model="active"
                           color="cyan"
                           dark
-                          icons-and-text
+                          fixed
+                          height="30"
                         >
                           <v-tabs-slider color="yellow"></v-tabs-slider>
                           <v-tab href="#tab-1">
-                            Image URL
-                            <v-icon>phone</v-icon>
+                            Image Upload
+                            <!-- <v-icon>favorite</v-icon> -->
                           </v-tab>
 
                           <v-tab href="#tab-2">
-                            Image Upload
-                            <v-icon>favorite</v-icon>
+                            Image URL
+                            <!-- <v-icon>link</v-icon> -->
                           </v-tab>
 
                           <v-tab-item id="tab-1">
                             <v-card flat>
                               <v-card-text>
-                                <input type="file" accept=".jpg, .png, .gif" @change="getPicInfo">
+                                <image-uploader
+                                  :debug="2"
+                                  :maxWidth="250"
+                                  :maxHeight="250"
+                                  :quality="0.9"
+                                  :autoRotate=true
+                                  outputFormat="string"
+                                  :preview=true
+                                  @input="getPicInfo"
+                                  @onUpload="checkPic"
+                                ></image-uploader>
                               </v-card-text>
                             </v-card>
                           </v-tab-item>
@@ -64,10 +76,12 @@
 <script>
 import DatePicker from './DatePicker'
 import { EventBus } from '../../../main'
+import { ImageUploader } from 'vue-image-upload-resize'
 
 export default {
   components: {
-    'date-picker': DatePicker
+    'date-picker': DatePicker,
+    'image-uploader': ImageUploader
   },
   props: [
     'db',
@@ -116,15 +130,24 @@ export default {
             console.log(error)
           })
       } else {
-        this.feedback = 'You must enter an item type'
+        // this.alert = 'true'
+        // this.feedback = 'You must enter an item type'
       }
     },
     /*
       Updates the picture file stored in data everytime the user changes the file they've uploaded
-      Parameters: e -- the event object from the file input button
+      Parameters: file -- a data_url string, 64-base
     */
-    getPicInfo (e) {
-      this.imageFile = e.target.files[0]
+    getPicInfo: function (file) {
+      if (file.includes('data:image')) {
+        this.imageFile = file
+        console.log('File is an image type')
+      } else {
+        console.log('Error: Incorrect file type')
+      }
+    },
+    checkPic () {
+      console.log('hi')
     },
     /*
       Uploads the picture to Storage and saves the url to data.imageURL
@@ -133,9 +156,9 @@ export default {
     */
     uploadPic (collectionName) {
       var name = this.user.uid + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
-      var metadata = { contentType: this.imageFile.type }
+      // var metadata = { contentType: this.imageFile.type }
       const STORAGE = this.firebase.storage().ref()
-      var uploadTask = STORAGE.child(name).put(this.imageFile, metadata)
+      var uploadTask = STORAGE.child(name).putString(this.imageFile, 'data_url')
       var self = this
       uploadTask.on('state_changed', function (snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
