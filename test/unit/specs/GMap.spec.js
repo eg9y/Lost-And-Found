@@ -22,7 +22,7 @@ describe('GMap.vue', () => {
     console.log(GMapComponent.$parent.getMap)
   })
 
-  // Geoff's lame test
+  // Geoff's test
   it('checks that the map is centered properly when the webpage is refreshed', () => {
     const Constructor = Vue.extend(GMap)
     const GMapComponent = new Constructor().$mount()

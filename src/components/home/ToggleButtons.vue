@@ -1,14 +1,15 @@
 <template>
+<!-- idea: wrap this in a v dialog that's always true, and then put this component inside gmapmap -->
   <!-- <v-card flat class="py-5">
     <v-card-text>
       <v-container fluid class="pa-0">
         <v-layout row wrap> -->
           <v-flex xs12 sm6 class="py-2">
             <v-btn-toggle v-model="toggle_multiple" multiple>
-              <v-btn flat @click.stop="displayLost" value="Lost">
+              <v-btn @click="displayLost" value="Lost">
                 Lost
               </v-btn>
-              <v-btn flat value="Found">
+              <v-btn @click="displayFound" value="Found">
                 Found
               </v-btn>
             </v-btn-toggle>
@@ -23,20 +24,15 @@
 export default {
   data () {
     return {
-      toggle_multiple: ['Lost', 'Found'],
-      lostMarkers: true,
-      foundMarkers: true
+      toggle_multiple: ['Lost', 'Found']
     }
   },
   methods: {
     displayLost () {
-      if (this.lostMarkers) {
-        console.log('true')
-        this.lostMarkers = false
-      } else {
-        console.log('false')
-        this.lostMarkers = true
-      }
+      this.$store.commit('setLostToggle')
+    },
+    displayFound () {
+      this.$store.commit('setFoundToggle')
     }
   }
 }
