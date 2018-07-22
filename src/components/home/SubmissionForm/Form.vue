@@ -12,7 +12,6 @@
                     <v-flex xs12>
                         <v-text-field v-model="contactEmail" label="Contact Information" :hint="contactHint" persistent-hint required></v-text-field>
                     </v-flex>
-                    <!-- new code for new image uploader -->
                     <date-picker></date-picker>
                     <v-flex xs12 mt-4>
                         <v-tabs
@@ -38,15 +37,16 @@
                             <v-card flat>
                               <v-card-text>
                                 <image-uploader
-                                  :debug="2"
-                                  :maxWidth="250"
-                                  :maxHeight="250"
+                                  ref="fileUpload"
+                                  :debug="1"
+                                  :maxWidth="400"
+                                  :maxHeight="400"
                                   :quality="0.9"
                                   :autoRotate=true
                                   outputFormat="string"
                                   :preview=true
-                                  @input="getPicInfo"
-                                  @onUpload="checkPic"
+                                  @input="updateImageFile"
+                                  @onUpload="checkFileType"
                                 ></image-uploader>
                               </v-card-text>
                             </v-card>
@@ -135,24 +135,29 @@ export default {
       }
     },
     /*
-      Updates the picture file stored in data everytime the user changes the file they've uploaded
-      Parameters: file -- a data_url string, 64-base
+      Checks the type of file being uploaded, and displays error message for user if not an image type
     */
-    getPicInfo: function (file) {
-      if (file.includes('data:image')) {
-        this.imageFile = file
+    checkFileType () {
+      var uploadedFile = this.$refs.fileUpload.$el.children[1].files[0]
+      if (uploadedFile.type.includes('image')) {
         console.log('File is an image type')
       } else {
-        console.log('Error: Incorrect file type')
+        console.log('Error: File is not an image')
+        // !!!! NEED TO DISPLAY USER ERROR MESSAGE !!!
       }
     },
-    checkPic () {
-      console.log('hi')
+    /*
+      Updates the picture file stored in data after being resized
+      NOTE: will not be called if uploaded file was not an image type
+      Parameters: file -- a data_url string, 64-base
+    */
+    updateImageFile: function (file) {
+      this.imageFile = file
     },
     /*
       Uploads the picture to Storage and saves the url to data.imageURL
+      NOTE: must be called before addDoc() if user is including a picture
       Parameters: collectionName -- the name of the item collection in the db; should be either 'lost-items' or 'found-items'
-      NOTE!!! must be called before addDoc() if user is including a picture
     */
     uploadPic (collectionName) {
       var name = this.user.uid + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
