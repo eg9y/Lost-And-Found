@@ -1,7 +1,7 @@
 <template>
   <!-- // POP UP SUBMISSION FORM -->
-  <v-dialog v-model="submissionDialog" persistent max-width="450px" lazy>
-    <v-tabs centered color="cyan" dark icons-and-text>
+  <v-dialog v-model="indexSubmissionForm" max-width="450px" lazy>
+    <v-tabs centered color="cyan" v-model="activeParent" dark icons-and-text>
       <v-tabs-slider color="yellow"></v-tabs-slider>
 
       <v-tab href="#tab-1">
@@ -22,6 +22,7 @@
           :user="user"
           :lat = "lat"
           :lng = "lng"
+          :activeParent = "activeParent"
           typeHint="What did you find?"
           descriptionHint="Please describe the item."
           contactHint="Email only"
@@ -37,6 +38,7 @@
           :user="user"
           :lat = "lat"
           :lng = "lng"
+          :activeParent = "activeParent"
           typeHint="What did you lose?"
           descriptionHint="Please describe the item."
           contactHint="Email only"
@@ -50,6 +52,9 @@
 <script>
 import Form from './Form'
 import { mapState } from 'vuex'
+
+// import event bus for child to parent communication
+import { EventBus } from '../../../main'
 
 export default {
   components: {
@@ -65,7 +70,18 @@ export default {
   },
   data () {
     return {
-      submission_dialog: false
+      activeParent: null,
+      indexSubmissionForm: null
+    }
+  },
+  watch: {
+    submissionDialog (val) {
+      this.indexSubmissionForm = val
+    },
+    indexSubmissionForm (val) {
+      if (!this.indexSubmissionForm) {
+        EventBus.$emit('toggleSubmission')
+      }
     }
   }
 }

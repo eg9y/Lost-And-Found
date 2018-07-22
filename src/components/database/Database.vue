@@ -8,8 +8,8 @@
             <v-card height="525px">
             <v-card-title primary-title>
             <div class="card-content">
-            <div>
-               <img class="item-pictures" v-bind:id="lostItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/>
+            <div v-if="lostItem.picture">
+               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
             </div>
             <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3>
             <img class><br><b>Description:</b> {{ lostItem.description }}<br/> <b>Contact:</b> {{ lostItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ lostItem.timestamp }}<br/> <b>Location:</b> {{ lostItem.location }}<br/><br/>
@@ -31,8 +31,8 @@
             <v-card height ="500px">
             <v-card-title primary-title>
             <div class="card-content">
-            <div>
-               <img class="item-pictures" v-bind:id="foundItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/>
+            <div v-if="foundItem.picture">
+               <img class="item-pictures" :id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
             </div>
             <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
             <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ foundItem.timestamp }}<br/> <b>Location:</b> {{ foundItem.location }}<br/><br/>
@@ -46,25 +46,6 @@
           </v-flex>
           </v-layout>
         </div><br/>
-
-    <!--Lily's code
-    <div class="card" v-for="lostItem in lostItems" :key="lostItem.id">
-      <div class="card-content">
-        <h2 class="indigo-text">Lost: {{ lostItem.type }}</h2>
-        <div>
-          <img class="item-pictures" v-bind:id="lostItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ lostItem.description }}<br/> Contact: {{ lostItem.contactEmail }}<br/> Time Stamp: {{ lostItem.timestamp }}<br/> Location: {{ lostItem.location }}<br/>
-        </div>
-      </div>
-    </div><br/>
-
-    <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
-      <div class="card-content">
-        <h2 class="indigo-text">Found: {{ foundItem.type }}</h2>
-        <div>
-          <img class="item-pictures" v-bind:id="foundItem.id" src="" alt="(NO PICTURE AVAILABLE)"><br/> Description: {{ foundItem.description }}<br/> Contact: {{ foundItem.contactEmail }}<br/> Time Stamp: {{ foundItem.timestamp }}<br/> Location: {{ foundItem.location }}<br/>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -84,36 +65,21 @@ export default {
   },
   methods: {
     /** *  ***/
-    displayLost () {
+    displayCollection (collectionName, collectionArr) {
       // fetch data from firestore
       db
-        .collection('lost-items')
+        .collection(collectionName)
         .get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let lostItem = doc.data()
-            lostItem.id = doc.id
-            this.lostItems.push(lostItem)
+            let item = doc.data()
+            item.id = doc.id
+            collectionArr.push(item)
 
             // fetch picture from Storage (if not null)
-            if (lostItem.picture) { this.getPicture(lostItem.picture, lostItem.id) }
-          })
-        })
-    },
-    /** *  ***/
-    displayFound () {
-      // fetch data from firestore
-      db
-        .collection('found-items')
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            let foundItem = doc.data()
-            foundItem.id = doc.id
-            this.foundItems.push(foundItem)
-
-            // fetch picture from Storage (if not null)
-            if (foundItem.picture) { this.getPicture(foundItem.picture, foundItem.id) }
+            if (item.picture && item.picture.includes('firebasestorage')) {
+              this.getPicture(item.picture, item.id)
+            }
           })
         })
     },
@@ -121,17 +87,22 @@ export default {
      *   and replaces the associated img tag src with the url ***/
     getPicture (urlPic, elemID) {
       storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
-        var img = document.getElementById(elemID)
+        let img = document.getElementById(elemID)
         img.src = url
       })
         .catch(function (error) {
           console.log(error)
         })
+    },
+    getExternalPic (urlPic) {
+      if (urlPic && !urlPic.includes('firebasestorage')) {
+        return urlPic
+      }
     }
   },
   created () {
-    this.displayLost()
-    this.displayFound(console.log('displayFound ran'))
+    this.displayCollection('lost-items', this.lostItems)
+    this.displayCollection('found-items', this.foundItems)
   }
 }
 </script>
