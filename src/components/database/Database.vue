@@ -22,7 +22,7 @@
           </v-card>
         </v-flex>
       </v-layout>
-    </div><br/>
+    </div>
 
       <!--Displays Found Items-->
       <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
@@ -45,7 +45,7 @@
             </v-card>
           </v-flex>
         </v-layout>
-      </div><br/>
+      </div>
 
     <!--Lily's code
     <div class="card" v-for="lostItem in lostItems" :key="lostItem.id">
