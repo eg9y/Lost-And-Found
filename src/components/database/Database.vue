@@ -44,8 +44,8 @@
             </v-card-actions>
             </v-card>
           </v-flex>
-          </v-layout>
-        </div><br/>
+        </v-layout>
+      </div>
   </div>
 </template>
 
