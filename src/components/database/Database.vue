@@ -40,7 +40,11 @@
               </v-card-title>
             <v-card-actions>
               <v-btn bottom flat color="cyan">Contact</v-btn>
+<<<<<<< HEAD
               <v-btn bottom flat color="cyan">Location</v-btn>
+=======
+              <v-btn bottom flat color="cyan" @click="locateItem(foundItem.id)" to="/">Location</v-btn>
+>>>>>>> master
             </v-card-actions>
             </v-card>
           </v-flex>
