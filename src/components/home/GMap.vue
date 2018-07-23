@@ -17,9 +17,9 @@
         </v-layout>
         <v-layout>
           <v-flex v-if="infoWinOpen" transition="fade">
-              <h2>{{infoWindow.description}}</h2>
-              <h2>{{infoWindow.timestamp}}</h2>
-              <h2>{{infoWindow.contactEmail | truncate}}</h2>
+              <h3>{{infoWindow.description}}</h3>
+              <h3>{{infoWindow.timestamp}}</h3>
+              <h3>{{infoWindow.contactEmail | truncate}}</h3>
           </v-flex>
         </v-layout>
         <div class="text-xs-center">
@@ -88,7 +88,9 @@ export default {
         pictures: null,
         location: null,
         contactEmail: null,
-        timestamp: null,
+        // timestamp: null,
+        date: null,
+        time: null,
         userID: null,
         id: null,
         collectionName: null
@@ -158,7 +160,9 @@ export default {
           this.infoWindow.type = collectionTitle + marker.type
           this.infoWindow.description = marker.description
           this.infoWindow.contactEmail = marker.contactEmail
-          this.infoWindow.timestamp = marker.timestamp
+          // this.infoWindow.timestamp = marker.timestamp
+          this.infoWindow.date = marker.date
+          this.infoWindow.time = marker.time
           this.infoWindow.userID = marker.userID
           this.infoWindow.collectionName = collectionName
           this.infoWindow.id = marker.id
@@ -281,18 +285,18 @@ export default {
       this.lat = null
       this.lng = null
     }.bind(this))
-    if (this.$route.params.id.length) {
+    if (this.$route.params.id) {
       this.findMarker(this.$route.params.id)
     }
   },
   watch: {
     all_lost_items () {
-      if (this.$route.params.id.length) {
+      if (this.$route.params.id) {
         this.findMarker(this.$route.params.id)
       }
     },
     all_found_items () {
-      if (this.$route.params.id.length) {
+      if (this.$route.params.id) {
         this.findMarker(this.$route.params.id)
       }
     }

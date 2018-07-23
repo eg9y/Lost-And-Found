@@ -215,7 +215,9 @@ export default {
           description: this.description,
           contactEmail: this.contactEmail,
           location: new this.firebase.firestore.GeoPoint(this.lat, this.lng),
-          timestamp: this.date + ' ' + this.time,
+          date: this.date,
+          time: this.time,
+          // timestamp: this.date + ' ' + this.time,
           picture: this.imageURL,
           userID: this.user.uid
         }).then((docRef) => {

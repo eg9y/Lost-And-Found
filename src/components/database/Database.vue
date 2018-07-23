@@ -9,15 +9,15 @@
             <v-card-title primary-title>
             <div class="card-content">
             <div v-if="lostItem.picture">
-               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
+               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
             </div>
             <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3>
-            <img class><br><b>Description:</b> {{ lostItem.description }}<br/> <b>Contact:</b> {{ lostItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ lostItem.timestamp }}<br/> <b>Location:</b> {{ lostItem.location }}<br/><br/>
+            <img class><br><b>Description:</b> {{ lostItem.description }}<br/> <b>Contact:</b> {{ lostItem.contactEmail }}<br/> <b>Date:</b> {{ lostItem.date }}<br/> <b>Time:</b> {{ lostItem.time }} <br/><br/>
           </div>
           </v-card-title>
           <v-card-actions>
-            <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
+            <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
+            <v-btn bottom flat color="cyan" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>
@@ -32,15 +32,15 @@
               <v-card-title primary-title>
                 <div class="card-content">
                   <div>
-                    <img class="item-pictures" v-bind:id="foundItem.id" src="getExternalPic(foundItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
+                    <img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
                   </div>
                   <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
-                  <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ foundItem.timestamp }}<br/> <b>Location:</b> {{ foundItem.location }}<br/><br/>
+                  <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Date:</b> {{ foundItem.date }}<br/> <b>Time:</b> {{ foundItem.time }}<br/><br/><br/>
                 </div>
               </v-card-title>
             <v-card-actions>
-              <v-btn bottom flat color="orange">Contact</v-btn>
-              <v-btn bottom flat color="orange" @click="locateItem(foundItem.id, 'f')">Location</v-btn>
+              <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
+              <v-btn bottom flat color="cyan" @click="locateItem(foundItem.id, 'f')">Location</v-btn>
             </v-card-actions>
             </v-card>
           </v-flex>
