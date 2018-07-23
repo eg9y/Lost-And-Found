@@ -9,7 +9,7 @@
             <v-card-title primary-title>
             <div class="card-content">
             <div v-if="lostItem.picture">
-              <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
+               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
             </div>
             <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3>
             <img class><br><b>Description:</b> {{ lostItem.description }}<br/> <b>Contact:</b> {{ lostItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ lostItem.timestamp }}<br/> <b>Location:</b> {{ lostItem.location }}<br/><br/>
@@ -52,7 +52,7 @@
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
-import { EventBus } from '../../main'
+// import { EventBus } from '../../main'
 
 var storage = firebase.storage()
 
@@ -101,11 +101,11 @@ export default {
       if (urlPic && !urlPic.includes('firebasestorage')) {
         return urlPic
       }
-    },
-    locateItem (itemID) {
+    }
+    /* locateItem (itemID) {
       console.log('Item ID: ' + itemID)
       EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
-    }
+    } */
   },
   created () {
     this.displayCollection('lost-items', this.lostItems)

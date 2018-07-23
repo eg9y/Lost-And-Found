@@ -267,13 +267,13 @@ export default {
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
-      this.lat = null
-      this.lng = null
+      // this.lat = null
+      // this.lng = null
     }.bind(this))
 
-    EventBus.$on('locateItem', function (itemID) {
+    /* EventBus.$on('locateItem', function (itemID) {
       this.findMarker(itemID)
-    }.bind(this))
+    }.bind(this)) */
   },
   mounted () {
   },

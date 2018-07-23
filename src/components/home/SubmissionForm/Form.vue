@@ -100,6 +100,8 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
+              color="cyan"
+              dark
               @click="uploadImageAndDoc"
               :disabled="!valid"
             >Submit</v-btn>
@@ -205,6 +207,7 @@ export default {
       this.toggleSubmission()
     },
     addDoc (collectionName) {
+      console.log('addDoc is running')
       if (this.type) {
         this.feedback = null
         this.db.collection(collectionName).add({
@@ -257,6 +260,7 @@ export default {
     */
     uploadPic (collectionName) {
       var name = this.user.uid + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
+      console.log('uploadPic is running')
       // var metadata = { contentType: this.imageFile.type }
       const STORAGE = this.firebase.storage().ref()
       var uploadTask = STORAGE.child(name).putString(this.imageFile, 'data_url')
