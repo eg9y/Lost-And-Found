@@ -44,7 +44,6 @@
             </v-card-actions>
             </v-card>
           </v-flex>
-<<<<<<< HEAD
         </v-layout>
       </div>
 
@@ -66,10 +65,7 @@
         </div>
       </div>
     </div>-->
-=======
-          </v-layout>
-        </div><br/>
->>>>>>> 03ffc7d2c48ad140b216aa70ab7ee3fc6d40e7ee
+
   </div>
 </template>
 
