@@ -3,7 +3,7 @@
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
-    <GmapMap :center="center" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
+    <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
         v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
@@ -46,6 +46,13 @@
         :clickable="true"
         icon="../../../static/icons/found_icon.png"
         @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+
+      <GmapMarker
+        v-if="lat && lng"
+        :animation="2"
+        :position="{lat, lng}"
+        icon="http://s3.amazonaws.com/besport.com_images/status-pin.png"
+        />
     </GmapMap>
   </div>
 </template>
@@ -61,11 +68,6 @@ const MIN_LAT = 36.987615
 const MAX_LAT = 37.001976
 const MIN_LNG = -122.068846
 const MAX_LNG = -122.04808
-
-// strings used for displaying marker titles and info windows
-// const LOST_STR = 'Lost: '
-// const FOUND_STR = 'Found: '
-// const CENTER_STR = 'Lost & Found Center'
 
 export default {
   components: {
@@ -98,6 +100,12 @@ export default {
           height: -35
         },
         maxWidth: '200'
+      },
+      mapOptions: {
+        minZoom: 15,
+        maxZoom: 18,
+        gestureHandling: 'cooperative',
+        draggableCursor: 'url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto'
       },
       lost_items: [],
       found_items: [],
@@ -210,6 +218,8 @@ export default {
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
+      this.lat = null
+      this.lng = null
     }.bind(this))
   },
   filters: {
@@ -229,11 +239,5 @@ export default {
 img {
   width: 100%;
   height: auto;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
 }
 </style>
