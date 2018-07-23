@@ -3,7 +3,6 @@
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
-    <v-btn @click="findMarker('SA9diJQJeMmRJbQkzAMZ')">Hi</v-btn>
     <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
@@ -235,18 +234,31 @@ export default {
       this.infoWindow.id = null
       this.infoWindow.collectionName = null
     },
-    findMarker (itemID) {
-      console.log('findMarker is running, looking for: ' + itemID)
-      console.log(typeof itemID)
+    findMarker (itemStr) {
+      console.log('findMarker is running, looking for: ' + itemStr)
+      console.log(typeof itemStr)
       console.log(this.all_lost_items.length)
-      if (this.all_lost_items) {
-        for (var i = 0; i < this.all_lost_items.length; i++) {
+      if (this.all_lost_items && this.all_found_items) {
+        var itemID = itemStr.substr(2)
+        if (itemStr[0] === 'l') {
+          for (var i = 0; i < this.all_lost_items.length; i++) {
           // console.log('ddd', this.all_lost_items[i])
-          if (this.all_lost_items[i].id === itemID) {
-            console.log('it\'s a match')
-            console.log(this.all_lost_items[i].id)
-            this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
-            i = this.all_lost_items.length
+            if (this.all_lost_items[i].id === itemID) {
+              console.log('it\'s a match')
+              console.log(this.all_lost_items[i].id)
+              this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
+              i = this.all_lost_items.length
+            }
+          }
+        } else if (itemStr[0] === 'f') {
+          for (var j = 0; j < this.all_found_items.length; j++) {
+          // console.log('ddd', this.all_lost_items[i])
+            if (this.all_found_items[j].id === itemID) {
+              console.log('it\'s a match')
+              console.log(this.all_found_items[j].id)
+              this.getMarkerDetails(this.all_found_items[j], 'Found: ', 'found-items')
+              j = this.all_Found_items.length
+            }
           }
         }
       }
@@ -268,16 +280,18 @@ export default {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
     }.bind(this))
-    if (this.all_lost_items && this.$route.params.id.length) {
+    if (this.all_lost_items && this.all_found_items && this.$route.params.id.length) {
       this.findMarker(this.$route.params.id)
     }
   },
-  mounted () {
-    console.log('gmap mounted')
-  },
   watch: {
     all_lost_items () {
-      if (this.all_lost_items && this.$route.params.id.length) {
+      if (this.all_lost_items && this.all_found_items && this.$route.params.id.length) {
+        this.findMarker(this.$route.params.id)
+      }
+    },
+    all_found_items () {
+      if (this.all_found_items && this.all_lost_items && this.$route.params.id.length) {
         this.findMarker(this.$route.params.id)
       }
     }
