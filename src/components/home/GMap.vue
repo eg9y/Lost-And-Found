@@ -35,7 +35,7 @@
         :title="lost_item.type"
         :clickable="true"
         icon="../../../static/icons/lost_icon.png"
-        @click="getMarkerDetails(lost_item, index, 'Lost: ', 'lost-items')" />
+        @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
       <GmapMarker
         v-if="all_found_items"
         :animation="2"
@@ -45,7 +45,7 @@
         :title="found_item.type"
         :clickable="true"
         icon="../../../static/icons/found_icon.png"
-        @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+        @click="getMarkerDetails(found_item, 'Found: ', 'found-items')" />
 
       <GmapMarker
         v-if="lat && lng"
@@ -140,7 +140,7 @@ export default {
       })
     },
     // Assigns values from selected marker for info window to project
-    getMarkerDetails (marker, idx, collectionTitle, collectionName) {
+    getMarkerDetails (marker, collectionTitle, collectionName) {
       this.closeInfoWindow()
       if (marker.location) {
         // wait 1/4 seconds to set new info for info window
@@ -156,11 +156,11 @@ export default {
           this.infoWindow.id = marker.id
 
           // check if its the same marker that was selected if yes toggle
-          if (this.currentMidx === idx) {
+          if (this.currentMid === marker.id) {
             this.infoWinOpen = !this.infoWinOpen
           } else { // if different marker set infowindow to open and reset current marker index
             this.infoWinOpen = true
-            this.currentMidx = idx
+            this.currentMid = marker.id
           }
         }, 400)
       }
@@ -223,11 +223,11 @@ export default {
     }.bind(this))
 
     EventBus.$on('newCenter', function (newCenter) {
-      console.log('gmap: ', newCenter)
       this.center = {
-        lat: newCenter[0],
-        lng: newCenter[1]
+        lat: newCenter.location._lat,
+        lng: newCenter.location._long
       }
+      this.getMarkerDetails(newCenter)
     }.bind(this))
   },
   filters: {

@@ -94,11 +94,11 @@ export default {
   methods: {
     centerLost (lostItem) {
       console.log(lostItem)
-      EventBus.$emit('newCenter', [lostItem.location._lat, lostItem.location._long])
+      EventBus.$emit('newCenter', lostItem)
     },
     centerFound (foundItem) {
       console.log(foundItem)
-      EventBus.$emit('newCenter', [foundItem.location._lat, foundItem.location._long])
+      EventBus.$emit('newCenter', foundItem)
     },
     toggleDrawer () {
       this.drawer = !this.drawer
@@ -108,6 +108,7 @@ export default {
       this.firebase.auth().signOut().then(() => {
         // Sign-out successful.
         this.$store.dispatch('signOut')
+        this.drawer = !this.drawer
       }).catch(function (error) {
         console.log(error)
       })
