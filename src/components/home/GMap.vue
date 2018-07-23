@@ -271,9 +271,9 @@ export default {
       this.lng = null
     }.bind(this))
 
-    EventBus.$on('locateItem', function (itemID) {
+    /* EventBus.$on('locateItem', function (itemID) {
       this.findMarker(itemID)
-    }.bind(this))
+    }.bind(this)) */
   },
   mounted () {
   },

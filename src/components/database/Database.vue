@@ -52,7 +52,7 @@
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
-import { EventBus } from '../../main'
+// import { EventBus } from '../../main'
 
 var storage = firebase.storage()
 
@@ -101,10 +101,11 @@ export default {
       if (urlPic && !urlPic.includes('firebasestorage')) {
         return urlPic
       }
-    locateItem (itemID) {
+    }
+    /* locateItem (itemID) {
       console.log('Item ID: ' + itemID)
       EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
-    }
+    } */
   },
   created () {
     this.displayCollection('lost-items', this.lostItems)
