@@ -16,8 +16,8 @@
           </div>
           </v-card-title>
           <v-card-actions>
-            <v-btn bottom flat color="cyan">Contact</v-btn>
-            <v-btn bottom flat color="cyan" @click="locateItem(lostItem.id)" to="/">Location</v-btn>
+            <v-btn bottom flat color="orange">Contact</v-btn>
+            <v-btn bottom flat color="orange" @click="locateItem(lostItem.id)" to="/">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>
@@ -39,8 +39,8 @@
                 </div>
               </v-card-title>
             <v-card-actions>
-              <v-btn bottom flat color="cyan">Contact</v-btn>
-              <v-btn bottom flat color="cyan" @click="locateItem(foundItem.id)" to="/">Location</v-btn>
+              <v-btn bottom flat color="orange">Contact</v-btn>
+              <v-btn bottom flat color="orange" @click="locateItem(foundItem.id)" to="/">Location</v-btn>
             </v-card-actions>
             </v-card>
           </v-flex>
@@ -101,6 +101,7 @@ export default {
       if (urlPic && !urlPic.includes('firebasestorage')) {
         return urlPic
       }
+    },
     locateItem (itemID) {
       console.log('Item ID: ' + itemID)
       EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
