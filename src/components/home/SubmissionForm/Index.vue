@@ -60,9 +60,6 @@ export default {
       'firebase'
     ]),
     collapseOrExpandWidth () {
-      // if (this.hide) {
-      //   return '40px'
-      // }
       return '450px'
     }
   },

@@ -289,6 +289,7 @@ export default {
   watch: {
     // reset every input if toggle between lost form and found form
     activeParent () {
+      this.$v.$reset()
       this.type = null
       this.description = null
       this.contactEmail = this.user.email

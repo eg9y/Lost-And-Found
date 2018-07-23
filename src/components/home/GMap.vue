@@ -237,8 +237,6 @@ export default {
     },
     findMarker (itemID) {
       console.log('findMarker is running, looking for: ' + itemID)
-      console.log(typeof itemID)
-      console.log(this.all_lost_items.length)
       if (this.all_lost_items) {
         for (var i = 0; i < this.all_lost_items.length; i++) {
           // console.log('ddd', this.all_lost_items[i])
@@ -267,8 +265,10 @@ export default {
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
+      this.lat = null
+      this.lng = null
     }.bind(this))
-    if (this.all_lost_items && this.$route.params.id.length) {
+    if (this.$route.params.id.length) {
       this.findMarker(this.$route.params.id)
     }
   },
@@ -277,7 +277,7 @@ export default {
   },
   watch: {
     all_lost_items () {
-      if (this.all_lost_items && this.$route.params.id.length) {
+      if (this.$route.params.id.length) {
         this.findMarker(this.$route.params.id)
       }
     }
