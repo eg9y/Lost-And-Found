@@ -9,15 +9,39 @@
             <v-card-title primary-title>
             <div class="card-content">
             <div v-if="lostItem.picture">
-               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
+               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
             </div>
-            <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3>
-            <img class><br><b>Description:</b> {{ lostItem.description }}<br/> <b>Contact:</b> {{ lostItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ lostItem.timestamp }}<br/> <b>Location:</b> {{ lostItem.location }}<br/><br/>
+            <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3><br/>
+            <div v-if="lostItem.description">
+              <b>Description:</b> {{ lostItem.description }}<br/>
+            </div>
+            <div v-else>
+              <b>Description:</b> N/A<br/>
+            </div>
+            <div v-if="lostItem.contactEmail">
+              <b>Contact:</b> {{ lostItem.contactEmail }}<br/>
+            </div>
+            <div v-else>
+              <b>Contact:</b> N/A<br/>
+            </div>
+            <div v-if="lostItem.date">
+              <b>Date:</b> {{ lostItem.date }}<br/>
+            </div>
+            <div v-else>
+              <b>Date:</b> N/A<br/>
+            </div>
+            <div v-if="lostItem.time">
+              <b>Time:</b> {{ lostItem.time }}<br/>
+            </div>
+            <div v-else>
+              <b>Time:</b> N/A<br/>
+            </div>
+            <br/>
           </div>
           </v-card-title>
           <v-card-actions>
-            <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange">Location</v-btn>
+            <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
+            <v-btn bottom flat color="cyan" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>
@@ -29,20 +53,44 @@
         <v-layout justify-center="20px">
           <v-flex xs12 sm9 offset-sm>
             <v-card height ="500px">
-            <v-card-title primary-title>
-            <div class="card-content">
-            <div v-if="foundItem.picture">
-               <img class="item-pictures" :id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
-            </div>
-            <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
-            <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ foundItem.timestamp }}<br/> <b>Location:</b> {{ foundItem.location }}<br/><br/>
-          </div>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange">Location</v-btn>
-         </v-card-actions>
-          </v-card>
+              <v-card-title primary-title>
+                <div class="card-content">
+                  <div>
+                    <img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
+                  </div>
+                  <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
+                  <div v-if="foundItem.description">
+                    <b>Description:</b> {{ foundItem.description }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Description:</b> N/A<br/>
+                  </div>
+                  <div v-if="foundItem.contactEmail">
+                    <b>Contact:</b> {{ foundItem.contactEmail }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Contact:</b> N/A<br/>
+                  </div>
+                  <div v-if="foundItem.date">
+                    <b>Date:</b> {{ foundItem.date }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Date:</b> N/A<br/>
+                  </div>
+                  <div v-if="foundItem.time">
+                    <b>Time:</b> {{ foundItem.time }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Time:</b> N/A<br/>
+                  </div>
+                  <br/>
+                </div>
+              </v-card-title>
+            <v-card-actions>
+              <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
+              <v-btn bottom flat color="cyan" @click="locateItem(foundItem.id, 'f')">Location</v-btn>
+            </v-card-actions>
+            </v-card>
           </v-flex>
           </v-layout>
         </div><br/>
@@ -52,6 +100,7 @@
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
+// import { EventBus } from '../../main'
 
 var storage = firebase.storage()
 
@@ -64,7 +113,8 @@ export default {
     }
   },
   methods: {
-    /** *  ***/
+    /*
+    */
     displayCollection (collectionName, collectionArr) {
       // fetch data from firestore
       db
@@ -83,8 +133,9 @@ export default {
           })
         })
     },
-    /** * fetches the picture from Storage, url given by urlPic,
-     *   and replaces the associated img tag src with the url ***/
+    /*
+      fetches the picture from Storage, url given by urlPic, and replaces the associated img tag src with the url
+    */
     getPicture (urlPic, elemID) {
       storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
         let img = document.getElementById(elemID)
@@ -98,6 +149,10 @@ export default {
       if (urlPic && !urlPic.includes('firebasestorage')) {
         return urlPic
       }
+    },
+    locateItem (itemID, collectionType) {
+      console.log('Item ID: ' + itemID)
+      this.$router.push(`/${collectionType}-${itemID}`)
     }
   },
   created () {

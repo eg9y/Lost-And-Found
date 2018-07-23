@@ -17,9 +17,9 @@
         </v-layout>
         <v-layout>
           <v-flex v-if="infoWinOpen" transition="fade">
-              <h2>{{infoWindow.description}}</h2>
-              <h2>{{infoWindow.timestamp}}</h2>
-              <h2>{{infoWindow.contactEmail | truncate}}</h2>
+              <h3>{{infoWindow.description}}</h3>
+              <h3>{{infoWindow.timestamp}}</h3>
+              <h3>{{infoWindow.contactEmail | truncate}}</h3>
           </v-flex>
         </v-layout>
         <div class="text-xs-center">
@@ -62,6 +62,7 @@ import { gmapApi } from 'vue2-google-maps'
 import SubmissionForm from './SubmissionForm/Index'
 import { EventBus } from '../../main'
 import { mapState } from 'vuex'
+import firebase from 'firebase'
 
 // these coordinates define the boundaries of the map/UCSC
 const MIN_LAT = 36.987615
@@ -73,6 +74,7 @@ export default {
   components: {
     'submission-form': SubmissionForm
   },
+  name: 'gmap',
   data () {
     return {
       // lat and lng are used for location
@@ -86,13 +88,15 @@ export default {
         pictures: null,
         location: null,
         contactEmail: null,
-        timestamp: null,
+        // timestamp: null,
+        date: null,
+        time: null,
         userID: null,
         id: null,
         collectionName: null
       },
       infoWinOpen: false,
-      currentMidx: null,
+      currentMid: null,
       // optional: offset infowindow so it visually sits nicely on top of our marker
       infoOptions: {
         pixelOffset: {
@@ -113,6 +117,9 @@ export default {
     }
   },
   methods: {
+    /*
+
+    */
     checkBoundary () {
       var strictBounds = new this.google.maps.LatLngBounds(
         new this.google.maps.LatLng(MIN_LAT, MIN_LNG),
@@ -139,7 +146,10 @@ export default {
         map.setCenter(new this.google.maps.LatLng(y, x))
       })
     },
-    // Assigns values from selected marker for info window to project
+    /*
+      Closes the currently open info window, assigns values from selected marker to info window, opens the info window
+      Parameters: ???
+    */
     getMarkerDetails (marker, collectionTitle, collectionName) {
       this.closeInfoWindow()
       if (marker.location) {
@@ -150,10 +160,13 @@ export default {
           this.infoWindow.type = collectionTitle + marker.type
           this.infoWindow.description = marker.description
           this.infoWindow.contactEmail = marker.contactEmail
-          this.infoWindow.timestamp = marker.timestamp
+          // this.infoWindow.timestamp = marker.timestamp
+          this.infoWindow.date = marker.date
+          this.infoWindow.time = marker.time
           this.infoWindow.userID = marker.userID
           this.infoWindow.collectionName = collectionName
           this.infoWindow.id = marker.id
+          console.log('Info Window ID: ' + this.infoWindow.id)
 
           // check if its the same marker that was selected if yes toggle
           if (this.currentMid === marker.id) {
@@ -162,10 +175,15 @@ export default {
             this.infoWinOpen = true
             this.currentMid = marker.id
           }
+          console.log(this.infoWinOpen)
+          console.log(this.currentMid)
         }, 400)
       }
     },
-    // update new location for potential marker
+    /*
+      Updates the location for a new potential marker, and opens the submission form
+      Parameters: e -- event object from clicking the map
+    */
     addLocation (e) {
       if (this.infoWinOpen) {
         this.infoWinOpen = false
@@ -180,16 +198,34 @@ export default {
       // open the submission form
       this.submissionDialog = true
     },
+    /*
+      Deletes the marker's associated entry in the db, and deletes the picture from Storage if applicable
+    */
     deleteMarker () {
+      // deletes associated picture if item has one, and it's stored in Storage
+      if (this.infoWindow.pictures && this.infoWindow.pictures.includes(this.infoWindow.userID)) {
+        var picRef = firebase.storage().refFromURL(this.infoWindow.pictures)
+        picRef.delete().then(function () {
+          console.log('Image successfully deleted from Storage')
+        // eslint-disable-next-line
+        }).catch(function (error) {
+          console.log('Error in deleting image from Storage')
+        })
+      }
+
+      // deletes the entry from the db and then updates the local copies
       this.db.collection(this.infoWindow.collectionName).doc(this.infoWindow.id).delete().then(() => {
         this.$store.dispatch('updateUserCollection', this.infoWindow.collectionName)
         this.$store.dispatch('updateCollection', this.infoWindow.collectionName)
-        this.infoWinOpen = false
+        this.infoWinOpen = this.closeInfoWindow()
         console.log('Document successfully deleted!')
       }).catch(function (error) {
         console.error('Error removing document: ', error)
       })
     },
+    /*
+
+    */
     closeInfoWindow () {
       this.infoWinOpen = false
       this.infoWindow.type = null
@@ -201,6 +237,34 @@ export default {
       this.infoWindow.userID = null
       this.infoWindow.id = null
       this.infoWindow.collectionName = null
+    },
+    findMarker (itemStr) {
+      console.log('findMarker is running, looking for: ' + itemStr)
+      console.log(typeof itemStr)
+      if (this.all_lost_items && this.all_found_items) {
+        var itemID = itemStr.substr(2)
+        if (itemStr[0] === 'l') {
+          for (var i = 0; i < this.all_lost_items.length; i++) {
+          // console.log('ddd', this.all_lost_items[i])
+            if (this.all_lost_items[i].id === itemID) {
+              console.log('it\'s a match')
+              console.log(this.all_lost_items[i].id)
+              this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
+              i = this.all_lost_items.length
+            }
+          }
+        } else if (itemStr[0] === 'f') {
+          for (var j = 0; j < this.all_found_items.length; j++) {
+          // console.log('ddd', this.all_lost_items[i])
+            if (this.all_found_items[j].id === itemID) {
+              console.log('it\'s a match')
+              console.log(this.all_found_items[j].id)
+              this.getMarkerDetails(this.all_found_items[j], 'Found: ', 'found-items')
+              j = this.all_Found_items.length
+            }
+          }
+        }
+      }
     }
   },
   computed: {
@@ -227,8 +291,25 @@ export default {
         lat: newCenter[0].location._lat,
         lng: newCenter[0].location._long
       }
+      console.log(newCenter)
       this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
     }.bind(this))
+
+    if (this.$route.params.id) {
+      this.findMarker(this.$route.params.id)
+    }
+  },
+  watch: {
+    all_lost_items () {
+      if (this.$route.params.id) {
+        this.findMarker(this.$route.params.id)
+      }
+    },
+    all_found_items () {
+      if (this.$route.params.id) {
+        this.findMarker(this.$route.params.id)
+      }
+    }
   },
   filters: {
     // Define truncate filter to replace long words with ...
