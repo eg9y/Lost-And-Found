@@ -221,6 +221,14 @@ export default {
       this.lat = null
       this.lng = null
     }.bind(this))
+
+    EventBus.$on('newCenter', function (newCenter) {
+      console.log('gmap: ', newCenter)
+      this.center = {
+        lat: newCenter[0],
+        lng: newCenter[1]
+      }
+    }.bind(this))
   },
   filters: {
     // Define truncate filter to replace long words with ...

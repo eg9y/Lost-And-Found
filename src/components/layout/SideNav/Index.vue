@@ -17,7 +17,7 @@
 
       <v-list-tile to="/Profile">
         <v-list-tile-action>
-          <v-icon>dashboard</v-icon>
+          <v-icon>library_books</v-icon>
         </v-list-tile-action>
 
         <v-list-tile-content>
@@ -40,17 +40,25 @@
       <v-divider></v-divider>
       <v-subheader inset>History</v-subheader>
 
-      <v-list-tile v-for="(lost_item,index) in lost_items" :key="`lost-${lost_item.type}-${index}`" @click="console.log('d')">
+      <v-list-tile v-for="(lost_item,index) in lost_items" :key="`lost-${lost_item.type}-${index}`" @click="centerLost(lost_item)">
+        <v-list-tile-action>
+          <v-icon>queue</v-icon>
+        </v-list-tile-action>
+
         <v-list-tile-content>
-          <v-list-tile-title>{{ lost_item.type }}</v-list-tile-title>
+          <v-list-tile-title>{{ lost_item.type}}</v-list-tile-title>
         </v-list-tile-content>
 
         <v-list-tile-content>
           <v-list-tile-title>{{ lost_item.timestamp }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-divider inset></v-divider>
-      <v-list-tile v-for="(found_item,index) in found_items" :key="`found-${found_item.type}-${index}`" @click="console.log('d')">
+
+      <v-list-tile v-for="(found_item,index) in found_items" :key="`found-${found_item.type}-${index}`"  @click="centerFound(found_item)">
+        <v-list-tile-action>
+          <v-icon>work_off</v-icon>
+        </v-list-tile-action>
+
         <v-list-tile-content>
           <v-list-tile-title>{{ found_item.type }}</v-list-tile-title>
         </v-list-tile-content>
@@ -84,6 +92,14 @@ export default {
     }
   },
   methods: {
+    centerLost (lostItem) {
+      console.log(lostItem)
+      EventBus.$emit('newCenter', [lostItem.location._lat, lostItem.location._long])
+    },
+    centerFound (foundItem) {
+      console.log(foundItem)
+      EventBus.$emit('newCenter', [foundItem.location._lat, foundItem.location._long])
+    },
     toggleDrawer () {
       this.drawer = !this.drawer
       EventBus.$emit('toggleDrawer')
