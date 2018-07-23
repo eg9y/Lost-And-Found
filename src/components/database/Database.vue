@@ -105,6 +105,7 @@ export default {
     locateItem (itemID) {
       console.log('Item ID: ' + itemID)
       // EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
+      this.$router.push(`/${itemID}`)
     }
   },
   created () {
