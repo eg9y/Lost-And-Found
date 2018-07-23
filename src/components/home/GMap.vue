@@ -276,7 +276,9 @@ export default {
       'db',
       'firebase',
       'all_lost_items',
-      'all_found_items'
+      'all_found_items',
+      'lostToggle',
+      'foundToggle'
     ])
   },
   created () {
