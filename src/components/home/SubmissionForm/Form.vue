@@ -100,6 +100,8 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
+              color="cyan"
+              dark
               @click="uploadImageAndDoc"
               :disabled="!valid"
             >Submit</v-btn>
