@@ -224,10 +224,10 @@ export default {
 
     EventBus.$on('newCenter', function (newCenter) {
       this.center = {
-        lat: newCenter.location._lat,
-        lng: newCenter.location._long
+        lat: newCenter[0].location._lat,
+        lng: newCenter[0].location._long
       }
-      this.getMarkerDetails(newCenter)
+      this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
     }.bind(this))
   },
   filters: {

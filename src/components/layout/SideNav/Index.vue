@@ -40,7 +40,7 @@
       <v-divider></v-divider>
       <v-subheader inset>History</v-subheader>
 
-      <v-list-tile v-for="(lost_item,index) in lost_items" :key="`lost-${lost_item.type}-${index}`" @click="centerLost(lost_item)">
+      <v-list-tile v-for="(lost_item,index) in lost_items" :key="`lost-${lost_item.type}-${index}`" @click="centerLost(lost_item,'Lost: ','lost-item' )">
         <v-list-tile-action>
           <v-icon>queue</v-icon>
         </v-list-tile-action>
@@ -54,7 +54,7 @@
         </v-list-tile-content>
       </v-list-tile>
 
-      <v-list-tile v-for="(found_item,index) in found_items" :key="`found-${found_item.type}-${index}`"  @click="centerFound(found_item)">
+      <v-list-tile v-for="(found_item,index) in found_items" :key="`found-${found_item.type}-${index}`"  @click="centerFound(found_item,'Found: ','found-item' )">
         <v-list-tile-action>
           <v-icon>work_off</v-icon>
         </v-list-tile-action>
@@ -92,13 +92,13 @@ export default {
     }
   },
   methods: {
-    centerLost (lostItem) {
+    centerLost (lostItem, collectionTiltle, collectionName) {
       console.log(lostItem)
-      EventBus.$emit('newCenter', lostItem)
+      EventBus.$emit('newCenter', [lostItem, collectionTiltle, collectionName])
     },
-    centerFound (foundItem) {
+    centerFound (foundItem, collectionTiltle, collectionName) {
       console.log(foundItem)
-      EventBus.$emit('newCenter', foundItem)
+      EventBus.$emit('newCenter', [foundItem, collectionTiltle, collectionName])
     },
     toggleDrawer () {
       this.drawer = !this.drawer
