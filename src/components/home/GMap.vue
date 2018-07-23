@@ -3,7 +3,7 @@
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
-    <GmapMap id="map" :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
+    <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
         v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
@@ -46,6 +46,13 @@
         :clickable="true"
         icon="../../../static/icons/found_icon.png"
         @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+
+      <GmapMarker
+        v-if="lat && lng"
+        :animation="2"
+        :position="{lat, lng}"
+        icon="http://s3.amazonaws.com/besport.com_images/status-pin.png"
+        />
     </GmapMap>
   </div>
 </template>
@@ -98,7 +105,7 @@ export default {
         minZoom: 15,
         maxZoom: 18,
         gestureHandling: 'cooperative',
-        draggableCursor: '../../../static/icons/lost_icon.png'
+        draggableCursor: 'url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto'
       },
       lost_items: [],
       found_items: [],
@@ -211,6 +218,8 @@ export default {
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
+      this.lat = null
+      this.lng = null
     }.bind(this))
   },
   filters: {
@@ -231,7 +240,4 @@ img {
   width: 100%;
   height: auto;
 }
-/* #map {
-  cursor: url(../../../static/icons/lost_icon.png), auto;
-} */
 </style>
