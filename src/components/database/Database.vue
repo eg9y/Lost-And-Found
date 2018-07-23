@@ -17,7 +17,7 @@
             </v-card-title>
           <v-card-actions>
             <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange">Location</v-btn>
+            <v-btn bottom flat color="orange" @click="locateItem(lostItem.id)" to="/">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>
@@ -40,7 +40,7 @@
               </v-card-title>
             <v-card-actions>
               <v-btn bottom flat color="orange">Contact</v-btn>
-              <v-btn bottom flat color="orange">Location</v-btn>
+              <v-btn bottom flat color="orange" @click="locateItem(foundItem.id)" to="/">Location</v-btn>
             </v-card-actions>
             </v-card>
           </v-flex>
@@ -71,6 +71,7 @@
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
+import { EventBus } from '../../main'
 
 var storage = firebase.storage()
 
@@ -130,6 +131,10 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    locateItem (itemID) {
+      console.log('Item ID: ' + itemID)
+      EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
     }
   },
   created () {

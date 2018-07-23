@@ -3,6 +3,7 @@
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
+    <v-btn @click="findMarker('KCNg3uuaNXOGkAoLfG8B')">Hi</v-btn>
     <GmapMap :center="center" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" id='map' style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
@@ -149,6 +150,7 @@ export default {
           this.infoWindow.userID = marker.userID
           this.infoWindow.collectionName = collectionName
           this.infoWindow.id = marker.id
+          console.log('Info Window ID: ' + this.infoWindow.id)
 
           // check if its the same marker that was selected if yes toggle
           if (this.currentMidx === idx) {
@@ -157,6 +159,8 @@ export default {
             this.infoWinOpen = true
             this.currentMidx = idx
           }
+          console.log(this.infoWinOpen)
+          console.log(this.currentMidx)
         }, 400)
       }
     },
@@ -217,6 +221,22 @@ export default {
       this.infoWindow.userID = null
       this.infoWindow.id = null
       this.infoWindow.collectionName = null
+    },
+    findMarker (itemID) {
+      console.log('findMarker is running, looking for: ' + itemID)
+      if (this.all_lost_items) {
+        console.log('all_lost_items not null')
+        for (var i = 0; i < this.all_lost_items.length; i++) {
+          console.log(this.all_lost_items[i].id)
+          if (this.all_lost_items[i].id === itemID) {
+            console.log('it\'s a match')
+            console.log(this.all_lost_items[i].id)
+            console.log(i)
+            this.getMarkerDetails(this.all_lost_items[i], i, 'Lost: ', 'lost-items').then(this.infoWinOpen = true)
+            i = this.all_lost_items.length
+          }
+        }
+      }
     }
   },
   computed: {
@@ -235,6 +255,12 @@ export default {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
     }.bind(this))
+
+    EventBus.$on('locateItem', function (itemID) {
+      this.findMarker(itemID)
+    }.bind(this))
+  },
+  mounted () {
   },
   filters: {
     // Define truncate filter to replace long words with ...
