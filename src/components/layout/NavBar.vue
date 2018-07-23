@@ -13,10 +13,7 @@
         <v-btn to="/" flat >
           <v-icon left>home</v-icon> Home
         </v-btn>
-        <v-btn to="/database" flat>
-          <v-icon left>fas fa-list-ul</v-icon>
-          Display
-        </v-btn>
+        <display-button></display-button>
         <!-- <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn" flat>
            Add Lost Item
         </v-btn>
@@ -52,12 +49,14 @@
 <script>
 import { mapState } from 'vuex'
 import SideNav from './SideNav/Index'
+import DisplayButton from './DisplayButton'
 import { EventBus } from '../../main'
 
 export default {
   name: 'AddFound',
   components: {
-    'side-nav': SideNav
+    'side-nav': SideNav,
+    'display-button': DisplayButton
   },
   computed: {
     ...mapState([

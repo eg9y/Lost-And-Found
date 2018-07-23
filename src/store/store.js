@@ -46,12 +46,18 @@ export default new Vuex.Store({
     setAllFoundItems (state, items) {
       state.all_found_items = items
     },
-    // below two functions are for toggling lost/found pins
-    setLostToggle (state) {
-      state.lostToggle = !state.lostToggle
+    // below four functions are for toggling lost/found pins
+    setLostToggleTrue (state) {
+      state.lostToggle = true
     },
-    setFoundToggle (state) {
-      state.foundToggle = !state.foundToggle
+    setLostToggleFalse (state) {
+      state.lostToggle = false
+    },
+    setFoundToggleTrue (state) {
+      state.foundToggle = true
+    },
+    setFoundToggleFalse (state) {
+      state.foundToggle = false
     },
     updateCollection (state, collectionName) {
       let documents = []

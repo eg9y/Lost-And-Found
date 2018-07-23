@@ -3,7 +3,6 @@
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
-    <toggle-buttons></toggle-buttons>
     <GmapMap :center="center" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
@@ -54,7 +53,6 @@
 <script>
 import { gmapApi } from 'vue2-google-maps'
 import SubmissionForm from './SubmissionForm/Index'
-import ToggleButtons from './ToggleButtons'
 import { EventBus } from '../../main'
 import { mapState } from 'vuex'
 
@@ -71,8 +69,7 @@ const MAX_LNG = -122.04808
 
 export default {
   components: {
-    'submission-form': SubmissionForm,
-    'toggle-buttons': ToggleButtons
+    'submission-form': SubmissionForm
   },
   data () {
     return {
