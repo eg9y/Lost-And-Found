@@ -22,4 +22,11 @@ describe('GMap.vue', () => {
     console.log('**********')
     console.log('What is this? ', GMapComponent.$el)
   })
+
+  it('should show the user location inside the UCSC boundaries', () => {
+    const Constructor = Vue.extend(GMap)
+    const GMapComponent = new Constructor().$mount()
+    expect(GMapComponent.center.lat).to.equal(this.lat)
+    expect(GMapComponent.center.lng).to.equal(this.lng)
+  })
 })
