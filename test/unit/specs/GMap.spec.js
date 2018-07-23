@@ -26,6 +26,12 @@ describe('GMap.vue', () => {
   it('should show the user location inside the UCSC boundaries', () => {
     const Constructor = Vue.extend(GMap)
     const GMapComponent = new Constructor().$mount()
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      }
+    })
     expect(GMapComponent.center.lat).to.equal(this.lat)
     expect(GMapComponent.center.lng).to.equal(this.lng)
   })
