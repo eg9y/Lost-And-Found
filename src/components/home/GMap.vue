@@ -36,7 +36,7 @@
         :title="lost_item.type"
         :clickable="true"
         icon="../../../static/icons/lost_icon.png"
-        @click="getMarkerDetails(lost_item, index, 'Lost: ', 'lost-items')" />
+        @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
       <GmapMarker
         v-if="all_found_items"
         :animation="2"
@@ -46,7 +46,7 @@
         :title="found_item.type"
         :clickable="true"
         icon="../../../static/icons/found_icon.png"
-        @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+        @click="getMarkerDetails(found_item, 'Found: ', 'found-items')" />
 
       <GmapMarker
         v-if="lat && lng"
@@ -95,7 +95,7 @@ export default {
         collectionName: null
       },
       infoWinOpen: false,
-      currentMidx: null,
+      currentMid: null,
       // optional: offset infowindow so it visually sits nicely on top of our marker
       infoOptions: {
         pixelOffset: {
@@ -149,7 +149,7 @@ export default {
       Closes the currently open info window, assigns values from selected marker to info window, opens the info window
       Parameters: ???
     */
-    getMarkerDetails (marker, idx, collectionTitle, collectionName) {
+    getMarkerDetails (marker, collectionTitle, collectionName) {
       this.closeInfoWindow()
       if (marker.location) {
         // wait 1/4 seconds to set new info for info window
@@ -166,14 +166,14 @@ export default {
           console.log('Info Window ID: ' + this.infoWindow.id)
 
           // check if its the same marker that was selected if yes toggle
-          if (this.currentMidx === idx) {
+          if (this.currentMid === marker.id) {
             this.infoWinOpen = !this.infoWinOpen
           } else { // if different marker set infowindow to open and reset current marker index
             this.infoWinOpen = true
-            this.currentMidx = idx
+            this.currentMid = marker.id
           }
           console.log(this.infoWinOpen)
-          console.log(this.currentMidx)
+          console.log(this.currentMid)
         }, 400)
       }
     },
@@ -242,7 +242,7 @@ export default {
           if (this.all_lost_items[i].id === itemID) {
             console.log('it\'s a match')
             console.log(this.all_lost_items[i].id)
-            this.getMarkerDetails(this.all_lost_items[i], i, 'Lost: ', 'lost-items')
+            this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
             i = this.all_lost_items.length
           }
         }
@@ -262,18 +262,21 @@ export default {
     ])
   },
   created () {
+    console.log(this.$route.params.id)
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
       // this.lat = null
       // this.lng = null
     }.bind(this))
 
-    EventBus.$on('locateItem', function (itemID) {
+    this.findMarker(this.$route.params.id)
+
+    /* EventBus.$once('locateItem', function (itemID) {
       this.findMarker(itemID)
-      this.infoWinOpen = true
-    }.bind(this))
+    }.bind(this)) */
   },
   mounted () {
+    console.log('gmap mounted')
   },
   filters: {
     // Define truncate filter to replace long words with ...
