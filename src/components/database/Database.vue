@@ -17,7 +17,7 @@
           </v-card-title>
           <v-card-actions>
             <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange" to="/" @click="locateItem('SA9diJQJeMmRJbQkzAMZ')">Location</v-btn>
+            <v-btn bottom flat color="orange" to="/" @click="locateItem(lostItem.id)">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>

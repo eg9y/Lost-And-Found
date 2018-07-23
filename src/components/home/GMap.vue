@@ -267,11 +267,13 @@ export default {
       // this.lat = null
       // this.lng = null
     }.bind(this))
-  },
-  mounted () {
+
     EventBus.$on('locateItem', function (itemID) {
       this.findMarker(itemID)
+      this.infoWinOpen = true
     }.bind(this))
+  },
+  mounted () {
   },
   filters: {
     // Define truncate filter to replace long words with ...
