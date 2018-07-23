@@ -1,4 +1,3 @@
-<<<<<<< HEAD:src/components/database/Database.vue
 <template>
   <div class="index container">
 
