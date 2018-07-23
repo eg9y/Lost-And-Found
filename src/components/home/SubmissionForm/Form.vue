@@ -187,8 +187,8 @@ export default {
         console.log('test')
         console.log('this.valid :', this.valid)
       }
-      // this.imageFile && this.active === 'tab-1' ? this.uploadPic(this.collectionName) : this.addDoc(this.collectionName)
-      // this.toggleSubmission()
+      this.imageFile && this.active === 'tab-1' ? this.uploadPic(this.collectionName) : this.addDoc(this.collectionName)
+      this.toggleSubmission()
     },
     addDoc (collectionName) {
       if (this.type) {
