@@ -17,7 +17,7 @@
           </v-card-title>
           <v-card-actions>
             <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange" to="/" @click="locateItem(lostItem.id)">Location</v-btn>
+            <v-btn bottom flat color="orange" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>
@@ -40,7 +40,7 @@
               </v-card-title>
             <v-card-actions>
               <v-btn bottom flat color="orange">Contact</v-btn>
-              <v-btn bottom flat color="orange" @click="locateItem(foundItem.id)">Location</v-btn>
+              <v-btn bottom flat color="orange" @click="locateItem(foundItem.id, 'f')">Location</v-btn>
             </v-card-actions>
             </v-card>
           </v-flex>
@@ -102,10 +102,9 @@ export default {
         return urlPic
       }
     },
-    locateItem (itemID) {
+    locateItem (itemID, collectionType) {
       console.log('Item ID: ' + itemID)
-      // EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
-      this.$router.push(`/${itemID}`)
+      this.$router.push(`/${collectionType}-${itemID}`)
     }
   },
   created () {
