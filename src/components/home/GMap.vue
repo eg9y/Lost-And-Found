@@ -3,7 +3,7 @@
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
-    <v-btn @click="findMarker('KCNg3uuaNXOGkAoLfG8B')">Hi</v-btn>
+    <v-btn @click="findMarker('SA9diJQJeMmRJbQkzAMZ')">Hi</v-btn>
     <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
@@ -238,14 +238,11 @@ export default {
     findMarker (itemID) {
       console.log('findMarker is running, looking for: ' + itemID)
       if (this.all_lost_items) {
-        console.log('all_lost_items not null')
         for (var i = 0; i < this.all_lost_items.length; i++) {
-          console.log(this.all_lost_items[i].id)
           if (this.all_lost_items[i].id === itemID) {
             console.log('it\'s a match')
             console.log(this.all_lost_items[i].id)
-            console.log(i)
-            this.getMarkerDetails(this.all_lost_items[i], i, 'Lost: ', 'lost-items').then(this.infoWinOpen = true)
+            this.getMarkerDetails(this.all_lost_items[i], i, 'Lost: ', 'lost-items')
             i = this.all_lost_items.length
           }
         }
@@ -270,12 +267,11 @@ export default {
       // this.lat = null
       // this.lng = null
     }.bind(this))
-
-    /* EventBus.$on('locateItem', function (itemID) {
-      this.findMarker(itemID)
-    }.bind(this)) */
   },
   mounted () {
+    EventBus.$on('locateItem', function (itemID) {
+      this.findMarker(itemID)
+    }.bind(this))
   },
   filters: {
     // Define truncate filter to replace long words with ...
