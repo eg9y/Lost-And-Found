@@ -11,8 +11,32 @@
             <div v-if="lostItem.picture">
                <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
             </div>
-            <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3>
-            <img class><br><b>Description:</b> {{ lostItem.description }}<br/> <b>Contact:</b> {{ lostItem.contactEmail }}<br/> <b>Date:</b> {{ lostItem.date }}<br/> <b>Time:</b> {{ lostItem.time }} <br/><br/>
+            <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3><br/>
+            <div v-if="lostItem.description">
+              <b>Description:</b> {{ lostItem.description }}<br/>
+            </div>
+            <div v-else>
+              <b>Description:</b> N/A<br/>
+            </div>
+            <div v-if="lostItem.contactEmail">
+              <b>Contact:</b> {{ lostItem.contactEmail }}<br/>
+            </div>
+            <div v-else>
+              <b>Contact:</b> N/A<br/>
+            </div>
+            <div v-if="lostItem.date">
+              <b>Date:</b> {{ lostItem.date }}<br/>
+            </div>
+            <div v-else>
+              <b>Date:</b> N/A<br/>
+            </div>
+            <div v-if="lostItem.time">
+              <b>Time:</b> {{ lostItem.time }}<br/>
+            </div>
+            <div v-else>
+              <b>Time:</b> N/A<br/>
+            </div>
+            <br/>
           </div>
           </v-card-title>
           <v-card-actions>
@@ -35,7 +59,31 @@
                     <img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
                   </div>
                   <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
-                  <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Date:</b> {{ foundItem.date }}<br/> <b>Time:</b> {{ foundItem.time }}<br/><br/><br/>
+                  <div v-if="foundItem.description">
+                    <b>Description:</b> {{ foundItem.description }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Description:</b> N/A<br/>
+                  </div>
+                  <div v-if="foundItem.contactEmail">
+                    <b>Contact:</b> {{ foundItem.contactEmail }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Contact:</b> N/A<br/>
+                  </div>
+                  <div v-if="foundItem.date">
+                    <b>Date:</b> {{ foundItem.date }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Date:</b> N/A<br/>
+                  </div>
+                  <div v-if="foundItem.time">
+                    <b>Time:</b> {{ foundItem.time }}<br/>
+                  </div>
+                  <div v-else>
+                    <b>Time:</b> N/A<br/>
+                  </div>
+                  <br/>
                 </div>
               </v-card-title>
             <v-card-actions>
