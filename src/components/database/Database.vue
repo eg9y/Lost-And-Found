@@ -17,7 +17,7 @@
           </v-card-title>
           <v-card-actions>
             <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange">Location</v-btn>
+            <v-btn bottom flat color="orange" @click="locateItem(lostItem.id)" to="/">Location</v-btn>
           </v-card-actions>
           </v-card>
         </v-flex>
@@ -29,20 +29,20 @@
         <v-layout justify-center="20px">
           <v-flex xs12 sm9 offset-sm>
             <v-card height ="500px">
-            <v-card-title primary-title>
-            <div class="card-content">
-            <div v-if="foundItem.picture">
-               <img class="item-pictures" :id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
-            </div>
-            <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
-            <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ foundItem.timestamp }}<br/> <b>Location:</b> {{ foundItem.location }}<br/><br/>
-          </div>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn bottom flat color="orange">Contact</v-btn>
-            <v-btn bottom flat color="orange">Location</v-btn>
-         </v-card-actions>
-          </v-card>
+              <v-card-title primary-title>
+                <div class="card-content">
+                  <div>
+                    <img class="item-pictures" v-bind:id="foundItem.id" src="getExternalPic(foundItem.picture)" alt="(NO PICTURE AVAILABLE)"><br/>
+                  </div>
+                  <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
+                  <img class><br><b>Description:</b> {{ foundItem.description }}<br/> <b>Contact:</b> {{ foundItem.contactEmail }}<br/> <b>Time Stamp:</b> {{ foundItem.timestamp }}<br/> <b>Location:</b> {{ foundItem.location }}<br/><br/>
+                </div>
+              </v-card-title>
+            <v-card-actions>
+              <v-btn bottom flat color="orange">Contact</v-btn>
+              <v-btn bottom flat color="orange" @click="locateItem(foundItem.id)" to="/">Location</v-btn>
+            </v-card-actions>
+            </v-card>
           </v-flex>
           </v-layout>
         </div><br/>
@@ -52,6 +52,7 @@
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
+import { EventBus } from '../../main'
 
 var storage = firebase.storage()
 
@@ -64,7 +65,8 @@ export default {
     }
   },
   methods: {
-    /** *  ***/
+    /*
+    */
     displayCollection (collectionName, collectionArr) {
       // fetch data from firestore
       db
@@ -83,8 +85,9 @@ export default {
           })
         })
     },
-    /** * fetches the picture from Storage, url given by urlPic,
-     *   and replaces the associated img tag src with the url ***/
+    /*
+      fetches the picture from Storage, url given by urlPic, and replaces the associated img tag src with the url
+    */
     getPicture (urlPic, elemID) {
       storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
         let img = document.getElementById(elemID)
@@ -98,6 +101,9 @@ export default {
       if (urlPic && !urlPic.includes('firebasestorage')) {
         return urlPic
       }
+    locateItem (itemID) {
+      console.log('Item ID: ' + itemID)
+      EventBus.$emit('locateItem', itemID) // need to pass id of item that was clicked
     }
   },
   created () {
