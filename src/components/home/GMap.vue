@@ -4,7 +4,7 @@
       You must log in to pin!
     </v-alert>
     <v-btn @click="findMarker('KCNg3uuaNXOGkAoLfG8B')">Hi</v-btn>
-    <GmapMap :center="center" :zoom="16" :options="{minZoom: 15, maxZoom: 18, gestureHandling: 'cooperative'}" id='map' style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
+    <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
       <gmap-info-window
         v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
@@ -47,6 +47,13 @@
         :clickable="true"
         icon="../../../static/icons/found_icon.png"
         @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+
+      <GmapMarker
+        v-if="lat && lng"
+        :animation="2"
+        :position="{lat, lng}"
+        icon="http://s3.amazonaws.com/besport.com_images/status-pin.png"
+        />
     </GmapMap>
   </div>
 </template>
@@ -96,6 +103,12 @@ export default {
           height: -35
         },
         maxWidth: '200'
+      },
+      mapOptions: {
+        minZoom: 15,
+        maxZoom: 18,
+        gestureHandling: 'cooperative',
+        draggableCursor: 'url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto'
       },
       lost_items: [],
       found_items: [],
@@ -254,6 +267,8 @@ export default {
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
       this.submissionDialog = false
+      this.lat = null
+      this.lng = null
     }.bind(this))
 
     EventBus.$on('locateItem', function (itemID) {
@@ -279,11 +294,5 @@ export default {
 img {
   width: 100%;
   height: auto;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
 }
 </style>
