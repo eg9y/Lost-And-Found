@@ -177,15 +177,16 @@ export default {
       imageFile: null,
       imageURL: null,
       active: null,
-      valid: true
+      valid: false
     }
   },
   methods: {
     uploadImageAndDoc () {
       this.$v.$touch()
-      if (!this.valid) {
+      if (this.$v.$invalid) {
         console.log('test')
         console.log('this.valid :', this.valid)
+        return
       }
       this.imageFile && this.active === 'tab-1' ? this.uploadPic(this.collectionName) : this.addDoc(this.collectionName)
       this.toggleSubmission()
@@ -222,10 +223,11 @@ export default {
     /* upload picture to Storage and save the url to data.imageURL */
     /* NOTE!!! must be called before addDoc() if user is including a picture */
     uploadPic (collectionName) {
-      var name = this.userID + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
-      var metadata = { contentType: this.imageFile.type }
+      var name = this.user.uid + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
+      console.log('uploadPic is running')
+      // var metadata = { contentType: this.imageFile.type }
       const STORAGE = this.firebase.storage().ref()
-      var uploadTask = STORAGE.child(name).put(this.imageFile, metadata)
+      var uploadTask = STORAGE.child(name).putString(this.imageFile, 'data_url')
       var self = this
       uploadTask.on('state_changed', function (snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
@@ -245,17 +247,21 @@ export default {
     // close form
     toggleSubmission () {
       this.$v.$reset()
+      this.clearForm()
       EventBus.$emit('toggleSubmission')
-    }
-  },
-  watch: {
-    // reset every input if toggle between lost form and found form
-    activeParent () {
+    },
+    clearForm () {
       this.type = null
       this.description = null
       this.contactEmail = this.user.email
       this.imageFile = null
       this.imageURL = null
+    }
+  },
+  watch: {
+    // reset every input if toggle between lost form and found form
+    activeParent () {
+      this.clearForm()
     }
   },
   created () {

@@ -38,6 +38,8 @@ export default {
       }
     )
 
+    // Listens to updates other users made and update
+    // the new lost-items collection in real time
     this.db.collection('lost-items')
       .onSnapshot((querySnapshot) => {
         let lostItems = []
@@ -50,6 +52,8 @@ export default {
         }
       })
 
+    // Listens to updates other users made and update
+    // the new found-items collection in real time
     this.db.collection('found-items')
       .onSnapshot((querySnapshot) => {
         let foundItems = []
@@ -64,11 +68,14 @@ export default {
   },
   methods: {
     // Get all documents by user from lost-items and found-items collection
-    // and put it to lost_items and found_items array
+    // and put them to lost_items and found_items array, respectively
     fetchAllUserDocuments () {
       this.$store.dispatch('updateUserCollection', 'lost-items')
       this.$store.dispatch('updateUserCollection', 'found-items')
     },
+
+    // Get all documents from lost-items and found-items collection
+    // and put them to all_lost_items and all_found_items array, respectively
     fetchAllDocuments () {
       this.$store.dispatch('updateCollection', 'lost-items')
       this.$store.dispatch('updateCollection', 'found-items')

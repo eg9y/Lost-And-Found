@@ -76,7 +76,9 @@ export default {
   watch: {
     submissionDialog (val) {
       this.indexSubmissionForm = val
-      this.hide = false
+      if (val) {
+        this.hide = false
+      }
     },
     indexSubmissionForm (val) {
       if (!this.indexSubmissionForm) {

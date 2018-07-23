@@ -5,54 +5,32 @@
     </v-alert>
     <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
       <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
-      <gmap-info-window
-        v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
+      <gmap-info-window v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
         <v-layout>
           <v-flex class="text-xs-center">
-            <transition name="fade">
-              <h1 style="text-align: center;">{{infoWindow.type}}</h1>
-            </transition>
-            <progressive-img v-if="infoWindow.pictures" :src="infoWindow.pictures" alt=""/>
+            <h1 style="text-align: center;">{{infoWindow.type}}</h1>
+            <progressive-img v-if="infoWindow.pictures" :src="infoWindow.pictures" alt="" />
           </v-flex>
         </v-layout>
         <v-layout>
           <v-flex v-if="infoWinOpen" transition="fade">
-              <h2>{{infoWindow.description}}</h2>
-              <h2>{{infoWindow.timestamp}}</h2>
-              <h2>{{infoWindow.contactEmail | truncate}}</h2>
+            <h2>{{infoWindow.description}}</h2>
+            <h2>{{infoWindow.timestamp}}</h2>
+            <h2>{{infoWindow.contactEmail | truncate}}</h2>
           </v-flex>
         </v-layout>
-        <div class="text-xs-center">
-          <v-btn v-if="isUserLoggedIn && user.uid == infoWindow.userID" @click="deleteMarker" color="error">Resolve</v-btn>
-        </div>
+        <v-layout>
+          <v-flex>
+            <div class="text-xs-center">
+              <v-btn v-if="isUserLoggedIn && user.uid == infoWindow.userID" @click="deleteMarker" color="error">Resolve</v-btn>
+            </div>
+          </v-flex>
+        </v-layout>
       </gmap-info-window>
-      <GmapMarker
-        v-if="all_lost_items"
-        :animation="2"
-        v-for="(lost_item, index) in all_lost_items"
-        :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`"
-        :position="{lat: lost_item.location._lat, lng: lost_item.location._long}"
-        :title="lost_item.type"
-        :clickable="true"
-        icon="../../../static/icons/lost_icon.png"
-        @click="getMarkerDetails(lost_item, index, 'Lost: ', 'lost-items')" />
-      <GmapMarker
-        v-if="all_found_items"
-        :animation="2"
-        v-for="(found_item, index) in all_found_items"
-        :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`"
-        :position="{lat: found_item.location._lat, lng: found_item.location._long}"
-        :title="found_item.type"
-        :clickable="true"
-        icon="../../../static/icons/found_icon.png"
-        @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
+      <GmapMarker v-if="all_lost_items" :animation="2" v-for="(lost_item, index) in all_lost_items" :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`" :position="{lat: lost_item.location._lat, lng: lost_item.location._long}" :title="lost_item.type" :clickable="true" icon="../../../static/icons/lost_icon.png" @click="getMarkerDetails(lost_item, index, 'Lost: ', 'lost-items')" />
+      <GmapMarker v-if="all_found_items" :animation="2" v-for="(found_item, index) in all_found_items" :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`" :position="{lat: found_item.location._lat, lng: found_item.location._long}" :title="found_item.type" :clickable="true" icon="../../../static/icons/found_icon.png" @click="getMarkerDetails(found_item, index, 'Found: ', 'found-items')" />
 
-      <GmapMarker
-        v-if="lat && lng"
-        :animation="2"
-        :position="{lat, lng}"
-        icon="http://s3.amazonaws.com/besport.com_images/status-pin.png"
-        />
+      <GmapMarker v-if="lat && lng" :animation="2" :position="{lat, lng}" icon="http://s3.amazonaws.com/besport.com_images/status-pin.png" />
     </GmapMap>
   </div>
 </template>
@@ -89,7 +67,12 @@ export default {
         timestamp: null,
         userID: null,
         id: null,
-        collectionName: null
+        collectionName: null,
+        edit: {
+          typeEdit: false,
+          descEdit: false,
+          emailEdit: false
+        }
       },
       infoWinOpen: false,
       currentMidx: null,
@@ -139,6 +122,26 @@ export default {
         map.setCenter(new this.google.maps.LatLng(y, x))
       })
     },
+    // toggleEdit (attribute) {
+    //   if (this.infoWindow.userID !== this.user.uid) {
+    //     return
+    //   }
+    //   switch (attribute) {
+    //     case 'type':
+    //       this.infoWindow.edit.type = !this.infoWindow.edit.type
+    //   }
+    // },
+    // saveEdit (attribute) {
+    //   this.db.collection(this.infoWindow.collectionName).doc(this.infoWindow.id).update({
+    //     [attribute]: this.infoWindow[attribute]
+    //   })
+    //     .then(() => {
+    //       this.toggleEdit()
+    //     })
+    //     .catch((err) => {
+    //       console.log('Error :', err)
+    //     })
+    // },
     // Assigns values from selected marker for info window to project
     getMarkerDetails (marker, idx, collectionTitle, collectionName) {
       this.closeInfoWindow()
