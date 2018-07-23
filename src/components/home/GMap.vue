@@ -27,7 +27,7 @@
         </div>
       </gmap-info-window>
       <GmapMarker
-        v-if="all_lost_items"
+        v-if="lostToggle"
         :animation="2"
         v-for="(lost_item, index) in all_lost_items"
         :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`"
@@ -37,7 +37,7 @@
         icon="../../../static/icons/lost_icon.png"
         @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
       <GmapMarker
-        v-if="all_found_items"
+        v-if="foundToggle"
         :animation="2"
         v-for="(found_item, index) in all_found_items"
         :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`"
@@ -217,7 +217,11 @@ export default {
       this.db.collection(this.infoWindow.collectionName).doc(this.infoWindow.id).delete().then(() => {
         this.$store.dispatch('updateUserCollection', this.infoWindow.collectionName)
         this.$store.dispatch('updateCollection', this.infoWindow.collectionName)
+<<<<<<< HEAD
         this.infoWinOpen = this.closeInfoWindow()
+=======
+        this.closeInfoWindow()
+>>>>>>> origin/Egan
         console.log('Document successfully deleted!')
       }).catch(function (error) {
         console.error('Error removing document: ', error)
@@ -276,7 +280,9 @@ export default {
       'db',
       'firebase',
       'all_lost_items',
-      'all_found_items'
+      'all_found_items',
+      'lostToggle',
+      'foundToggle'
     ])
   },
   created () {
