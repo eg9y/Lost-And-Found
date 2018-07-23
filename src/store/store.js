@@ -17,7 +17,10 @@ export default new Vuex.Store({
     all_lost_items: null,
     all_found_items: null,
     firebase,
-    db
+    db,
+    // added by Geoff for toggling between lost/found pins
+    lostToggle: true,
+    foundToggle: true
   },
   mutations: {
     setUser (state, user) {
@@ -42,6 +45,19 @@ export default new Vuex.Store({
     },
     setAllFoundItems (state, items) {
       state.all_found_items = items
+    },
+    // below four functions are for toggling lost/found pins
+    setLostToggleTrue (state) {
+      state.lostToggle = true
+    },
+    setLostToggleFalse (state) {
+      state.lostToggle = false
+    },
+    setFoundToggleTrue (state) {
+      state.foundToggle = true
+    },
+    setFoundToggleFalse (state) {
+      state.foundToggle = false
     },
     updateCollection (state, collectionName) {
       let documents = []

@@ -37,7 +37,7 @@
               <li v-if="found_items.length > 0" v-for="(item, index) in found_items" :key="index">
                 {{item.description}}
                 {{item.type}}
-                {{item.timestamp}}\
+                {{item.timestamp}}
               </li>
             </ul>
           </template>
