@@ -1,5 +1,8 @@
+<!-- This is the Side Nav Component-->
 <template>
   <v-navigation-drawer v-model="drawer" absolute temporary>
+
+    <!-- This part of the drawer displays the User Info-->
     <v-list class="pa-1" v-if="user">
       <v-list-tile avatar>
         <v-list-tile-avatar>
@@ -38,31 +41,28 @@
 
     <v-list>
       <v-divider></v-divider>
+      <!-- This part of the drawer diplays the user's submission history, and center the map on the clicked entry -->
       <v-subheader inset>History</v-subheader>
 
       <v-list-tile v-for="lost_item in lost_items" :key="lost_item.id" @click="centerLost(lost_item,'lost: ','lost-items' )">
         <v-list-tile-action>
           <v-icon>queue</v-icon>
         </v-list-tile-action>
-
         <v-list-tile-content>
           <v-list-tile-title>{{ lost_item.type}}</v-list-tile-title>
         </v-list-tile-content>
-
         <v-list-tile-content>
           <v-list-tile-title>{{ lost_item.timestamp }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
 
-      <v-list-tile v-for="found_item in found_items" :key="found_item.id"  @click="centerFound(found_item,'find: ','found-items' )">
+      <v-list-tile v-for="found_item in found_items" :key="found_item.id" @click="centerFound(found_item,'find: ','found-items' )">
         <v-list-tile-action>
           <v-icon>work_off</v-icon>
         </v-list-tile-action>
-
         <v-list-tile-content>
           <v-list-tile-title>{{ found_item.type }}</v-list-tile-title>
         </v-list-tile-content>
-
         <v-list-tile-content>
           <v-list-tile-title>{{ found_item.timestamp }}</v-list-tile-title>
         </v-list-tile-content>
@@ -77,6 +77,12 @@ import { mapState } from 'vuex'
 
 export default {
   props: ['mainDrawer'],
+  data () {
+    return {
+      drawer: this.mainDrawer
+    }
+  },
+
   computed: {
     ...mapState([
       'isUserLoggedIn',
@@ -86,12 +92,11 @@ export default {
       'firebase'
     ])
   },
-  data () {
-    return {
-      drawer: this.mainDrawer
-    }
-  },
+
   methods: {
+    /*
+    The 'center functions' pass item info to the GMAP component used for centering and displaying marker details
+    */
     centerLost (lostItem, collectionTiltle, collectionName) {
       console.log(lostItem)
       EventBus.$emit('newCenter', [lostItem, collectionTiltle, collectionName])
@@ -100,6 +105,10 @@ export default {
       console.log(foundItem)
       EventBus.$emit('newCenter', [foundItem, collectionTiltle, collectionName])
     },
+
+    /*
+    Pass the drawer status (open/closed) to the map component
+    */
     toggleDrawer () {
       this.drawer = !this.drawer
       EventBus.$emit('toggleDrawer')
@@ -127,6 +136,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>
