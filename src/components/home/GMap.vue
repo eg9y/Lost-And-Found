@@ -288,6 +288,14 @@ export default {
       this.lat = null
       this.lng = null
     }.bind(this))
+    EventBus.$on('newCenter', function (newCenter) {
+      this.center = {
+        lat: newCenter[0].location._lat,
+        lng: newCenter[0].location._long
+      }
+      console.log(newCenter)
+      this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
+    }.bind(this))
     if (this.$route.params.id) {
       this.findMarker(this.$route.params.id)
     }
