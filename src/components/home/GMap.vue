@@ -1,74 +1,57 @@
+<!-- This is the component that displays UCSC map using Google Maps API -->
+
 <template>
   <div style="width: 100%; height: 100%">
+
+    <!-- Alert that pops up when users attempt to create a marker without signing in -->
     <v-alert icon="new_releases" style="margin=0 0 0 0;" v-model="alert" dismissible type="error" transition="slide-y-transition">
       You must log in to pin!
     </v-alert>
+
+    <!-- Pop up dialog that includes the submission form -->
+    <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
+
+    <!-- The UCSC map -->
     <GmapMap :center="center" :zoom="16" :options="mapOptions" style="width: 100%; height: 100%" ref="mapRef" @dragend="checkBoundary" @click="addLocation">
-      <submission-form :lat="lat" :lng="lng" :submissionDialog="submissionDialog" :user="user"></submission-form>
-      <gmap-info-window
-        v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
+
+      <!-- The marker info window -->
+      <gmap-info-window v-cloak :options="infoOptions" :position="infoWindow.location" :opened="infoWinOpen" @closeclick="closeInfoWindow">
         <v-layout>
           <v-flex class="text-xs-center">
             <transition name="fade">
               <h1 style="text-align: center;">{{infoWindow.type}}</h1>
             </transition>
-            <progressive-img v-if="infoWindow.pictures" :src="infoWindow.pictures" alt=""/>
+            <progressive-img v-if="infoWindow.pictures" :src="infoWindow.pictures" alt="" />
           </v-flex>
         </v-layout>
         <v-layout>
           <v-flex v-if="infoWinOpen" transition="fade">
-              <h3>{{infoWindow.description}}</h3>
-              <h3>{{infoWindow.timestamp}}</h3>
-              <h3>{{infoWindow.contactEmail | truncate}}</h3>
+            <h3>{{infoWindow.description}}</h3>
+            <h3>{{infoWindow.timestamp}}</h3>
+            <h3>{{infoWindow.contactEmail | truncate}}</h3>
           </v-flex>
         </v-layout>
         <div class="text-xs-center">
           <v-btn v-if="isUserLoggedIn && user.uid == infoWindow.userID" @click="deleteMarker" color="error">Resolve</v-btn>
         </div>
       </gmap-info-window>
-      <GmapMarker
-        v-if="lostToggle"
-        :animation="2"
-        v-for="(lost_item, index) in all_lost_items"
-        :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`"
-        :position="{lat: lost_item.location._lat, lng: lost_item.location._long}"
-        :title="lost_item.type"
-        :clickable="true"
-        icon="../../../static/icons/lost_icon.png"
-        @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
-      <GmapMarker
-        v-if="foundToggle"
-        :animation="2"
-        v-for="(found_item, index) in all_found_items"
-        :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`"
-        :position="{lat: found_item.location._lat, lng: found_item.location._long}"
-        :title="found_item.type"
-        :clickable="true"
-        icon="../../../static/icons/found_icon.png"
-        @click="getMarkerDetails(found_item, 'Found: ', 'found-items')" />
 
-      <GmapMarker
-        v-if="lat && lng"
-        :animation="2"
-        :position="{lat, lng}"
-        icon="http://s3.amazonaws.com/besport.com_images/status-pin.png"
-        />
+      <!-- The lost and found markers -->
+      <GmapMarker v-if="lostToggle" :animation="2" v-for="(lost_item, index) in all_lost_items" :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`" :position="{lat: lost_item.location._lat, lng: lost_item.location._long}" :title="lost_item.type" :clickable="true" icon="../../../static/icons/lost_icon.png" @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
+      <GmapMarker v-if="foundToggle" :animation="2" v-for="(found_item, index) in all_found_items" :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`" :position="{lat: found_item.location._lat, lng: found_item.location._long}" :title="found_item.type" :clickable="true" icon="../../../static/icons/found_icon.png" @click="getMarkerDetails(found_item, 'Found: ', 'found-items')" />
+
+      <!-- The pin that places the potential submission -->
+      <GmapMarker v-if="lat && lng" :animation="2" :position="{lat, lng}" icon="http://s3.amazonaws.com/besport.com_images/status-pin.png" />
     </GmapMap>
   </div>
 </template>
 
 <script>
-import { gmapApi } from 'vue2-google-maps'
 import SubmissionForm from './SubmissionForm/Index'
+import firebase from 'firebase'
+import { gmapApi } from 'vue2-google-maps'
 import { EventBus } from '../../main'
 import { mapState } from 'vuex'
-import firebase from 'firebase'
-
-// these coordinates define the boundaries of the map/UCSC
-const MIN_LAT = 36.987615
-const MAX_LAT = 37.001976
-const MIN_LNG = -122.068846
-const MAX_LNG = -122.04808
 
 export default {
   components: {
@@ -116,11 +99,31 @@ export default {
       alert: false
     }
   },
+  computed: {
+    google: gmapApi,
+    ...mapState([
+      'isUserLoggedIn',
+      'user',
+      'stillLoading',
+      'db',
+      'firebase',
+      'all_lost_items',
+      'all_found_items',
+      'lostToggle',
+      'foundToggle'
+    ])
+  },
   methods: {
     /*
-
+      Checks the map boundaries, and prevents the user from going out of bounds
     */
     checkBoundary () {
+      // these coordinates define the boundaries of the map/UCSC
+      const MIN_LAT = 36.987615
+      const MAX_LAT = 37.001976
+      const MIN_LNG = -122.068846
+      const MAX_LNG = -122.04808
+
       var strictBounds = new this.google.maps.LatLngBounds(
         new this.google.maps.LatLng(MIN_LAT, MIN_LNG),
         new this.google.maps.LatLng(MAX_LAT, MAX_LNG)
@@ -147,8 +150,9 @@ export default {
       })
     },
     /*
-      Closes the currently open info window, assigns values from selected marker to info window, opens the info window
-      Parameters: ???
+      Closes the currently open info window,
+      assigns values from selected marker to info window,
+      opens the info window
     */
     getMarkerDetails (marker, collectionTitle, collectionName) {
       this.closeInfoWindow()
@@ -171,7 +175,8 @@ export default {
           // check if its the same marker that was selected if yes toggle
           if (this.currentMid === marker.id) {
             this.infoWinOpen = !this.infoWinOpen
-          } else { // if different marker set infowindow to open and reset current marker index
+          } else {
+            // if different marker set infowindow to open and reset current marker index
             this.infoWinOpen = true
             this.currentMid = marker.id
           }
@@ -207,7 +212,7 @@ export default {
         var picRef = firebase.storage().refFromURL(this.infoWindow.pictures)
         picRef.delete().then(function () {
           console.log('Image successfully deleted from Storage')
-        // eslint-disable-next-line
+          // eslint-disable-next-line
         }).catch(function (error) {
           console.log('Error in deleting image from Storage')
         })
@@ -224,7 +229,7 @@ export default {
       })
     },
     /*
-
+      Closes the info window and clears all the information fields
     */
     closeInfoWindow () {
       this.infoWinOpen = false
@@ -238,57 +243,31 @@ export default {
       this.infoWindow.id = null
       this.infoWindow.collectionName = null
     },
+    /*
+      Given itemStr, searches for correct item in all_lost_items or all_found_items
+      Parameters: itemStr -- string in the form of <x>-<item id>, where item id is the unique id from the database,
+      and x is 'l' for items in the lost collection and 'f' for items in the found collection
+    */
     findMarker (itemStr) {
       console.log('findMarker is running, looking for: ' + itemStr)
-      console.log(typeof itemStr)
       if (this.all_lost_items && this.all_found_items) {
         var itemID = itemStr.substr(2)
         if (itemStr[0] === 'l') {
           for (var i = 0; i < this.all_lost_items.length; i++) {
-          // console.log('ddd', this.all_lost_items[i])
             if (this.all_lost_items[i].id === itemID) {
-              console.log('it\'s a match')
-              console.log(this.all_lost_items[i].id)
               this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
               i = this.all_lost_items.length
             }
           }
         } else if (itemStr[0] === 'f') {
           for (var j = 0; j < this.all_found_items.length; j++) {
-          // console.log('ddd', this.all_lost_items[i])
             if (this.all_found_items[j].id === itemID) {
-              console.log('it\'s a match')
-              console.log(this.all_found_items[j].id)
               this.getMarkerDetails(this.all_found_items[j], 'Found: ', 'found-items')
               j = this.all_Found_items.length
             }
           }
         }
       }
-    }
-  },
-  computed: {
-    google: gmapApi,
-    ...mapState([
-      'isUserLoggedIn',
-      'user',
-      'stillLoading',
-      'db',
-      'firebase',
-      'all_lost_items',
-      'all_found_items',
-      'lostToggle',
-      'foundToggle'
-    ])
-  },
-  created () {
-    EventBus.$on('toggleSubmission', function (submission) {
-      this.submissionDialog = false
-      this.lat = null
-      this.lng = null
-    }.bind(this))
-    if (this.$route.params.id) {
-      this.findMarker(this.$route.params.id)
     }
   },
   watch: {
@@ -303,8 +282,20 @@ export default {
       }
     }
   },
+  created () {
+    EventBus.$on('toggleSubmission', function (submission) {
+      this.submissionDialog = false
+      this.lat = null
+      this.lng = null
+    }.bind(this))
+    if (this.$route.params.id) {
+      this.findMarker(this.$route.params.id)
+    }
+  },
   filters: {
-    // Define truncate filter to replace long words with ...
+    /*
+      Define truncate filter to replace long words with ...
+    */
     truncate (text) {
       let newText = text
       if (typeof (newText) === 'string' && newText.length > 14) {
@@ -316,6 +307,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 img {
   width: 100%;

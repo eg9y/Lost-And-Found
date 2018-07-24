@@ -1,3 +1,5 @@
+<!-- The entry point to our app -->
+
 <template>
   <v-app id="inspire">
     <nav-bar></nav-bar>
@@ -24,6 +26,24 @@ export default {
       'db',
       'user'
     ])
+  },
+  methods: {
+    /*
+      Gets all documents by user from lost-items and found-items collection
+      and stores it in lost_items and found_items array
+    */
+    fetchAllUserDocuments () {
+      this.$store.dispatch('updateUserCollection', 'lost-items')
+      this.$store.dispatch('updateUserCollection', 'found-items')
+    },
+    /*
+      Gets all documents from lost-items and found-items collection
+      and stores it in lost_items and found_items array
+    */
+    fetchAllDocuments () {
+      this.$store.dispatch('updateCollection', 'lost-items')
+      this.$store.dispatch('updateCollection', 'found-items')
+    }
   },
   created () {
     this.firebase.auth().onAuthStateChanged(
@@ -61,18 +81,6 @@ export default {
           this.$store.dispatch('updateUserCollection', 'found-items')
         }
       })
-  },
-  methods: {
-    // Get all documents by user from lost-items and found-items collection
-    // and put it to lost_items and found_items array
-    fetchAllUserDocuments () {
-      this.$store.dispatch('updateUserCollection', 'lost-items')
-      this.$store.dispatch('updateUserCollection', 'found-items')
-    },
-    fetchAllDocuments () {
-      this.$store.dispatch('updateCollection', 'lost-items')
-      this.$store.dispatch('updateCollection', 'found-items')
-    }
   }
 }
 </script>

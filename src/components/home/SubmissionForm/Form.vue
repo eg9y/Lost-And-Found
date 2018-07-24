@@ -1,117 +1,63 @@
+<!-- This is the Lost/Found submission form inside the pop up dialog -->
+
 <template>
-    <v-card>
-        <v-card-text>
-            <v-container grid-list-md>
-                <v-form v-model="valid">
-                  <v-layout wrap>
-                    <v-flex xs12>
-                        <v-text-field
-                          class="text-field"
-                          v-model="type"
-                          label="Item *"
-                          :hint="typeHint"
-                          counter="10"
-                          :maxlength="10"
-                          required
-                          :error-messages="typeErrors"
-                          @input="$v.type.$touch()"
-                          @blur="$v.type.$touch()"
-                        ></v-text-field>
-                    </v-flex>
-                    <v-flex xs12>
-                        <v-textarea
-                          v-model="description"
-                          :hint="descriptionHint"
-                          label="Item Description *"
-                          counter="150"
-                          :maxlength="150"
-                          required
-                          :error-messages="descriptionErrors"
-                          @input="$v.description.$touch()"
-                          @blur="$v.description.$touch()"
-                        ></v-textarea>
-                    </v-flex>
-                    <v-flex xs12>
-                        <v-text-field
-                          v-model="contactEmail"
-                          label="Contact Information *"
-                          :hint="contactHint"
-                          required
-                          :error-messages="contactEmailErrors"
-                          @input="$v.contactEmail.$touch()"
-                          @blur="$v.contactEmail.$touch()"
-                        ></v-text-field>
-                    </v-flex>
-                    <date-picker></date-picker>
-                    <time-picker></time-picker>
-                    <v-flex xs12 mt-4>
-                        <v-tabs
-                          centered
-                          v-model="active"
-                          color="cyan"
-                          dark
-                          fixed
-                          height="30"
-                        >
-                          <v-tabs-slider color="yellow"></v-tabs-slider>
-                          <v-tab href="#tab-1">
-                            Image Upload
-                            <v-icon>fas fa-laptop</v-icon>
-                          </v-tab>
+  <v-card>
+    <v-card-text>
+      <v-container grid-list-md>
+        <v-form v-model="valid">
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field class="text-field" v-model="type" label="Item *" :hint="typeHint" counter="10" :maxlength="10" required :error-messages="typeErrors" @input="$v.type.$touch()" @blur="$v.type.$touch()"></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-textarea v-model="description" :hint="descriptionHint" label="Item Description *" counter="150" :maxlength="150" required :error-messages="descriptionErrors" @input="$v.description.$touch()" @blur="$v.description.$touch()"></v-textarea>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field v-model="contactEmail" label="Contact Information *" :hint="contactHint" required :error-messages="contactEmailErrors" @input="$v.contactEmail.$touch()" @blur="$v.contactEmail.$touch()"></v-text-field>
+            </v-flex>
+            <date-picker></date-picker>
+            <time-picker></time-picker>
+            <v-flex xs12 mt-4>
+              <v-tabs centered v-model="active" color="cyan" dark fixed height="30">
+                <v-tabs-slider color="yellow"></v-tabs-slider>
+                <v-tab href="#tab-1">
+                  Image Upload
+                  <v-icon>fas fa-laptop</v-icon>
+                </v-tab>
 
-                          <v-tab href="#tab-2">
-                            Image URL
-                            <v-icon>fas fa-wifi</v-icon>
-                          </v-tab>
+                <v-tab href="#tab-2">
+                  Image URL
+                  <v-icon>fas fa-wifi</v-icon>
+                </v-tab>
 
-                          <v-tab-item id="tab-1">
-                            <v-card flat>
-                              <v-card-text>
-                                <image-uploader
-                                  ref="fileUpload"
-                                  :debug="1"
-                                  :maxWidth="400"
-                                  :maxHeight="400"
-                                  :quality="0.9"
-                                  :autoRotate=true
-                                  outputFormat="string"
-                                  :preview=true
-                                  @input="updateImageFile"
-                                  @onUpload="checkFileType"
-                                ></image-uploader>
-                              </v-card-text>
-                            </v-card>
-                          </v-tab-item>
-                          <v-tab-item id="tab-2">
-                            <v-card flat>
-                              <v-card-text>
-                                <v-text-field label="URL" v-model="imageURL"></v-text-field>
-                              </v-card-text>
-                            </v-card>
-                          </v-tab-item>
-                        </v-tabs>
-                    </v-flex>
-                </v-layout>
-                </v-form>
-            </v-container>
-            <br />
-            <small>* indicates required field</small>
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="cyan"
-              dark
-              @click="uploadImageAndDoc"
-              :disabled="!valid"
-            >Submit</v-btn>
-            <v-btn
-              color="cyan"
-              dark
-              @click.native="toggleSubmission"
-            >Close</v-btn>
-        </v-card-actions>
-    </v-card>
+                <v-tab-item id="tab-1">
+                  <v-card flat>
+                    <v-card-text>
+                      <image-uploader ref="fileUpload" :debug="1" :maxWidth="400" :maxHeight="400" :quality="0.9" :autoRotate=true outputFormat="string" :preview=true @input="updateImageFile" @onUpload="checkFileType"></image-uploader>
+                    </v-card-text>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item id="tab-2">
+                  <v-card flat>
+                    <v-card-text>
+                      <v-text-field label="URL" v-model="imageURL"></v-text-field>
+                    </v-card-text>
+                  </v-card>
+                </v-tab-item>
+              </v-tabs>
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </v-container>
+      <br />
+      <small>* indicates required field</small>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn @click="uploadImageAndDoc" :disabled="!valid">Submit</v-btn>
+      <v-btn color="cyan" dark @click.native="toggleSubmission">Close</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
@@ -132,6 +78,31 @@ export default {
     'date-picker': DatePicker,
     'time-picker': TimePicker,
     'image-uploader': ImageUploader
+  },
+  props: [
+    'db',
+    'firebase',
+    'user',
+    'lat',
+    'lng',
+    'activeParent',
+    'typeHint',
+    'descriptionHint',
+    'contactHint',
+    'collectionName'
+  ],
+  data () {
+    return {
+      type: null,
+      description: null,
+      contactEmail: null,
+      date: null,
+      time: null,
+      imageFile: null,
+      imageURL: null,
+      active: null,
+      valid: true
+    }
   },
   mixins: [formMixin],
   // vuelidate package allows us to include validations to enforce correct input format
@@ -171,41 +142,23 @@ export default {
       return errors
     }
   },
-  props: [
-    'db',
-    'firebase',
-    'user',
-    'lat',
-    'lng',
-    'activeParent',
-    'typeHint',
-    'descriptionHint',
-    'contactHint',
-    'collectionName'
-  ],
-  data () {
-    return {
-      type: null,
-      description: null,
-      contactEmail: null,
-      date: null,
-      time: null,
-      imageFile: null,
-      imageURL: null,
-      active: null,
-      valid: true
-    }
-  },
   methods: {
+    /*
+      Checks whether the submission form is valid
+      If it is valid, call the appropriate function to upload the document to the database
+      depending on whether or not a picture was included
+    */
     uploadImageAndDoc () {
       this.$v.$touch()
-      if (!this.valid) {
-        console.log('test')
-        console.log('this.valid :', this.valid)
+      if (this.$v.$invalid) {
+        return
       }
       this.imageFile && this.active === 'tab-1' ? this.uploadPic(this.collectionName) : this.addDoc(this.collectionName)
       this.toggleSubmission()
     },
+    /*
+      Adds the document to the database
+    */
     addDoc (collectionName) {
       console.log('addDoc is running')
       if (this.type) {
@@ -258,12 +211,10 @@ export default {
     /*
       Uploads the picture to Storage and saves the url to data.imageURL
       NOTE: must be called before addDoc() if user is including a picture
-      Parameters: collectionName -- the name of the item collection in the db; should be either 'lost-items' or 'found-items'
     */
     uploadPic (collectionName) {
       var name = this.user.uid + '-' + (+new Date()) + '-' + this.type // give picture unique name based on userID, timestamp, and item type
       console.log('uploadPic is running')
-      // var metadata = { contentType: this.imageFile.type }
       const STORAGE = this.firebase.storage().ref()
       var uploadTask = STORAGE.child(name).putString(this.imageFile, 'data_url')
       var self = this
@@ -282,7 +233,9 @@ export default {
         })
       })
     },
-    // close form
+    /*
+      Close form (used in the "Submit" and "Close" buttons)
+    */
     toggleSubmission () {
       this.$v.$reset()
       EventBus.$emit('toggleSubmission')
@@ -313,6 +266,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

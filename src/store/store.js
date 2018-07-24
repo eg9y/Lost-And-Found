@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-// setup firebase and db so all components can use
 import firebase from 'firebase'
 import db from '@/firebase/init'
 
@@ -18,6 +16,8 @@ export default new Vuex.Store({
     all_found_items: null,
     firebase,
     db,
+    // if lostToggle/foundToggle is true = display lost/found markers
+    // if lostToggle/foundToggle is false = hide lost/found markers
     lostToggle: true,
     foundToggle: true
   },
@@ -58,6 +58,9 @@ export default new Vuex.Store({
     setFoundToggleFalse (state) {
       state.foundToggle = false
     },
+    /*
+      Fetches new submissions from firebase storage and updates the local copy of all lost/found entries
+    */
     updateCollection (state, collectionName) {
       let documents = []
       state.db
@@ -80,6 +83,9 @@ export default new Vuex.Store({
           console.log('Error getting documents: ', error)
         })
     },
+    /*
+      Fetches new submissions from firebase storage and updates the local copy of the user's lost/found entries
+    */
     updateUserCollection (state, collectionName) {
       let documents = []
       state.db
