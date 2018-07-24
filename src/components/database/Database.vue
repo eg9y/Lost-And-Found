@@ -10,13 +10,14 @@
           <v-card height="525px">
             <v-card-title primary-title>
               <div class="card-content">
-                <div v-if="lostItem.picture">
-                  <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
-                </div>
                 <h3 class="headline mb-0">
                   <center>
                     <b>Lost:</b> {{lostItem.type}}</center>
-                </h3><br/>
+                </h3>
+                <div v-if="lostItem.picture">
+                  <br/><img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)">
+                </div>
+                <br/>
                 <div v-if="lostItem.description">
                   <b>Description:</b> {{ lostItem.description }}<br/>
                 </div>
@@ -60,13 +61,13 @@
           <v-card height="500px">
             <v-card-title primary-title>
               <div class="card-content">
-                <div>
-                  <img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
-                </div>
                 <h3 class="headline mb-0">
                   <center>
                     <b>Found:</b> {{foundItem.type}}</center>
                 </h3>
+                <div v-if="foundItem.picture">
+                  <br/><img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)">
+                </div><br/>
                 <div v-if="foundItem.description">
                   <b>Description:</b> {{ foundItem.description }}<br/>
                 </div>
