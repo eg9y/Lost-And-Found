@@ -1,3 +1,5 @@
+<!-- This displays all the items in the database as a list view -->
+
 <template>
   <div class="index container">
 
@@ -7,102 +9,108 @@
         <v-flex xs12 sm9 offset-sm>
           <v-card height="525px">
             <v-card-title primary-title>
-            <div class="card-content">
-            <div v-if="lostItem.picture">
-               <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
-            </div>
-            <h3 class="headline mb-0"><center><b>Lost:</b> {{lostItem.type}}</center></h3><br/>
-            <div v-if="lostItem.description">
-              <b>Description:</b> {{ lostItem.description }}<br/>
-            </div>
-            <div v-else>
-              <b>Description:</b> N/A<br/>
-            </div>
-            <div v-if="lostItem.contactEmail">
-              <b>Contact:</b> {{ lostItem.contactEmail }}<br/>
-            </div>
-            <div v-else>
-              <b>Contact:</b> N/A<br/>
-            </div>
-            <div v-if="lostItem.date">
-              <b>Date:</b> {{ lostItem.date }}<br/>
-            </div>
-            <div v-else>
-              <b>Date:</b> N/A<br/>
-            </div>
-            <div v-if="lostItem.time">
-              <b>Time:</b> {{ lostItem.time }}<br/>
-            </div>
-            <div v-else>
-              <b>Time:</b> N/A<br/>
-            </div>
-            <br/>
-          </div>
-          </v-card-title>
-          <v-card-actions>
-            <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
-            <v-btn bottom flat color="cyan" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
-          </v-card-actions>
+              <div class="card-content">
+                <div v-if="lostItem.picture">
+                  <img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
+                </div>
+                <h3 class="headline mb-0">
+                  <center>
+                    <b>Lost:</b> {{lostItem.type}}</center>
+                </h3><br/>
+                <div v-if="lostItem.description">
+                  <b>Description:</b> {{ lostItem.description }}<br/>
+                </div>
+                <div v-else>
+                  <b>Description:</b> N/A<br/>
+                </div>
+                <div v-if="lostItem.contactEmail">
+                  <b>Contact:</b> {{ lostItem.contactEmail }}<br/>
+                </div>
+                <div v-else>
+                  <b>Contact:</b> N/A<br/>
+                </div>
+                <div v-if="lostItem.date">
+                  <b>Date:</b> {{ lostItem.date }}<br/>
+                </div>
+                <div v-else>
+                  <b>Date:</b> N/A<br/>
+                </div>
+                <div v-if="lostItem.time">
+                  <b>Time:</b> {{ lostItem.time }}<br/>
+                </div>
+                <div v-else>
+                  <b>Time:</b> N/A<br/>
+                </div>
+                <br/>
+              </div>
+            </v-card-title>
+            <v-card-actions>
+              <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
+              <v-btn bottom flat color="cyan" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
+            </v-card-actions>
           </v-card>
         </v-flex>
       </v-layout>
-    </div><br/>
+    </div>
 
-      <!--Displays Found Items-->
-      <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
-        <v-layout justify-center="20px">
-          <v-flex xs12 sm9 offset-sm>
-            <v-card height ="500px">
-              <v-card-title primary-title>
-                <div class="card-content">
-                  <div>
-                    <img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
-                  </div>
-                  <h3 class="headline mb-0"><center><b>Found:</b> {{foundItem.type}}</center></h3>
-                  <div v-if="foundItem.description">
-                    <b>Description:</b> {{ foundItem.description }}<br/>
-                  </div>
-                  <div v-else>
-                    <b>Description:</b> N/A<br/>
-                  </div>
-                  <div v-if="foundItem.contactEmail">
-                    <b>Contact:</b> {{ foundItem.contactEmail }}<br/>
-                  </div>
-                  <div v-else>
-                    <b>Contact:</b> N/A<br/>
-                  </div>
-                  <div v-if="foundItem.date">
-                    <b>Date:</b> {{ foundItem.date }}<br/>
-                  </div>
-                  <div v-else>
-                    <b>Date:</b> N/A<br/>
-                  </div>
-                  <div v-if="foundItem.time">
-                    <b>Time:</b> {{ foundItem.time }}<br/>
-                  </div>
-                  <div v-else>
-                    <b>Time:</b> N/A<br/>
-                  </div>
-                  <br/>
+    <!--Sets the design and displays Found Items-->
+    <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
+      <v-layout justify-center="20px">
+        <v-flex xs12 sm9 offset-sm>
+          <v-card height="500px">
+            <v-card-title primary-title>
+              <div class="card-content">
+                <div>
+                  <img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)"><br/>
                 </div>
-              </v-card-title>
+                <h3 class="headline mb-0">
+                  <center>
+                    <b>Found:</b> {{foundItem.type}}</center>
+                </h3>
+                <div v-if="foundItem.description">
+                  <b>Description:</b> {{ foundItem.description }}<br/>
+                </div>
+                <div v-else>
+                  <b>Description:</b> N/A<br/>
+                </div>
+                <div v-if="foundItem.contactEmail">
+                  <b>Contact:</b> {{ foundItem.contactEmail }}<br/>
+                </div>
+                <div v-else>
+                  <b>Contact:</b> N/A<br/>
+                </div>
+                <div v-if="foundItem.date">
+                  <b>Date:</b> {{ foundItem.date }}<br/>
+                </div>
+                <div v-else>
+                  <b>Date:</b> N/A<br/>
+                </div>
+                <div v-if="foundItem.time">
+                  <b>Time:</b> {{ foundItem.time }}<br/>
+                </div>
+                <div v-else>
+                  <b>Time:</b> N/A<br/>
+                </div>
+                <br/>
+              </div>
+            </v-card-title>
             <v-card-actions>
               <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
               <v-btn bottom flat color="cyan" @click="locateItem(foundItem.id, 'f')">Location</v-btn>
             </v-card-actions>
-            </v-card>
-          </v-flex>
-          </v-layout>
-        </div><br/>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
-// import { EventBus } from '../../main'
 
-var storage = firebase.storage()
+// Creates a reference to firebase storage
+const STORAGE = firebase.storage()
 
 export default {
   name: 'Database',
@@ -114,6 +122,7 @@ export default {
   },
   methods: {
     /*
+      Displays all items in a collection in the database
     */
     displayCollection (collectionName, collectionArr) {
       // fetch data from firestore
@@ -134,10 +143,10 @@ export default {
         })
     },
     /*
-      fetches the picture from Storage, url given by urlPic, and replaces the associated img tag src with the url
+      Fetches the picture from Storage and replaces the associated img tag src with the url
     */
     getPicture (urlPic, elemID) {
-      storage.refFromURL(urlPic).getDownloadURL().then(function (url) {
+      STORAGE.refFromURL(urlPic).getDownloadURL().then(function (url) {
         let img = document.getElementById(elemID)
         img.src = url
       })
@@ -145,13 +154,19 @@ export default {
           console.log(error)
         })
     },
+    /*
+      Checks if the picture is stored in Firebase Storage
+      If not, returns the same url
+    */
     getExternalPic (urlPic) {
       if (urlPic && !urlPic.includes('firebasestorage')) {
         return urlPic
       }
     },
+    /*
+      Used in the Location button to redirect to the home page with the info window of the item open
+    */
     locateItem (itemID, collectionType) {
-      console.log('Item ID: ' + itemID)
       this.$router.push(`/${collectionType}-${itemID}`)
     }
   },

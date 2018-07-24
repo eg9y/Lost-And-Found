@@ -1,30 +1,26 @@
+<!-- The navigation bar at the top of the web app -->
+
 <template>
   <div>
-    <!-- NAV BAR -->
     <v-toolbar dark color="primary" v-if="!stillLoading">
       <v-toolbar-side-icon v-if="this.isUserLoggedIn" @click.stop="drawer = !drawer">
       </v-toolbar-side-icon>
-
       <v-toolbar-title class="white--text">Lost And Found</v-toolbar-title>
-
       <v-spacer></v-spacer>
 
+      <!-- Home button -->
       <v-toolbar-items>
-        <v-btn to="/" flat >
+        <v-btn to="/" flat>
           <v-icon left>home</v-icon> Home
         </v-btn>
         <display-button></display-button>
-        <!-- <v-btn @click.stop="lost_dialog = true" v-if="this.isUserLoggedIn" flat>
-           Add Lost Item
-        </v-btn>
-        <v-btn @click.stop="found_dialog = true" v-if="this.isUserLoggedIn" flat>
-          Add Found Item
-        </v-btn> -->
       </v-toolbar-items>
+
+      <!-- Sign in/out buttons -->
       <v-toolbar-items v-if="!this.isUserLoggedIn">
         <v-btn @click="auth" flat>
           <v-icon left>fas fa-sign-in-alt</v-icon>
-           Sign In
+          Sign In
         </v-btn>
       </v-toolbar-items>
       <v-toolbar-items v-else>
@@ -37,26 +33,33 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
+
+    <!-- Loading bar -->
     <template v-else>
       <v-progress-linear :indeterminate="true" color="info"></v-progress-linear>
     </template>
 
+    <!-- Side nav drawer -->
     <side-nav :mainDrawer="drawer"></side-nav>
 
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import SideNav from './SideNav/Index'
 import DisplayButton from './DisplayButton'
+import { mapState } from 'vuex'
 import { EventBus } from '../../main'
 
 export default {
-  name: 'AddFound',
   components: {
     'side-nav': SideNav,
     'display-button': DisplayButton
+  },
+  data () {
+    return {
+      drawer: false
+    }
   },
   computed: {
     ...mapState([
@@ -66,17 +69,10 @@ export default {
       'firebase'
     ])
   },
-  data () {
-    return {
-      drawer: false
-    }
-  },
-  created () {
-    EventBus.$on('toggleDrawer', function () {
-      this.drawer = false
-    }.bind(this))
-  },
   methods: {
+    /*
+      Redirects to Google authentication
+    */
     auth () {
       var provider = new this.firebase.auth.GoogleAuthProvider()
       this.firebase.auth().useDeviceLanguage()
@@ -85,6 +81,9 @@ export default {
       })
       this.firebase.auth().signInWithRedirect(provider)
     },
+    /*
+      Signs the user out
+    */
     signOut () {
       this.firebase.auth().signOut().then(() => {
         // Sign-out successful.
@@ -93,9 +92,11 @@ export default {
         console.log(error)
       })
     }
+  },
+  created () {
+    EventBus.$on('toggleDrawer', function () {
+      this.drawer = false
+    }.bind(this))
   }
 }
 </script>
-
-<style>
-</style>

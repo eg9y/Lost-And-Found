@@ -4,28 +4,29 @@ import Vue from 'vue'
 import App from './App'
 // Import vue-progressive-image for progressive image loading
 import VueProgressiveImage from 'vue-progressive-image'
-// setup router
+// Setup router
 import router from './router'
 import VueRouter from 'vue-router'
-// setup vuex
+// Setup vuex
 import store from '@/store/store'
 import { sync } from 'vuex-router-sync'
-// setup vuetify
+// Setup vuetify
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-// setup google maps
+// Setup google maps
 import * as VueGoogleMaps from 'vue2-google-maps'
-// import global component Panel ('window' component)
+// Import global component Panel ('window' component)
 import Panel from '@/components/globals/Panel'
 
 Vue.component('panel', Panel)
 
-// setup event bus to be exported. Allows child component to talk
+// Setup event bus to be exported. Allows child component to talk
 // with parent component
 export const EventBus = new Vue()
 
+sync(store, router)
+// Ensure you are using css-loader
 Vue.use(VueRouter)
-sync(store, router) // Ensure you are using css-loader
 
 Vue.use(Vuetify, {
   theme: {
@@ -37,16 +38,15 @@ Vue.use(Vuetify, {
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyB-FXJVrNHMXVkgxiGkZylm8kcABXb06cA',
-    libraries: 'places' // This is required if you use the Autocomplete plugin
-    // OR: libraries: 'places,drawing,visualization'
-    // (as you require)
+    // This is required if you use the Autocomplete plugin
+    libraries: 'places'
   },
   autobindAllEvents: false
 })
 
 Vue.use(VueProgressiveImage)
 
-// development mode
+// Development mode
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
