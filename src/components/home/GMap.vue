@@ -222,11 +222,7 @@ export default {
       this.db.collection(this.infoWindow.collectionName).doc(this.infoWindow.id).delete().then(() => {
         this.$store.dispatch('updateUserCollection', this.infoWindow.collectionName)
         this.$store.dispatch('updateCollection', this.infoWindow.collectionName)
-<<<<<<< HEAD
-        this.infoWinOpen = this.closeInfoWindow()
-=======
         this.closeInfoWindow()
->>>>>>> origin/Egan
         console.log('Document successfully deleted!')
       }).catch(function (error) {
         console.error('Error removing document: ', error)
@@ -274,43 +270,6 @@ export default {
       }
     }
   },
-<<<<<<< HEAD
-  computed: {
-    google: gmapApi,
-    ...mapState([
-      'isUserLoggedIn',
-      'user',
-      'stillLoading',
-      'db',
-      'firebase',
-      'all_lost_items',
-      'all_found_items',
-      'lostToggle',
-      'foundToggle'
-    ])
-  },
-  created () {
-    EventBus.$on('toggleSubmission', function (submission) {
-      this.submissionDialog = false
-      this.lat = null
-      this.lng = null
-    }.bind(this))
-
-    EventBus.$on('newCenter', function (newCenter) {
-      this.center = {
-        lat: newCenter[0].location._lat,
-        lng: newCenter[0].location._long
-      }
-      console.log(newCenter)
-      this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
-    }.bind(this))
-
-    if (this.$route.params.id) {
-      this.findMarker(this.$route.params.id)
-    }
-  },
-=======
->>>>>>> origin/BACKUP-MASTER
   watch: {
     all_lost_items () {
       if (this.$route.params.id) {
@@ -328,6 +287,14 @@ export default {
       this.submissionDialog = false
       this.lat = null
       this.lng = null
+    }.bind(this))
+    EventBus.$on('newCenter', function (newCenter) {
+      this.center = {
+        lat: newCenter[0].location._lat,
+        lng: newCenter[0].location._long
+      }
+      console.log(newCenter)
+      this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
     }.bind(this))
     if (this.$route.params.id) {
       this.findMarker(this.$route.params.id)
