@@ -44,7 +44,7 @@
       <!-- This part of the drawer diplays the user's submission history, and center the map on the clicked entry -->
       <v-subheader inset>History</v-subheader>
 
-      <v-list-tile v-for="lost_item in lost_items" :key="lost_item.id" @click="centerLost(lost_item,'lost: ','lost-items' )">
+      <v-list-tile v-for="lost_item in lost_items" :key="lost_item.id" @click="centerLost(lost_item,'Lost: ','lost-items' )">
         <v-list-tile-action>
           <v-icon>sentiment_very_dissatisfied</v-icon>
         </v-list-tile-action>
@@ -56,7 +56,7 @@
         </v-list-tile-content>
       </v-list-tile>
 
-      <v-list-tile v-for="found_item in found_items" :key="found_item.id" @click="centerFound(found_item,'find: ','found-items' )">
+      <v-list-tile v-for="found_item in found_items" :key="found_item.id" @click="centerFound(found_item,'Find: ','found-items' )">
         <v-list-tile-action>
           <v-icon>sentiment_very_satisfied</v-icon>
         </v-list-tile-action>
