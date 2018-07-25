@@ -1,7 +1,8 @@
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      allow read: if request.auth!=null;
+      // allow anyone to read so that users can see Display page pictures without being signed in
+      allow read;
       // only allow writes from authorized users for images that are less than 1MB
       allow write: if request.auth!=null
       						 && request.resource.size < 1024 * 1024
