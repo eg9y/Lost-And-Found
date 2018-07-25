@@ -161,32 +161,27 @@ export default {
     */
     addDoc (collectionName) {
       console.log('addDoc is running')
-      if (this.type) {
-        this.feedback = null
-        this.db.collection(collectionName).add({
-          type: this.type,
-          description: this.description,
-          contactEmail: this.contactEmail,
-          location: new this.firebase.firestore.GeoPoint(this.lat, this.lng),
-          date: this.date,
-          time: this.time,
-          // timestamp: this.date + ' ' + this.time,
-          picture: this.imageURL,
-          userID: this.user.uid
-        }).then((docRef) => {
-          console.log('doc :', docRef)
-          docRef.get().then((doc) => {
-            this.$store.dispatch('updateUserCollection', collectionName)
-            this.$store.dispatch('updateCollection', collectionName)
-          })
+      this.feedback = null
+      this.db.collection(collectionName).add({
+        type: this.type,
+        description: this.description,
+        contactEmail: this.contactEmail,
+        location: new this.firebase.firestore.GeoPoint(this.lat, this.lng),
+        date: this.date,
+        time: this.time,
+        // timestamp: this.date + ' ' + this.time,
+        picture: this.imageURL,
+        userID: this.user.uid
+      }).then((docRef) => {
+        console.log('doc :', docRef)
+        docRef.get().then((doc) => {
+          this.$store.dispatch('updateUserCollection', collectionName)
+          this.$store.dispatch('updateCollection', collectionName)
         })
-          .catch(function (error) {
-            console.log(error)
-          })
-      } else {
-        // this.alert = 'true'
-        // this.feedback = 'You must enter an item type'
-      }
+      })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     /*
       Checks the type of file being uploaded, and displays error message for user if not an image type
