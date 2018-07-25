@@ -40,7 +40,7 @@
                 <v-tab-item id="tab-2">
                   <v-card flat>
                     <v-card-text>
-                      <v-text-field label="URL" v-model="imageURL"></v-text-field>
+                      <v-text-field label="URL" v-model="imageURL" :error-messages="imageURLErrors" @input="$v.imageURL.$touch()" @blur="$v.imageURL.$touch()"></v-text-field>
                     </v-card-text>
                   </v-card>
                 </v-tab-item>
@@ -70,8 +70,10 @@ import { EventBus } from '../../../main'
 import { ImageUploader } from 'vue-image-upload-resize'
 
 // import to use vuelidate
-import { email, required } from 'vuelidate/lib/validators'
+import { email, required, helpers } from 'vuelidate/lib/validators'
 import formMixin from '../../../mixins/form'
+
+const IMAGEURLVALIDATION = helpers.regex('IMAGEURLVALIDATION', /(?:([^:/?#]+):)?(?:\/\/([^/?#]*))?([^?#]*\.(?:jpg|gif|png))(?:\?([^#]*))?(?:#(.*))?/)
 
 export default {
   components: {
@@ -86,6 +88,7 @@ export default {
     'lat',
     'lng',
     'activeParent',
+    'indexSubmissionForm',
     'typeHint',
     'descriptionHint',
     'contactHint',
@@ -117,6 +120,9 @@ export default {
     },
     description: {
       required
+    },
+    imageURL: {
+      IMAGEURLVALIDATION
     }
   },
   computed: {
@@ -125,13 +131,19 @@ export default {
     typeErrors () {
       const errors = []
       if (!this.$v.type.$dirty) return errors
-      !this.$v.type.required && errors.push('type is required.')
+      !this.$v.type.required && errors.push('Type is required.')
       return errors
     },
     descriptionErrors () {
       const errors = []
       if (!this.$v.description.$dirty) return errors
-      !this.$v.description.required && errors.push('description is required.')
+      !this.$v.description.required && errors.push('Description is required.')
+      return errors
+    },
+    imageURLErrors () {
+      const errors = []
+      if (!this.$v.imageURL.$dirty) return errors
+      !this.$v.imageURL.IMAGEURLVALIDATION && errors.push('Image must be valid. Type can be JPG, PNG, or GIF')
       return errors
     },
     contactEmailErrors () {
@@ -233,18 +245,29 @@ export default {
     */
     toggleSubmission () {
       this.$v.$reset()
+      this.clearForm()
       EventBus.$emit('toggleSubmission')
-    }
-  },
-  watch: {
-    // reset every input if toggle between lost form and found form
-    activeParent () {
+    },
+    /*
+      Resets the value of the form input
+    */
+    clearForm () {
       this.$v.$reset()
       this.type = null
       this.description = null
       this.contactEmail = this.user.email
       this.imageFile = null
       this.imageURL = null
+    }
+  },
+  watch: {
+    // reset every input if toggle between lost form and found form
+    activeParent () {
+      this.clearForm()
+    },
+    // reset every input if form is closed by clicking anywhere outside of the dialog
+    indexSubmissionForm () {
+      this.clearForm()
     }
   },
   created () {

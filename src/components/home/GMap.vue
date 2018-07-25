@@ -284,6 +284,8 @@ export default {
   },
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
+      this.lat = null
+      this.lng = null
       this.submissionDialog = false
     }.bind(this))
     EventBus.$on('newCenter', function (newCenter) {

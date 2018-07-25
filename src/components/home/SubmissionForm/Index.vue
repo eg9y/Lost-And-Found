@@ -30,12 +30,34 @@
 
         <!-- Found item form -->
         <v-tab-item :id="'tab-1'">
-          <submission-form :db="db" :firebase="firebase" :user="user" :lat="lat" :lng="lng" :activeParent="activeParent" typeHint="What did you find?" descriptionHint="Please describe the item." contactHint="Email only" collectionName="found-items" />
+          <submission-form
+            :db="db"
+            :firebase="firebase"
+            :user="user"
+            :lat="lat"
+            :lng="lng"
+            :activeParent="activeParent"
+            :indexSubmissionForm="indexSubmissionForm"
+            typeHint="What did you find?"
+            descriptionHint="Please describe the item."
+            contactHint="Email only"
+            collectionName="found-items" />
         </v-tab-item>
 
         <!-- Lost item form -->
         <v-tab-item :id="'tab-2'">
-          <submission-form :db="db" :firebase="firebase" :user="user" :lat="lat" :lng="lng" :activeParent="activeParent" typeHint="What did you lose?" descriptionHint="Please describe the item." contactHint="Email only" collectionName="lost-items" />
+          <submission-form
+            :db="db"
+            :firebase="firebase"
+            :user="user"
+            :lat="lat"
+            :lng="lng"
+            :activeParent="activeParent"
+            :indexSubmissionForm="indexSubmissionForm"
+            typeHint="What did you lose?"
+            descriptionHint="Please describe the item."
+            contactHint="Email only"
+            collectionName="lost-items" />
         </v-tab-item>
       </v-tabs>
     </template>
