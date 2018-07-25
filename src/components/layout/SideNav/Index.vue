@@ -82,7 +82,6 @@ export default {
       drawer: this.mainDrawer
     }
   },
-
   computed: {
     ...mapState([
       'isUserLoggedIn',
@@ -92,7 +91,6 @@ export default {
       'firebase'
     ])
   },
-
   methods: {
     /*
       Passes the information for a "lost" item to the GMap component
