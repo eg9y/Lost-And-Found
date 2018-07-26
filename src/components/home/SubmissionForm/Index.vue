@@ -47,11 +47,11 @@
             collectionName="lost-items"/>
         </v-tab-item>
       </v-tabs>
-    <v-btn id="hide" @click="hide = true"  v-if="!hide" color="danger" :style="hideButtonStyle" >
-      <v-icon left>fas fa-eye-slash</v-icon>  hide
+    <v-btn @click="hide = true"  v-if="!hide" color="danger" :style="hideButtonStyle"  :fab="goMobile" :small="goMobile">
+      <v-icon :left="!goMobile">fas fa-eye-slash</v-icon>  <span v-if="!goMobile">hide</span>
     </v-btn>
-    <v-btn id="hide" @click="hide = false"  v-else :style="hideButtonStyle" >
-       <v-icon left>fas fa-eye</v-icon> show
+    <v-btn @click="hide = false"  v-else :style="hideButtonStyle" :fab="goMobile" :small="goMobile">
+       <v-icon :left="!goMobile">fas fa-eye</v-icon> <span v-if="!goMobile">show</span>
     </v-btn>
   </v-dialog>
 </template>
@@ -80,11 +80,15 @@ export default {
       'db',
       'firebase'
     ]),
+    goMobile () {
+      return this.$vuetify.breakpoint.width < '710'
+    },
     breakpoint () { return this.$vuetify.breakpoint },
     hideButtonStyle () {
       return {
-        top: (this.$vuetify.breakpoint.height - 50) + 'px',
-        left: '5px'
+        position: 'absolute',
+        top: this.goMobile ? (this.$vuetify.breakpoint.height - 80) + 'px' : (this.$vuetify.breakpoint.height - 50) + 'px',
+        left: this.goMobile ? '20px' : '5px'
       }
     }
   },
@@ -108,8 +112,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-#hide {
-    position: absolute;
-}
-</style>
