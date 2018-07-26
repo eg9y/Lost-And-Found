@@ -97,7 +97,9 @@ export default {
       Information is used to center the view on the marker and open the marker's info window
     */
     centerLost (lostItem, collectionTiltle, collectionName) {
-      console.log(lostItem)
+      if (this.$router[this.$router.length - 1] !== '/') {
+        this.$router.push(`/l-${lostItem.id}`)
+      }
       EventBus.$emit('newCenter', [lostItem, collectionTiltle, collectionName])
     },
 
@@ -106,7 +108,9 @@ export default {
       Information is used to center the view on the marker and open the marker's info window
     */
     centerFound (foundItem, collectionTiltle, collectionName) {
-      console.log(foundItem)
+      if (this.$router[this.$router.length - 1] !== '/') {
+        this.$router.push(`/f-${foundItem.id}`)
+      }
       EventBus.$emit('newCenter', [foundItem, collectionTiltle, collectionName])
     },
 

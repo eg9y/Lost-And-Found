@@ -1,7 +1,7 @@
 <!-- The entry point to our app -->
 
 <template>
-  <v-app id="inspire">
+  <v-app id="app">
     <nav-bar></nav-bar>
     <v-content>
       <router-view/>
@@ -84,3 +84,15 @@ export default {
   }
 }
 </script>
+<style scoped>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  background-color: rgb(247, 244, 244);
+}
+body {
+  background-color: rgb(247, 244, 244);
+}
+</style>

@@ -14,6 +14,8 @@ export default new Vuex.Store({
     found_items: null,
     all_lost_items: null,
     all_found_items: null,
+    queried_lost_items: null,
+    queried_found_items: null,
     firebase,
     db,
     // if lostToggle/foundToggle is true = display lost/found markers
@@ -67,17 +69,39 @@ export default new Vuex.Store({
         .collection(collectionName)
         .get()
         .then(items => {
-          items.forEach(doc => {
-            let dataWithId = doc.data()
-            dataWithId.id = doc.id
-            // doc.data() is never undefined for query doc snapshots
-            documents.push(dataWithId)
-          })
+          pushDocuments(items, documents)
           if (collectionName === 'lost-items') {
             state.all_lost_items = documents
           } else {
             state.all_found_items = documents
           }
+        })
+        .catch(function (error) {
+          console.log('Error getting documents: ', error)
+        })
+    },
+    /*
+      Fetches new submissions from firebase storage and updates the local copy of all lost/found entries based on query
+    */
+    updateCollectionQuery (state, query) {
+      let documentsLost = []
+      state.db
+        .collection('lost-items')
+        .where('type', '==', query)
+        .get()
+        .then(lostItems => {
+          pushDocuments(lostItems, documentsLost)
+          state.queried_lost_items = documentsLost
+
+          let documentsFound = []
+          state.db
+            .collection('found-items')
+            .where('type', '==', query)
+            .get()
+            .then(foundItems => {
+              pushDocuments(foundItems, documentsFound)
+              state.queried_found_items = documentsFound
+            })
         })
         .catch(function (error) {
           console.log('Error getting documents: ', error)
@@ -93,12 +117,7 @@ export default new Vuex.Store({
         .where('userID', '==', state.user.uid)
         .get()
         .then(items => {
-          items.forEach(doc => {
-            // doc.data() is never undefined for query doc snapshots
-            let dataWithId = doc.data()
-            dataWithId.id = doc.id
-            documents.push(dataWithId)
-          })
+          pushDocuments(items, documents)
           if (collectionName === 'lost-items') {
             state.lost_items = documents
           } else {
@@ -140,6 +159,21 @@ export default new Vuex.Store({
     },
     updateUserCollection ({commit}, collectionName) {
       commit('updateUserCollection', collectionName)
+    },
+    updateCollectionQuery ({commit}, query) {
+      commit('updateCollectionQuery', query)
     }
   }
 })
+
+function pushDocuments (items, collection) {
+  if (items) {
+    items.forEach(doc => {
+      let dataWithId = doc.data()
+      dataWithId.id = doc.id
+      // doc.data() is never undefined for query doc snapshots
+      collection.push(dataWithId)
+    })
+  }
+  return collection
+}

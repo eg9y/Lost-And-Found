@@ -191,7 +191,6 @@ export default {
         userID: this.user.uid,
         collection
       }).then((docRef) => {
-        console.log('doc :', docRef)
         docRef.get().then((doc) => {
           this.$store.dispatch('updateUserCollection', collectionName)
           this.$store.dispatch('updateCollection', collectionName)
@@ -232,7 +231,6 @@ export default {
       const STORAGE = this.firebase.storage().ref()
       var uploadTask = STORAGE.child(name).putString(this.imageFile, 'data_url')
       var self = this
-      console.log('uploadPic this.type :', this.type)
       uploadTask.on('state_changed', (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
