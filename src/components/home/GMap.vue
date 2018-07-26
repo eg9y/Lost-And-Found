@@ -106,12 +106,6 @@ export default {
         },
         maxWidth: '200'
       },
-      mapOptions: {
-        minZoom: 15,
-        maxZoom: 18,
-        gestureHandling: 'cooperative',
-        draggableCursor: 'url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto'
-      },
       lost_items: [],
       found_items: [],
       alert: false
@@ -129,7 +123,15 @@ export default {
       'all_found_items',
       'lostToggle',
       'foundToggle'
-    ])
+    ]),
+    mapOptions () {
+      return {
+        minZoom: 15,
+        maxZoom: 18,
+        gestureHandling: this.$vuetify.breakpoint.width >= '710' ? 'cooperative' : 'greedy',
+        draggableCursor: 'url(http://s3.amazonaws.com/besport.com_images/status-pin.png), auto'
+      }
+    }
   },
   methods: {
     /*
