@@ -174,7 +174,6 @@ export default {
     */
     getMarkerDetails (marker, collectionTitle, collectionName) {
       this.closeInfoWindow()
-      console.log('marker :', marker)
       if (marker.location) {
         // wait 1/4 seconds to set new info for info window
         this.infoWindow.pictures = marker.picture
@@ -189,7 +188,6 @@ export default {
           this.infoWindow.userID = marker.userID
           this.infoWindow.collectionName = collectionName
           this.infoWindow.id = marker.id
-          console.log('Info Window ID: ' + this.infoWindow.id)
 
           // check if its the same marker that was selected if yes toggle
           if (this.currentMid === marker.id) {
@@ -199,8 +197,6 @@ export default {
             this.infoWinOpen = true
             this.currentMid = marker.id
           }
-          console.log(this.infoWinOpen)
-          console.log(this.currentMid)
         }, 400)
       }
     },
@@ -280,8 +276,6 @@ export default {
         }
       } else if (this.all_found_items && itemStr[0] === 'f') {
         for (var j = 0; j < this.all_found_items.length; j++) {
-          console.log('this.all_lost_items[i].id :', this.all_found_items[j].id)
-          console.log('itemID :', itemID)
           if (this.all_found_items[j].id === itemID) {
             this.getMarkerDetails(this.all_found_items[j], 'Found: ', 'found-items')
             j = this.all_found_items.length
@@ -316,7 +310,6 @@ export default {
         lat: newCenter[0].location._lat,
         lng: newCenter[0].location._long
       }
-      console.log(newCenter)
       this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
     }.bind(this))
 

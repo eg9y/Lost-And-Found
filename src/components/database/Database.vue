@@ -2,6 +2,9 @@
 
 <template>
   <div>
+    <!-- Search bar to search submission by item type -->
+    <!-- <search-panel></search-panel> -->
+
     <!--Sets the design and displays Lost Items-->
     <list :collectionCluster="clusteredCollections" />
   </div>
@@ -9,23 +12,29 @@
 
 <script>
 import List from './List'
+import SearchPanel from './SearchPanel'
 import { mapState } from 'vuex'
 
 // Creates a reference to firebase storag
 
 export default {
   components: {
-    'list': List
+    'list': List,
+    'search-panel': SearchPanel
   },
   data () {
     return {
-      clusteredCollections: null
+      clusteredCollections: null,
+      protectedAllLostItems: [],
+      protectedAllFoundItems: []
     }
   },
   computed: {
     ...mapState([
       'all_lost_items',
-      'all_found_items'
+      'all_found_items',
+      'queried_found_items',
+      'queried_lost_items'
     ]),
     breakpoint () { return this.$vuetify.breakpoint }
   },
@@ -62,22 +71,57 @@ export default {
       }
     },
     updateAllClusters () {
-      this.updateCluster([...this.all_lost_items, ...this.all_found_items])
+      if (!this.$route.query.search) {
+        this.updateCluster([...this.protectedAllLostItems, ...this.protectedAllFoundItems])
+      } else {
+        this.updateCluster([...this.queried_lost_items, ...this.queried_found_items])
+      }
     }
   },
   watch: {
     breakpoint () {
       this.updateAllClusters()
     },
-    all_lost_items () {
-      this.updateAllClusters()
+    '$route.query.search': {
+      immediate: true,
+      async handler (val) {
+        if (!val || !val.length) {
+          this.updateAllClusters()
+          return
+        }
+        this.$store.dispatch('updateCollectionQuery', val)
+        console.log('d22')
+      }
     },
-    all_found_items () {
-      this.updateAllClusters()
+    all_lost_items (collection) {
+      if (collection && collection.length) {
+        if (!this.protectedAllFoundItems) {
+          this.protectedAllFoundItems = []
+        }
+        this.protectedAllLostItems = collection
+        console.log('ddd', collection)
+        this.updateCluster([...this.protectedAllLostItems, ...this.protectedAllFoundItems])
+      }
+    },
+    all_found_items (collection) {
+      if (collection && collection.length) {
+        if (!this.protectedAllLostItems) {
+          this.protectedAllLostItems = []
+        }
+        this.protectedAllFoundItems = collection
+        this.updateCluster([...this.protectedAllLostItems, ...this.protectedAllFoundItems])
+      }
+    },
+    queried_found_items (collection) {
+      this.updateCluster([...this.queried_lost_items, ...this.queried_found_items])
     }
   },
   created () {
-    if (this.all_lost_items && this.all_found_items) {
+    this.protectedAllLostItems = this.all_lost_items
+    this.protectedAllFoundItems = this.all_found_items
+    let lostItemsAvailable = this.protectedAllLostItems && this.protectedAllLostItems.length
+    let foundItemsAvailable = this.protectedAllFoundItems && this.protectedAllFoundItems.length
+    if (lostItemsAvailable && foundItemsAvailable) {
       this.updateAllClusters()
     }
   }
@@ -88,27 +132,5 @@ export default {
 img {
   width: 100%;
   height: auto;
-}
-.project-card {
-  margin-right: 10px;
-  padding: 0px;
-}
-.index {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 50px;
-  margin-top: 60px;
-}
-.index h2 {
-  font-size: 1.8em;
-  text-align: center;
-  margin-top: 0;
-}
-.item-pictures {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 200px;
-  max-height: 200px;
 }
 </style>

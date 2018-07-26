@@ -2,21 +2,8 @@
 
 <template>
   <v-dialog v-model="indexSubmissionForm" :max-width="collapseOrExpandWidth" lazy>
-    <!-- if not collapsed, show option to hide -->
-    <v-card v-if="!hide" color="cyan">
-      <v-btn color="white" dark @click="hide = true" flat icon>
-        <v-icon>fas fa-minus-square</v-icon>
-      </v-btn>
-    </v-card>
-    <!-- if collapsed, show option to expand -->
-    <v-card v-else color="cyan">
-      <v-btn color="white" dark @click="hide = false" flat icon>
-        <v-icon>fas fa-expand-arrows-alt</v-icon>
-      </v-btn>
-    </v-card>
     <!-- if collapsed, hide all the form (give user visibility) -->
-    <template v-if="!hide">
-      <v-tabs centered color="cyan" v-model="activeParent" dark icons-and-text>
+      <v-tabs v-show="!hide" centered color="cyan" v-model="activeParent" dark icons-and-text>
         <v-tabs-slider color="yellow"></v-tabs-slider>
         <v-tab href="#tab-1">
           Add Found Item
@@ -41,7 +28,7 @@
             typeHint="What did you find?"
             descriptionHint="Please describe the item."
             contactHint="Email only"
-            collectionName="found-items" />
+            collectionName="found-items"/>
         </v-tab-item>
 
         <!-- Lost item form -->
@@ -57,10 +44,15 @@
             typeHint="What did you lose?"
             descriptionHint="Please describe the item."
             contactHint="Email only"
-            collectionName="lost-items" />
+            collectionName="lost-items"/>
         </v-tab-item>
       </v-tabs>
-    </template>
+    <v-btn id="hide" @click="hide = true"  v-if="!hide" color="danger" :style="hideButtonStyle" >
+      <v-icon left>fas fa-eye-slash</v-icon>  hide
+    </v-btn>
+    <v-btn id="hide" @click="hide = false"  v-else :style="hideButtonStyle" >
+       <v-icon left>fas fa-eye</v-icon> show
+    </v-btn>
   </v-dialog>
 </template>
 
@@ -87,7 +79,14 @@ export default {
       'user',
       'db',
       'firebase'
-    ])
+    ]),
+    breakpoint () { return this.$vuetify.breakpoint },
+    hideButtonStyle () {
+      return {
+        top: (this.$vuetify.breakpoint.height - 50) + 'px',
+        left: '5px'
+      }
+    }
   },
   watch: {
     /*
@@ -109,3 +108,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+#hide {
+    position: absolute;
+}
+</style>

@@ -3,11 +3,26 @@
 
 <template>
   <div>
-    <v-layout v-for="(cluster, clusterIdx) in collectionCluster" :key="clusterIdx" class="mt-2">
+    <v-layout v-for="(cluster, clusterIdx) in collectionCluster" :key="clusterIdx" class="mt-2 mr-2 ml-2">
       <v-flex v-for="(submission, index) in cluster" :key="index" :xs3="$vuetify.breakpoint.width >= 885" :xs4="$vuetify.breakpoint.width < 885" :xs6="$vuetify.breakpoint.width < 612" :xs12="$vuetify.breakpoint.width < 500">
         <v-layout column>
           <v-card :class="{'project-card':index !== cluster.length-1}">
-            <img :id="submission.id" v-if="submission.picture" :src="submission.picture" alt="(PICTURE UNAVAILABLE)">
+            <v-card-media height="200px" :id="submission.id" v-if="submission.picture" :src="submission.picture" alt="NO IMAGE UPLOADED">
+            </v-card-media>
+            <v-card-media
+              height="200px"
+              :id="submission.id"
+              v-else-if="submission.collection === 'lost'"
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/768px-Icon-round-Question_mark.svg.png"
+            >
+            </v-card-media>
+            <v-card-media
+              height="200px"
+              :id="submission.id"
+              v-else
+              src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Exclamation_mark.png"
+            >
+            </v-card-media>
             <v-card-title primary-title>
               <h2 class="text-sm-left">
                 <strong>{{lostOrFound(submission.collection)}}</strong>{{submission.type}}</h2>
@@ -88,4 +103,19 @@ export default {
 </script>
 
 <style>
+  img {
+  }
+  .project-card {
+    margin-right: 10px;
+    padding: 0px;
+  }
+  .detail-info {
+    font-size: 15px;
+    margin: 0;
+    padding: 0;
+  }
+  .small-info {
+    font-size: 0.8em;
+    overflow:hidden;
+  }
 </style>
