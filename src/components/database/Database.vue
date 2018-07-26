@@ -1,184 +1,98 @@
 <!-- This displays all the items in the database as a list view -->
 
 <template>
-  <div class="index container">
-
+  <div>
     <!--Sets the design and displays Lost Items-->
-    <div class="card" v-for="lostItem in lostItems" :key="lostItem.id">
-      <v-layout justify-center="20px">
-        <v-flex xs12 sm9 offset-sm>
-          <v-card height="525px">
-            <v-card-title primary-title>
-              <div class="card-content">
-                <h3 class="headline mb-0">
-                  <center>
-                    <b>Lost:</b> {{lostItem.type}}</center>
-                </h3>
-                <div v-if="lostItem.picture">
-                  <br/><img class="item-pictures" :id="lostItem.id" :src="getExternalPic(lostItem.picture)" alt="(PICTURE UNAVAILABLE)">
-                </div>
-                <br/>
-                <div v-if="lostItem.description">
-                  <b>Description:</b> {{ lostItem.description }}<br/>
-                </div>
-                <div v-else>
-                  <b>Description:</b> N/A<br/>
-                </div>
-                <div v-if="lostItem.contactEmail">
-                  <b>Contact:</b> {{ lostItem.contactEmail }}<br/>
-                </div>
-                <div v-else>
-                  <b>Contact:</b> N/A<br/>
-                </div>
-                <div v-if="lostItem.date">
-                  <b>Date:</b> {{ lostItem.date }}<br/>
-                </div>
-                <div v-else>
-                  <b>Date:</b> N/A<br/>
-                </div>
-                <div v-if="lostItem.time">
-                  <b>Time:</b> {{ lostItem.time }}<br/>
-                </div>
-                <div v-else>
-                  <b>Time:</b> N/A<br/>
-                </div>
-                <br/>
-              </div>
-            </v-card-title>
-            <v-card-actions>
-              <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
-              <v-btn bottom flat color="cyan" @click="locateItem(lostItem.id, 'l')">Location</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </div>
-
-    <!--Sets the design and displays Found Items-->
-    <div class="card" v-for="foundItem in foundItems" :key="foundItem.id">
-      <v-layout justify-center="20px">
-        <v-flex xs12 sm9 offset-sm>
-          <v-card height="500px">
-            <v-card-title primary-title>
-              <div class="card-content">
-                <h3 class="headline mb-0">
-                  <center>
-                    <b>Found:</b> {{foundItem.type}}</center>
-                </h3>
-                <div v-if="foundItem.picture">
-                  <br/><img class="item-pictures" v-bind:id="foundItem.id" :src="getExternalPic(foundItem.picture)" alt="(PICTURE UNAVAILABLE)">
-                </div><br/>
-                <div v-if="foundItem.description">
-                  <b>Description:</b> {{ foundItem.description }}<br/>
-                </div>
-                <div v-else>
-                  <b>Description:</b> N/A<br/>
-                </div>
-                <div v-if="foundItem.contactEmail">
-                  <b>Contact:</b> {{ foundItem.contactEmail }}<br/>
-                </div>
-                <div v-else>
-                  <b>Contact:</b> N/A<br/>
-                </div>
-                <div v-if="foundItem.date">
-                  <b>Date:</b> {{ foundItem.date }}<br/>
-                </div>
-                <div v-else>
-                  <b>Date:</b> N/A<br/>
-                </div>
-                <div v-if="foundItem.time">
-                  <b>Time:</b> {{ foundItem.time }}<br/>
-                </div>
-                <div v-else>
-                  <b>Time:</b> N/A<br/>
-                </div>
-                <br/>
-              </div>
-            </v-card-title>
-            <v-card-actions>
-              <!-- <v-btn bottom flat color="cyan">Contact</v-btn> -->
-              <v-btn bottom flat color="cyan" @click="locateItem(foundItem.id, 'f')">Location</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </div>
+    <list :collectionCluster="clusteredCollections" />
   </div>
 </template>
 
 <script>
-import firebase from 'firebase'
-import db from '@/firebase/init'
+import List from './List'
+import { mapState } from 'vuex'
 
-// Creates a reference to firebase storage
-const STORAGE = firebase.storage()
+// Creates a reference to firebase storag
 
 export default {
-  name: 'Database',
+  components: {
+    'list': List
+  },
   data () {
     return {
-      lostItems: [],
-      foundItems: []
+      clusteredCollections: null
     }
   },
+  computed: {
+    ...mapState([
+      'all_lost_items',
+      'all_found_items'
+    ]),
+    breakpoint () { return this.$vuetify.breakpoint }
+  },
   methods: {
-    /*
-      Displays all items in a collection in the database
-    */
-    displayCollection (collectionName, collectionArr) {
-      // fetch data from firestore
-      db
-        .collection(collectionName)
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            let item = doc.data()
-            item.id = doc.id
-            collectionArr.push(item)
-
-            // fetch picture from Storage (if not null)
-            if (item.picture && item.picture.includes('firebasestorage')) {
-              this.getPicture(item.picture, item.id)
-            }
-          })
+    updateCluster (collection) {
+      let group = []
+      let limit = 0
+      let cluster = 0
+      let clusters = []
+      if (!this.$vuetify.breakpoint) {
+        limit = 1
+      } else {
+        if (this.$vuetify.breakpoint.width < 500) {
+          limit = 1
+        } else if (this.$vuetify.breakpoint.width < 612) {
+          limit = 2
+        } else if (this.$vuetify.breakpoint.width < 885) {
+          limit = 3
+        } else {
+          limit = 4
+        }
+      }
+      if (collection && collection.length) {
+        collection.forEach((submission, index) => {
+          group.push(submission)
+          cluster++
+          if (cluster === limit || collection.length - 1 === index) {
+            clusters.push(group)
+            group = []
+            cluster = 0
+          }
         })
-    },
-    /*
-      Fetches the picture from Storage and replaces the associated img tag src with the url
-    */
-    getPicture (urlPic, elemID) {
-      STORAGE.refFromURL(urlPic).getDownloadURL().then(function (url) {
-        let img = document.getElementById(elemID)
-        img.src = url
-      })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
-    /*
-      Checks if the picture is stored in Firebase Storage
-      If not, returns the same url
-    */
-    getExternalPic (urlPic) {
-      if (urlPic && !urlPic.includes('firebasestorage')) {
-        return urlPic
+        this.clusteredCollections = clusters
       }
     },
-    /*
-      Used in the Location button to redirect to the home page with the info window of the item open
-    */
-    locateItem (itemID, collectionType) {
-      this.$router.push(`/${collectionType}-${itemID}`)
+    updateAllClusters () {
+      this.updateCluster([...this.all_lost_items, ...this.all_found_items])
+    }
+  },
+  watch: {
+    breakpoint () {
+      this.updateAllClusters()
+    },
+    all_lost_items () {
+      this.updateAllClusters()
+    },
+    all_found_items () {
+      this.updateAllClusters()
     }
   },
   created () {
-    this.displayCollection('lost-items', this.lostItems)
-    this.displayCollection('found-items', this.foundItems)
+    if (this.all_lost_items && this.all_found_items) {
+      this.updateAllClusters()
+    }
   }
 }
 </script>
 
 <style>
+img {
+  width: 100%;
+  height: auto;
+}
+.project-card {
+  margin-right: 10px;
+  padding: 0px;
+}
 .index {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
