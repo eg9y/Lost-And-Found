@@ -37,8 +37,26 @@
       </gmap-info-window>
 
       <!-- The lost and found markers -->
-      <GmapMarker v-if="lostToggle" :animation="2" v-for="(lost_item, index) in all_lost_items" :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`" :position="{lat: lost_item.location._lat, lng: lost_item.location._long}" :title="lost_item.type" :clickable="true" icon="../../../static/icons/lost_icon.png" @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
-      <GmapMarker v-if="foundToggle" :animation="2" v-for="(found_item, index) in all_found_items" :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`" :position="{lat: found_item.location._lat, lng: found_item.location._long}" :title="found_item.type" :clickable="true" icon="../../../static/icons/found_icon.png" @click="getMarkerDetails(found_item, 'Found: ', 'found-items')" />
+      <GmapMarker
+        v-if="lostToggle"
+        :animation="2"
+        v-for="(lost_item, index) in all_lost_items"
+        :key="`lost-${index}-${lost_item.location._lat},${lost_item.location._long}`"
+        :position="{lat: lost_item.location._lat, lng: lost_item.location._long}"
+        :title="lost_item.type"
+        :clickable="true"
+        icon="../../../static/icons/lost_icon.png"
+        @click="getMarkerDetails(lost_item, 'Lost: ', 'lost-items')" />
+      <GmapMarker
+        v-if="foundToggle"
+        :animation="2"
+        v-for="(found_item, index) in all_found_items"
+        :key="`found-${index}-${found_item.location._lat},${found_item.location._long}`"
+        :position="{lat: found_item.location._lat, lng: found_item.location._long}"
+        :title="found_item.type"
+        :clickable="true"
+        icon="../../../static/icons/found_icon.png"
+        @click="getMarkerDetails(found_item, 'Found: ', 'found-items')" />
 
       <!-- The pin that places the potential submission -->
       <GmapMarker v-if="lat && lng" :animation="2" :position="{lat, lng}" icon="http://s3.amazonaws.com/besport.com_images/status-pin.png" />
@@ -156,6 +174,7 @@ export default {
     */
     getMarkerDetails (marker, collectionTitle, collectionName) {
       this.closeInfoWindow()
+      console.log('marker :', marker)
       if (marker.location) {
         // wait 1/4 seconds to set new info for info window
         this.infoWindow.pictures = marker.picture
@@ -250,21 +269,23 @@ export default {
     */
     findMarker (itemStr) {
       console.log('findMarker is running, looking for: ' + itemStr)
-      if (this.all_lost_items && this.all_found_items) {
-        var itemID = itemStr.substr(2)
-        if (itemStr[0] === 'l') {
-          for (var i = 0; i < this.all_lost_items.length; i++) {
-            if (this.all_lost_items[i].id === itemID) {
-              this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
-              i = this.all_lost_items.length
-            }
+      const itemID = itemStr.substr(2)
+      if (this.all_lost_items && itemStr[0] === 'l') {
+        for (var i = 0; i < this.all_lost_items.length; i++) {
+          if (this.all_lost_items[i].id === itemID) {
+            this.getMarkerDetails(this.all_lost_items[i], 'Lost: ', 'lost-items')
+            i = this.all_lost_items.length
+            break
           }
-        } else if (itemStr[0] === 'f') {
-          for (var j = 0; j < this.all_found_items.length; j++) {
-            if (this.all_found_items[j].id === itemID) {
-              this.getMarkerDetails(this.all_found_items[j], 'Found: ', 'found-items')
-              j = this.all_Found_items.length
-            }
+        }
+      } else if (this.all_found_items && itemStr[0] === 'f') {
+        for (var j = 0; j < this.all_found_items.length; j++) {
+          console.log('this.all_lost_items[i].id :', this.all_found_items[j].id)
+          console.log('itemID :', itemID)
+          if (this.all_found_items[j].id === itemID) {
+            this.getMarkerDetails(this.all_found_items[j], 'Found: ', 'found-items')
+            j = this.all_found_items.length
+            break
           }
         }
       }
@@ -284,8 +305,10 @@ export default {
   },
   created () {
     EventBus.$on('toggleSubmission', function (submission) {
-      this.lat = null
-      this.lng = null
+      if (this.submission === true) {
+        this.lat = null
+        this.lng = null
+      }
       this.submissionDialog = false
     }.bind(this))
     EventBus.$on('newCenter', function (newCenter) {
@@ -296,6 +319,7 @@ export default {
       console.log(newCenter)
       this.getMarkerDetails(newCenter[0], newCenter[1], newCenter[2])
     }.bind(this))
+
     if (this.$route.params.id) {
       this.findMarker(this.$route.params.id)
     }

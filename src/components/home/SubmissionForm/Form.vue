@@ -7,7 +7,7 @@
         <v-form v-model="valid">
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field class="text-field" v-model="type" label="Item *" :hint="typeHint" counter="10" :maxlength="10" required :error-messages="typeErrors" @input="$v.type.$touch()" @blur="$v.type.$touch()"></v-text-field>
+              <v-text-field class="text-field" v-model="type" label="Item *" :hint="typeHint" counter="30" :maxlength="30" required :error-messages="typeErrors" @input="$v.type.$touch()" @blur="$v.type.$touch()"></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-textarea v-model="description" :hint="descriptionHint" label="Item Description *" counter="150" :maxlength="150" required :error-messages="descriptionErrors" @input="$v.description.$touch()" @blur="$v.description.$touch()"></v-textarea>
@@ -166,7 +166,6 @@ export default {
         return
       }
       this.imageFile && this.active === 'tab-1' ? this.uploadPic(this.collectionName) : this.addDoc(this.collectionName)
-      this.toggleSubmission()
     },
     /*
       Adds the document to the database
@@ -174,6 +173,12 @@ export default {
     addDoc (collectionName) {
       console.log('addDoc is running')
       this.feedback = null
+      let collection
+      if (this.activeParent === 'tab-1') {
+        collection = 'found'
+      } else {
+        collection = 'lost'
+      }
       this.db.collection(collectionName).add({
         type: this.type,
         description: this.description,
@@ -183,13 +188,15 @@ export default {
         time: this.time,
         // timestamp: this.date + ' ' + this.time,
         picture: this.imageURL,
-        userID: this.user.uid
+        userID: this.user.uid,
+        collection
       }).then((docRef) => {
         console.log('doc :', docRef)
         docRef.get().then((doc) => {
           this.$store.dispatch('updateUserCollection', collectionName)
           this.$store.dispatch('updateCollection', collectionName)
         })
+        this.toggleSubmission()
       })
         .catch(function (error) {
           console.log(error)
@@ -225,18 +232,21 @@ export default {
       const STORAGE = this.firebase.storage().ref()
       var uploadTask = STORAGE.child(name).putString(this.imageFile, 'data_url')
       var self = this
-      uploadTask.on('state_changed', function (snapshot) {
+      console.log('uploadPic this.type :', this.type)
+      uploadTask.on('state_changed', (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         console.log('Upload is ' + progress + '% done')
-      }, function (error) {
+      }, (error) => {
         // Handle unsuccessful uploads
         console.log("Error: couldn't upload picture,", error)
-      }, function () {
+      }, () => {
         // Handle successful uploads on complete
+        console.log('uploadPic this.typez :', this.type)
         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
           self.imageURL = downloadURL
           self.addDoc(collectionName)
+          self.toggleSubmission()
         })
       })
     },
