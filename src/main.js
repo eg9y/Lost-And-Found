@@ -37,7 +37,7 @@ Vue.use(Vuetify, {
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyB-FXJVrNHMXVkgxiGkZylm8kcABXb06cA',
+    key: 'AIzaSyBuJ-8GbQLKMZt_S2PIUK8HKpaNUNamuag',
     // This is required if you use the Autocomplete plugin
     libraries: 'places'
   },
