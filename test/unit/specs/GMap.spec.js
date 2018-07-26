@@ -14,4 +14,11 @@ describe('GMap.vue', () => {
     console.log('**********')
     console.log(GMapComponent.$el)
   }) */
+
+  it('checks that the map is centered properly when the webpage is refreshed', () => {
+    const Constructor = Vue.extend(GMap)
+    const GMapComponent = new Constructor().$mount()
+    expect(GMapComponent.center.lat).to.equal(36.994635)
+    expect(GMapComponent.center.lng).to.equal(-122.058842)
+  })
 })
